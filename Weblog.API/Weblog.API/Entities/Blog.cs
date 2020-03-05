@@ -23,5 +23,7 @@ namespace Weblog.API.Entities
         public string Title { get; set; }
 
         public string Excerpt { get; set; }
+
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
     }
 }
