@@ -5,3 +5,4 @@
 /.vs
 /Weblog.API/.vs/Weblog.API/v16
 /Weblog.API/Weblog.API/obj
+/Weblog.API/Weblog.API/bin/Debug/netcoreapp3.1
