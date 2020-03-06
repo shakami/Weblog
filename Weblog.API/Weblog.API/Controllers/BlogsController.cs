@@ -4,13 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Weblog.API.DbContexts;
 
 namespace Weblog.API.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class BlogsController : ControllerBase
     {
     }
 }
