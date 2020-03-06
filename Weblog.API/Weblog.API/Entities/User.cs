@@ -23,5 +23,7 @@ namespace Weblog.API.Entities
         [Required]
         [StringLength(25)]
         public string LastName { get; set; }
+
+        public ICollection<Blog> Blogs { get; set; } = new List<Blog>();
     }
 }

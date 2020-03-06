@@ -12,6 +12,7 @@ namespace Weblog.API.DbContexts
         public WeblogContext(DbContextOptions<WeblogContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         public DbSet<User> Users { get; set; }
@@ -21,20 +22,26 @@ namespace Weblog.API.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Comment>()
-                .HasIndex(c => c.PostId)
-                .HasName("IX_Comments_PostId");
-
-            modelBuilder.Entity<Comment>()
-                .Property(c => c.TimeCreated)
-                .HasDefaultValueSql("getDate()");
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(u => u.EmailAddress);
 
             modelBuilder.Entity<Post>()
                 .Property(p => p.TimeCreated)
                 .HasDefaultValueSql("getDate()");
 
-            modelBuilder.Entity<User>()
-                .HasAlternateKey(u => u.EmailAddress);
+            modelBuilder.Entity<Comment>(buildAction =>
+            {
+                buildAction.HasIndex(c => c.PostId)
+                           .HasName("IX_Comments_PostId");
+
+                buildAction.Property(c => c.TimeCreated)
+                           .HasDefaultValueSql("getDate()");
+
+                buildAction.HasOne(c => c.User)
+                           .WithMany()
+                           .HasForeignKey(c => c.UserId)
+                           .OnDelete(DeleteBehavior.Restrict);
+            });
 
             base.OnModelCreating(modelBuilder);
         }
