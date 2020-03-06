@@ -149,8 +149,8 @@ namespace Weblog.API.Services
                     {
                         item.State = EntityState.Detached;
                     }
-                
                 }
+                // couldn't handle the exception
                 throw;
             }
             return true;

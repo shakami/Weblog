@@ -71,7 +71,10 @@ namespace Weblog.API.Controllers
             }
             catch (DbUpdateException ex)
             {
-                return ErrorHandler.UnprocessableEntity(this, ex);
+                ModelState.AddModelError(ex.Message,
+                                         ex?.InnerException.Message);
+
+                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
             }
 
             var newUserToReturn = _mapper.Map<UserWithoutBlogsDto>(userEntity);

@@ -35,21 +35,8 @@ namespace Weblog.API
                     {
                         setupAction.InvalidModelStateResponseFactory = context =>
                         {
-                            var problemDetails = new ValidationProblemDetails(context.ModelState)
-                            {
-                                Type = "https://tools.ietf.org/html/rfc4918#section-11.2",
-                                Title = "One or more model validation errors occurred.",
-                                Status = StatusCodes.Status422UnprocessableEntity,
-                                Detail = "See the errors property for details.",
-                                Instance = context.HttpContext.Request.Path
-                            };
-
-                            problemDetails.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
-
-                            return new UnprocessableEntityObjectResult(problemDetails)
-                            {
-                                ContentTypes = { "application/problem+json" }
-                            };
+                            return ErrorHandler.UnprocessableEntity(context.ModelState,
+                                                                    context.HttpContext);
                         };
                     });
 
