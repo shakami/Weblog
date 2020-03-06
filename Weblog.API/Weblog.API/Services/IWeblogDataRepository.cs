@@ -6,7 +6,7 @@ using Weblog.API.Entities;
 
 namespace Weblog.API.Services
 {
-    interface IWeblogDataRepository
+    public interface IWeblogDataRepository
     {
         //-- users
         IEnumerable<User> GetUsers();
