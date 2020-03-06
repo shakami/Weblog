@@ -44,9 +44,9 @@ namespace Weblog.API.Services
         void DeletePost(Post post);
 
         //-- comments
-        IEnumerable<Comment> GetComments(int PostId);
+        IEnumerable<Comment> GetComments(int postId);
 
-        void AddComment(int PostId, Comment newComment);
+        void AddComment(int postId, Comment newComment);
         
         void UpdateComment(Comment updatedComment);
 

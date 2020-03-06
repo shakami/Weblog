@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Weblog.API.DbContexts;
+using Weblog.API.Services;
 
 namespace Weblog.API
 {
@@ -33,6 +34,8 @@ namespace Weblog.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("WeblogDB"));
             });
+
+            services.AddScoped<IWeblogDataRepository, WeblogDataRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
