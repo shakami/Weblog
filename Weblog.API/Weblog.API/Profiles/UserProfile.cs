@@ -10,7 +10,17 @@ namespace Weblog.API.Profiles
     {
         public UserProfile()
         {
-            CreateMap<Entities.User, Models.UserDto>();
+            CreateMap<Entities.User, Models.UserDto>()
+                .ForMember(dest => dest.Name,
+                            opt => opt.MapFrom(src =>
+                                    $"{src.FirstName} {src.LastName}"));
+
+            CreateMap<Entities.User, Models.UserWithoutBlogsDto>()
+                .ForMember(dest => dest.Name,
+                            opt => opt.MapFrom(src =>
+                                    $"{src.FirstName} {src.LastName}"));
+
+            CreateMap<Models.UserForCreationDto, Entities.User>();
         }
     }
 }

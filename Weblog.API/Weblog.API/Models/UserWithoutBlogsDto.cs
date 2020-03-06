@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 namespace Weblog.API.Models
 {
-    public class UserDto
+    public class UserWithoutBlogsDto
     {
         public int UserId { get; set; }
         public string EmailAddress { get; set; }
         public string Name { get; set; }
-        public ICollection<BlogWithoutPostsDto> Blogs { get; set; }
-            = new List<BlogWithoutPostsDto>();
     }
 }

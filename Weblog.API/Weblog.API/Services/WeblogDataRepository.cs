@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace Weblog.API.Services
 
         public void AddUser(User newUser)
         {
-            throw new NotImplementedException();
+            _context.Users.Add(newUser);
         }
 
         public void DeleteBlog(Blog blog)
@@ -126,7 +127,33 @@ namespace Weblog.API.Services
 
         public bool Save()
         {
-            return _context.SaveChanges() >= 0;
+            try
+            {
+                _context.SaveChanges();//  >= 0;
+            }
+            catch (DbUpdateException e)
+            {
+                const int SqlServerViolationOfUniqueIndex = 2601;
+                const int SqlServerViolationOfUniqueConstraint = 2627;
+
+                if (e?.InnerException is SqlException sqlEx)
+                {
+                    if (sqlEx.Number == SqlServerViolationOfUniqueIndex ||
+                        sqlEx.Number == SqlServerViolationOfUniqueConstraint)
+                    {
+                        throw new DbUpdateException("Cannot have duplicates.", sqlEx);
+                    }
+
+                    // revert entity states
+                    foreach (var item in e.Entries)
+                    {
+                        item.State = EntityState.Detached;
+                    }
+                
+                }
+                throw;
+            }
+            return true;
         }
 
         public void UpdateBlog(Blog updatedBlog)
@@ -151,7 +178,8 @@ namespace Weblog.API.Services
 
         public bool UserExists(int userId)
         {
-            // no code
+            return _context.Users
+                .Any(u => u.UserId == userId);
         }
     }
 }
