@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Weblog.API.DbContexts;
 
 namespace Weblog.API.Migrations
 {
     [DbContext(typeof(WeblogContext))]
-    partial class WeblogContextModelSnapshot : ModelSnapshot
+    [Migration("20200306204402_EmailAddressIsUniqueIndexNotAltKey")]
+    partial class EmailAddressIsUniqueIndexNotAltKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,8 @@ namespace Weblog.API.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("PostId")
-                        .HasName("IX_Comments_PostId");
+                        .HasName("IX_Comments_PostId")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.HasIndex("UserId");
 

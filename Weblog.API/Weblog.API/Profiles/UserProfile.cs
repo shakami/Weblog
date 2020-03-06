@@ -20,7 +20,7 @@ namespace Weblog.API.Profiles
                             opt => opt.MapFrom(src =>
                                     $"{src.FirstName} {src.LastName}"));
 
-            CreateMap<Models.UserForCreationDto, Entities.User>();
+            CreateMap<Models.UserForManipulationDto, Entities.User>();
         }
     }
 }

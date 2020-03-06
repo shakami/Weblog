@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using Weblog.API.Models;
 using Weblog.API.Services;
 
@@ -49,18 +45,8 @@ namespace Weblog.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserForCreationDto user)
+        public IActionResult CreateUser([FromBody] UserForManipulationDto user)
         {
-            if (user is null)
-            {
-                return BadRequest();
-            }
-
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var userEntity = _mapper.Map<Entities.User>(user);
 
             _weblogDataRepository.AddUser(userEntity);
@@ -69,10 +55,11 @@ namespace Weblog.API.Controllers
             {
                 _weblogDataRepository.Save();
             }
-            catch (DbUpdateException ex)
+            catch (ApplicationException ex)
             {
-                ModelState.AddModelError(ex.Message,
-                                         ex?.InnerException.Message);
+                // adding user with email address that already exists
+                ModelState.AddModelError(nameof(user.EmailAddress),
+                                         ex.Message + "\n" + ex?.InnerException.Message);
 
                 return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
             }
@@ -82,6 +69,37 @@ namespace Weblog.API.Controllers
             return CreatedAtRoute(nameof(GetUser),
                                   new { userId = newUserToReturn.UserId },
                                   newUserToReturn);
+        }
+
+        [HttpPut("{userId}")]
+        public IActionResult UpdateUser(int userId,
+            [FromBody] UserForManipulationDto user)
+        {
+            var userFromRepo = _weblogDataRepository.GetUser(userId, includeBlogs: false);
+
+            if (userFromRepo is null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(user, userFromRepo);
+
+            _weblogDataRepository.UpdateUser(userFromRepo);
+            
+            try
+            {
+                _weblogDataRepository.Save();
+            }
+            catch (ApplicationException ex)
+            {
+                // changing user with email address that already exists
+                ModelState.AddModelError(nameof(user.EmailAddress),
+                                         ex.Message + "\n" + ex?.InnerException.Message);
+
+                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
+            }
+
+            return NoContent();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Weblog.API.Models
 {
-    public class UserForCreationDto
+    public class UserForManipulationDto
     {
         [Required]
         [EmailAddress]

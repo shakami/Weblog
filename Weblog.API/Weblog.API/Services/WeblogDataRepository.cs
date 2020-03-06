@@ -141,7 +141,7 @@ namespace Weblog.API.Services
                     if (sqlEx.Number == SqlServerViolationOfUniqueIndex ||
                         sqlEx.Number == SqlServerViolationOfUniqueConstraint)
                     {
-                        throw new DbUpdateException("Cannot have duplicates.", sqlEx);
+                        throw new ApplicationException("Cannot have duplicates.", sqlEx);
                     }
 
                     // revert entity states

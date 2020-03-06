@@ -23,7 +23,10 @@ namespace Weblog.API.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
-                .HasAlternateKey(u => u.EmailAddress);
+                .HasIndex(u => u.EmailAddress)
+                .HasName("IX_Users_EmailAddress")
+                .IsUnique(true)
+                .IsClustered(false);
 
             modelBuilder.Entity<Post>()
                 .Property(p => p.TimeCreated)
