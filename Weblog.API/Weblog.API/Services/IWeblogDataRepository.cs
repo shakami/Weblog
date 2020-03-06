@@ -22,6 +22,7 @@ namespace Weblog.API.Services
         void DeleteUser(User user);
 
         //-- blogs
+        IEnumerable<Blog> GetBlogs();
         IEnumerable<Blog> GetBlogs(int userId);
         
         Blog GetBlog(int blogId);

@@ -101,5 +101,21 @@ namespace Weblog.API.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{userId}")]
+        public IActionResult DeleteUser(int userId)
+        {
+            var userFromRepo = _weblogDataRepository.GetUser(userId, includeBlogs: false);
+
+            if (userFromRepo is null)
+            {
+                return NotFound();
+            }
+
+            _weblogDataRepository.DeleteUser(userFromRepo);
+            _weblogDataRepository.Save();
+
+            return NoContent();
+        }
     }
 }

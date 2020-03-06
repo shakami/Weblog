@@ -71,6 +71,11 @@ namespace Weblog.API.Services
                 .FirstOrDefault();
         }
 
+        public IEnumerable<Blog> GetBlogs()
+        {
+            return _context.Blogs.ToList();
+        }
+
         public IEnumerable<Blog> GetBlogs(int userId)
         {
             return _context.Blogs
