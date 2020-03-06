@@ -23,11 +23,12 @@ namespace Weblog.API.Services
 
         //-- blogs
         IEnumerable<Blog> GetBlogs();
+        
         IEnumerable<Blog> GetBlogs(int userId);
         
-        Blog GetBlog(int blogId);
+        Blog GetBlog(int blogId, bool includePosts);
 
-        void AddBlog(int userId, Blog newBlog);
+        void AddBlog(Blog newBlog);
 
         void UpdateBlog(Blog updatedBlog);
 

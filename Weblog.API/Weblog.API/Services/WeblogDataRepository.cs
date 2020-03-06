@@ -18,9 +18,9 @@ namespace Weblog.API.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void AddBlog(int userId, Blog newBlog)
+        public void AddBlog(Blog newBlog)
         {
-            var user = GetUser(userId, includeBlogs: false);
+            var user = GetUser(newBlog.UserId, includeBlogs: true);
 
             user.Blogs.Add(newBlog);
         }
@@ -34,7 +34,7 @@ namespace Weblog.API.Services
 
         public void AddPost(int blogId, Post newPost)
         {
-            var blog = GetBlog(blogId);
+            var blog = GetBlog(blogId, includePosts: true);
 
             blog.Posts.Add(newPost);
         }
@@ -64,8 +64,15 @@ namespace Weblog.API.Services
             _context.Users.Remove(user);
         }
 
-        public Blog GetBlog(int blogId)
+        public Blog GetBlog(int blogId, bool includePosts)
         {
+            if (includePosts)
+            {
+                return _context.Blogs
+                    .Include(b => b.Posts)
+                    .Where(b => b.BlogId == blogId)
+                    .FirstOrDefault();
+            }
             return _context.Blogs
                 .Where(b => b.BlogId == blogId)
                 .FirstOrDefault();
@@ -73,12 +80,15 @@ namespace Weblog.API.Services
 
         public IEnumerable<Blog> GetBlogs()
         {
-            return _context.Blogs.ToList();
+            return _context.Blogs
+                .ToList();
         }
 
         public IEnumerable<Blog> GetBlogs(int userId)
         {
-            return _context.Blogs
+            var user = GetUser(userId, includeBlogs: true);
+            
+            return user.Blogs
                 .ToList();
         }
 
@@ -100,7 +110,7 @@ namespace Weblog.API.Services
 
         public IEnumerable<Post> GetPosts(int blogId)
         {
-            var blog = GetBlog(blogId);
+            var blog = GetBlog(blogId, includePosts: true);
 
             return blog.Posts
                 .OrderByDescending(p => p.TimeCreated)
