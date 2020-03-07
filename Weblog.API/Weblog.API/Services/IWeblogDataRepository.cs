@@ -28,6 +28,8 @@ namespace Weblog.API.Services
         
         Blog GetBlog(int blogId, bool includePosts);
 
+        bool BlogExists(int blogId);
+
         void AddBlog(Blog newBlog);
 
         void UpdateBlog(Blog updatedBlog);
@@ -37,12 +39,12 @@ namespace Weblog.API.Services
         //-- posts
         IEnumerable<Post> GetPosts(int blogId);
 
-        Post GetPost(int postId);
+        Post GetPost(int postId, bool includeComments);
 
         void AddPost(int blogId, Post newPost);
 
         void UpdatePost(Post updatedPost);
-
+        
         void DeletePost(Post post);
 
         //-- comments

@@ -27,7 +27,7 @@ namespace Weblog.API.Services
 
         public void AddComment(int postId, Comment newComment)
         {
-            var post = GetPost(postId);
+            var post = GetPost(postId, includeComments: true);
 
             post.Comments.Add(newComment);
         }
@@ -42,6 +42,12 @@ namespace Weblog.API.Services
         public void AddUser(User newUser)
         {
             _context.Users.Add(newUser);
+        }
+
+        public bool BlogExists(int blogId)
+        {
+            return _context.Blogs
+                .Any(b => b.BlogId == blogId);
         }
 
         public void DeleteBlog(Blog blog)
@@ -68,10 +74,14 @@ namespace Weblog.API.Services
         {
             if (includePosts)
             {
-                return _context.Blogs
+                var blog = _context.Blogs
                     .Include(b => b.Posts)
                     .Where(b => b.BlogId == blogId)
                     .FirstOrDefault();
+
+                blog.Posts = blog.Posts.OrderByDescending(p => p.TimeCreated).ToList();
+
+                return blog;
             }
             return _context.Blogs
                 .Where(b => b.BlogId == blogId)
@@ -87,22 +97,34 @@ namespace Weblog.API.Services
         public IEnumerable<Blog> GetBlogs(int userId)
         {
             var user = GetUser(userId, includeBlogs: true);
-            
+
             return user.Blogs
                 .ToList();
         }
 
         public IEnumerable<Comment> GetComments(int postId)
         {
-            var post = GetPost(postId);
+            var post = GetPost(postId, includeComments: true);
 
             return post.Comments
                 .OrderByDescending(c => c.TimeCreated)
                 .ToList();
         }
 
-        public Post GetPost(int postId)
+        public Post GetPost(int postId, bool includeComments)
         {
+            if (includeComments)
+            {
+                var post = _context.Posts
+                    .Include(p => p.Comments)
+                    .Where(p => p.PostId == postId)
+                    .FirstOrDefault();
+
+                post.Comments = post.Comments.OrderByDescending(c => c.TimeCreated).ToList();
+
+                return post;
+            }
+
             return _context.Posts
                 .Where(p => p.PostId == postId)
                 .FirstOrDefault();

@@ -15,7 +15,7 @@ namespace Weblog.API.Models
 
         public string Excerpt { get; set; }
 
-        public ICollection<PostDto> Posts { get; set; }
-            = new List<PostDto>();
+        public ICollection<PostWithoutCommentsDto> Posts { get; set; }
+            = new List<PostWithoutCommentsDto>();
     }
 }
