@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using Weblog.API.Entities;
 using Weblog.API.Helpers;
 using Weblog.API.Models;
 using Weblog.API.ResourceParameters;
@@ -29,11 +32,24 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBlogs([FromQuery] BlogsResourceParameters blogsResourceParameters)
+        public IActionResult GetBlogs(
+            [FromQuery] BlogsResourceParameters blogsResourceParameters,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
+            if (!MediaTypeHeaderValue.TryParse(mediaType,
+                    out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
+
             var blogEntities = _weblogDataRepository.GetBlogs(blogsResourceParameters);
 
-            return Ok(_mapper.Map<IEnumerable<BlogDto>>(blogEntities));
+            var blogsToReturn = _mapper.Map<IEnumerable<BlogDto>>(blogEntities);
+
+            Response.Headers.Add(PaginationHeader<Blog>.Get(blogEntities));
+
+            return Ok();
         }
+        
     }
 }

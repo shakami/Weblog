@@ -45,8 +45,7 @@ namespace Weblog.API.Controllers
 
             var usersToReturn = _mapper.Map<IEnumerable<UserDto>>(userEntities);
 
-            Response.Headers.Add("X-Pagination",
-                PaginationHeader(userEntities));
+            Response.Headers.Add(PaginationHeader<User>.Get(userEntities));
 
             var includeLinks = parsedMediaType
                 .SubTypeWithoutSuffix
@@ -316,19 +315,6 @@ namespace Weblog.API.Controllers
             }
 
             return links;
-        }
-
-        private string PaginationHeader(PagedList<User> userEntities)
-        {
-            var paginationMetadata = new
-            {
-                totalCount = userEntities.TotalCount,
-                pageSize = userEntities.PageSize,
-                currentPage = userEntities.CurrentPage,
-                totalPages = userEntities.TotalPages,
-            };
-
-            return JsonSerializer.Serialize(paginationMetadata);
         }
     }
 }
