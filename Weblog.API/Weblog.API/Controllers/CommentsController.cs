@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weblog.API.Helpers;
 using Weblog.API.Models;
+using Weblog.API.ResourceParameters;
 using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
@@ -27,7 +29,8 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetComments(int blogId, int postId)
+        public IActionResult GetComments(int blogId, int postId,
+            [FromQuery] CommentsResourceParameters commentsResourceParameters)
         {
             if (!_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
@@ -35,7 +38,7 @@ namespace Weblog.API.Controllers
                 return NotFound();
             }
 
-            var commentsFromRepo = _weblogDataRepository.GetComments(postId);
+            var commentsFromRepo = _weblogDataRepository.GetComments(postId, commentsResourceParameters);
 
             return Ok(_mapper.Map<IEnumerable<CommentDto>>(commentsFromRepo));
         }

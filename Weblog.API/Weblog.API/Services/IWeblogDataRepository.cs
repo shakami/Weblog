@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Weblog.API.Entities;
+using Weblog.API.Helpers;
+using Weblog.API.ResourceParameters;
 
 namespace Weblog.API.Services
 {
     public interface IWeblogDataRepository
     {
-        //-- users
-        IEnumerable<User> GetUsers();
+        //--------- users ---------//
+        PagedList<User> GetUsers(UsersResourceParameters resourceParameters);
 
         User GetUser(int userId, bool includeBlogs);
 
@@ -21,10 +20,10 @@ namespace Weblog.API.Services
 
         void DeleteUser(User user);
 
-        //-- blogs
-        IEnumerable<Blog> GetBlogs();
-        
-        IEnumerable<Blog> GetBlogs(int userId);
+        //--------- blogs ---------//
+        PagedList<Blog> GetBlogs(BlogsResourceParameters resourceParameters);
+
+        PagedList<Blog> GetBlogs(int userId, BlogsResourceParameters resourceParameters);
         
         Blog GetBlog(int blogId, bool includePosts);
 
@@ -36,8 +35,8 @@ namespace Weblog.API.Services
 
         void DeleteBlog(Blog blog);
 
-        //-- posts
-        IEnumerable<Post> GetPosts(int blogId);
+        //--------- posts ---------//
+        PagedList<Post> GetPosts(int blogId, PostsResourceParameters resourceParameters);
 
         Post GetPost(int postId, bool includeComments);
 
@@ -49,8 +48,8 @@ namespace Weblog.API.Services
         
         void DeletePost(Post post);
 
-        //-- comments
-        IEnumerable<Comment> GetComments(int postId);
+        //--------- comments ---------//
+        PagedList<Comment> GetComments(int postId, CommentsResourceParameters resourceParameters);
 
         Comment GetComment(int commentId);
 
@@ -60,7 +59,7 @@ namespace Weblog.API.Services
 
         void DeleteComment(Comment comment);
 
-        //--save
+        //--------- save ---------//
         bool Save();
     }
 }

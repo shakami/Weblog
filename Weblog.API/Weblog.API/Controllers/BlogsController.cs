@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weblog.API.Helpers;
 using Weblog.API.Models;
+using Weblog.API.ResourceParameters;
 using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
@@ -27,9 +29,9 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBlogs()
+        public IActionResult GetBlogs([FromQuery] BlogsResourceParameters blogsResourceParameters)
         {
-            var blogEntities = _weblogDataRepository.GetBlogs();
+            var blogEntities = _weblogDataRepository.GetBlogs(blogsResourceParameters);
 
             return Ok(_mapper.Map<IEnumerable<BlogWithoutPostsDto>>(blogEntities));
         }

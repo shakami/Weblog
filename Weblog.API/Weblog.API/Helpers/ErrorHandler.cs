@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using Weblog.API.Models;
 
-namespace Weblog.API.Services
+namespace Weblog.API.Helpers
 {
     public class ErrorHandler
     {

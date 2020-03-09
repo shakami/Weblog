@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Weblog.API.DbContexts;
 using Weblog.API.Entities;
+using Weblog.API.Helpers;
+using Weblog.API.ResourceParameters;
 
 namespace Weblog.API.Services
 {
@@ -88,18 +89,49 @@ namespace Weblog.API.Services
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Blog> GetBlogs()
+        public PagedList<Blog> GetBlogs(BlogsResourceParameters resourceParameters)
         {
-            return _context.Blogs
-                .ToList();
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
+
+            var collection = _context.Blogs as IQueryable<Blog>;
+
+            var searchQuery = resourceParameters.SearchQuery?.Trim();
+
+            if (searchQuery != null)
+            {
+                collection = collection
+                    .Where(b => b.Title.Contains(searchQuery));
+            }
+
+            return PagedList<Blog>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
-        public IEnumerable<Blog> GetBlogs(int userId)
+        public PagedList<Blog> GetBlogs(int userId, BlogsResourceParameters resourceParameters)
         {
-            var user = GetUser(userId, includeBlogs: true);
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
 
-            return user.Blogs
-                .ToList();
+            var collection = _context.Blogs
+                .Where(b => b.UserId == userId) as IQueryable<Blog>;
+
+            var searchQuery = resourceParameters.SearchQuery?.Trim();
+
+            if (searchQuery != null)
+            {
+                collection = collection
+                    .Where(b => b.Title.Contains(searchQuery));
+            }
+
+            return PagedList<Blog>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
         public Comment GetComment(int commentId)
@@ -109,13 +141,20 @@ namespace Weblog.API.Services
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Comment> GetComments(int postId)
+        public PagedList<Comment> GetComments(int postId, CommentsResourceParameters resourceParameters)
         {
-            var post = GetPost(postId, includeComments: true);
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
 
-            return post.Comments
-                .OrderByDescending(c => c.TimeCreated)
-                .ToList();
+            var collection = _context.Comments
+                                .Where(c => c.PostId == postId)
+                                .OrderByDescending(c => c.TimeCreated);
+
+            return PagedList<Comment>.Create(collection,
+                                             resourceParameters.PageNumber,
+                                             resourceParameters.PageSize);
         }
 
         public Post GetPost(int postId, bool includeComments)
@@ -137,13 +176,29 @@ namespace Weblog.API.Services
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Post> GetPosts(int blogId)
+        public PagedList<Post> GetPosts(int blogId, PostsResourceParameters resourceParameters)
         {
-            var blog = GetBlog(blogId, includePosts: true);
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
 
-            return blog.Posts
-                .OrderByDescending(p => p.TimeCreated)
-                .ToList();
+            var collection = _context.Posts
+                .Where(p => p.BlogId == blogId);
+
+            var searchQuery = resourceParameters.SearchQuery?.Trim();
+
+            if (searchQuery != null)
+            {
+                collection = collection.Where(p => p.Title.Contains(searchQuery));
+            }
+
+            collection = collection
+                            .OrderByDescending(p => p.TimeCreated);
+
+            return PagedList<Post>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
         public User GetUser(int userId, bool includeBlogs)
@@ -161,12 +216,20 @@ namespace Weblog.API.Services
                 .FirstOrDefault();
         }
 
-        public IEnumerable<User> GetUsers()
+        public PagedList<User> GetUsers(UsersResourceParameters resourceParameters)
         {
-            return _context.Users
-                .OrderBy(u => u.LastName)
-                .ThenBy(u => u.FirstName)
-                .ToList();
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
+
+            var collection = _context.Users
+                                .OrderBy(u => u.LastName)
+                                .ThenBy(u => u.FirstName);
+
+            return PagedList<User>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
         public bool PostExists(int postId)
@@ -177,9 +240,10 @@ namespace Weblog.API.Services
 
         public bool Save()
         {
+            bool result;
             try
             {
-                _context.SaveChanges();//  >= 0;
+                result = _context.SaveChanges() >= 0;
             }
             catch (DbUpdateException e)
             {
@@ -203,7 +267,7 @@ namespace Weblog.API.Services
                 // couldn't handle the exception
                 throw;
             }
-            return true;
+            return result;
         }
 
         public void UpdateBlog(Blog updatedBlog)

@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Weblog.API.Models;
+using Weblog.API.ResourceParameters;
 using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
@@ -27,14 +28,15 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPosts(int blogId)
+        public IActionResult GetPosts(int blogId,
+            [FromQuery] PostsResourceParameters postsResourceParameters)
         {
             if (!_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
 
-            var postsFromRepo = _weblogDataRepository.GetPosts(blogId);
+            var postsFromRepo = _weblogDataRepository.GetPosts(blogId, postsResourceParameters);
 
             return Ok(_mapper.Map<IEnumerable<PostWithoutCommentsDto>>(postsFromRepo));
         }
