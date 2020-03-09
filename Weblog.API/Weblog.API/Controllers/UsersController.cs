@@ -48,8 +48,10 @@ namespace Weblog.API.Controllers
             Response.Headers.Add("X-Pagination",
                 PaginationHeader(userEntities));
 
-            var includeLinks = parsedMediaType.SubTypeWithoutSuffix
-                                .EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);
+            var includeLinks = parsedMediaType
+                .SubTypeWithoutSuffix
+                .EndsWith("hateoas",
+                          StringComparison.InvariantCultureIgnoreCase);
 
             if (!includeLinks)
             {
@@ -72,6 +74,171 @@ namespace Weblog.API.Controllers
             };
 
             return Ok(resourceToReturn);
+        }
+
+        [HttpGet("{userId}", Name = nameof(GetUser))]
+        public IActionResult GetUser(int userId,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
+        {
+            if (!MediaTypeHeaderValue.TryParse(mediaType,
+                    out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
+
+            var userEntity = _weblogDataRepository.GetUser(userId);
+
+            if (userEntity is null)
+            {
+                return NotFound();
+            }
+
+            var userToReturn = _mapper.Map<UserDto>(userEntity);
+
+            var includeLinks = parsedMediaType
+                .SubTypeWithoutSuffix
+                .EndsWith("hateoas",
+                          StringComparison.InvariantCultureIgnoreCase);
+
+            if (!includeLinks)
+            {
+                return Ok(userToReturn);
+            }
+
+            var userWithLinks = new UserDtoWithLinks
+                (userToReturn, CreateLinksForUser(userId));
+
+            return Ok(userWithLinks);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser(
+            [FromBody] UserForManipulationDto user,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
+        {
+            if (!MediaTypeHeaderValue.TryParse(mediaType,
+                    out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
+
+            var userEntity = _mapper.Map<User>(user);
+
+            _weblogDataRepository.AddUser(userEntity);
+
+            try
+            {
+                _weblogDataRepository.Save();
+            }
+            catch (ApplicationException ex)
+            {
+                // adding user with email address that already exists
+                ModelState.AddModelError(nameof(user.EmailAddress),
+                                         ex.Message + "\n" + ex?.InnerException.Message);
+
+                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
+            }
+
+            var newUserToReturn = _mapper.Map<UserDto>(userEntity);
+
+            var includeLinks = parsedMediaType
+                .SubTypeWithoutSuffix
+                .EndsWith("hateoas",
+                          StringComparison.InvariantCultureIgnoreCase);
+
+            if (!includeLinks)
+            {
+                return CreatedAtRoute(nameof(GetUser),
+                                  new { userId = newUserToReturn.UserId },
+                                  newUserToReturn);
+            }
+
+            var links = CreateLinksForUser(newUserToReturn.UserId);
+            var userWithLinks = new UserDtoWithLinks(newUserToReturn, links);
+
+            return CreatedAtRoute(nameof(GetUser),
+                                  new { userId = newUserToReturn.UserId },
+                                  userWithLinks);
+        }
+
+        [HttpPut("{userId}", Name = nameof(UpdateUser))]
+        public IActionResult UpdateUser(int userId,
+            [FromBody] UserForManipulationDto user)
+        {
+            var userFromRepo = _weblogDataRepository.GetUser(userId);
+
+            if (userFromRepo is null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(user, userFromRepo);
+
+            _weblogDataRepository.UpdateUser(userFromRepo);
+
+            try
+            {
+                _weblogDataRepository.Save();
+            }
+            catch (ApplicationException ex)
+            {
+                // changing user with email address that already exists
+                ModelState.AddModelError(nameof(user.EmailAddress),
+                                         ex.Message + "\n" + ex?.InnerException.Message);
+
+                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}", Name = nameof(DeleteUser))]
+        public IActionResult DeleteUser(int userId)
+        {
+            var userFromRepo = _weblogDataRepository.GetUser(userId);
+
+            if (userFromRepo is null)
+            {
+                return NotFound();
+            }
+
+            _weblogDataRepository.DeleteUser(userFromRepo);
+            _weblogDataRepository.Save();
+
+            return NoContent();
+        }
+
+        private string CreateUsersResourceUri(
+            UsersResourceParameters usersResourceParameters,
+            ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetUsers),
+                        new
+                        {
+                            pageNumber = usersResourceParameters.PageNumber - 1,
+                            pageSize = usersResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetUsers),
+                        new
+                        {
+                            pageNumber = usersResourceParameters.PageNumber + 1,
+                            pageSize = usersResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.Current:
+                default:
+                    return Url.Link(nameof(GetUsers),
+                        new
+                        {
+                            pageNumber = usersResourceParameters.PageNumber,
+                            pageSize = usersResourceParameters.PageSize,
+                        });
+            }
         }
 
         private List<LinkDto> CreateLinksForUser(int userId)
@@ -162,126 +329,6 @@ namespace Weblog.API.Controllers
             };
 
             return JsonSerializer.Serialize(paginationMetadata);
-        }
-
-        [HttpGet("{userId}", Name = nameof(GetUser))]
-        public IActionResult GetUser(int userId)
-        {
-            var userEntity = _weblogDataRepository.GetUser(userId);
-
-            if (userEntity is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<UserDto>(userEntity));
-        }
-
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] UserForManipulationDto user)
-        {
-            var userEntity = _mapper.Map<Entities.User>(user);
-
-            _weblogDataRepository.AddUser(userEntity);
-
-            try
-            {
-                _weblogDataRepository.Save();
-            }
-            catch (ApplicationException ex)
-            {
-                // adding user with email address that already exists
-                ModelState.AddModelError(nameof(user.EmailAddress),
-                                         ex.Message + "\n" + ex?.InnerException.Message);
-
-                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
-            }
-
-            var newUserToReturn = _mapper.Map<UserDto>(userEntity);
-
-            return CreatedAtRoute(nameof(GetUser),
-                                  new { userId = newUserToReturn.UserId },
-                                  newUserToReturn);
-        }
-
-        [HttpPut("{userId}", Name = nameof(UpdateUser))]
-        public IActionResult UpdateUser(int userId,
-            [FromBody] UserForManipulationDto user)
-        {
-            var userFromRepo = _weblogDataRepository.GetUser(userId);
-
-            if (userFromRepo is null)
-            {
-                return NotFound();
-            }
-
-            _mapper.Map(user, userFromRepo);
-
-            _weblogDataRepository.UpdateUser(userFromRepo);
-
-            try
-            {
-                _weblogDataRepository.Save();
-            }
-            catch (ApplicationException ex)
-            {
-                // changing user with email address that already exists
-                ModelState.AddModelError(nameof(user.EmailAddress),
-                                         ex.Message + "\n" + ex?.InnerException.Message);
-
-                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
-            }
-
-            return NoContent();
-        }
-
-        [HttpDelete("{userId}", Name = nameof(DeleteUser))]
-        public IActionResult DeleteUser(int userId)
-        {
-            var userFromRepo = _weblogDataRepository.GetUser(userId);
-
-            if (userFromRepo is null)
-            {
-                return NotFound();
-            }
-
-            _weblogDataRepository.DeleteUser(userFromRepo);
-            _weblogDataRepository.Save();
-
-            return NoContent();
-        }
-
-        private string CreateUsersResourceUri(
-            UsersResourceParameters usersResourceParameters,
-            ResourceUriType type)
-        {
-            switch (type)
-            {
-                case ResourceUriType.PreviousPage:
-                    return Url.Link(nameof(GetUsers),
-                        new
-                        {
-                            pageNumber = usersResourceParameters.PageNumber - 1,
-                            pageSize = usersResourceParameters.PageSize,
-                        });
-
-                case ResourceUriType.NextPage:
-                    return Url.Link(nameof(GetUsers),
-                        new
-                        {
-                            pageNumber = usersResourceParameters.PageNumber + 1,
-                            pageSize = usersResourceParameters.PageSize,
-                        });
-
-                case ResourceUriType.Current:
-                default:
-                    return Url.Link(nameof(GetUsers),
-                        new
-                        {
-                            pageNumber = usersResourceParameters.PageNumber,
-                            pageSize = usersResourceParameters.PageSize,
-                        });
-            }
         }
     }
 }
