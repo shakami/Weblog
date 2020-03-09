@@ -25,6 +25,7 @@ namespace Weblog.API.Entities
 
         public int UserId { get; set; }
 
+        [Required]
         public string Body { get; set; }
 
         public DateTime TimeCreated { get; set; }

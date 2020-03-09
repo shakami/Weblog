@@ -102,6 +102,13 @@ namespace Weblog.API.Services
                 .ToList();
         }
 
+        public Comment GetComment(int commentId)
+        {
+            return _context.Comments
+                .Where(c => c.CommentId == commentId)
+                .FirstOrDefault();
+        }
+
         public IEnumerable<Comment> GetComments(int postId)
         {
             var post = GetPost(postId, includeComments: true);
@@ -160,6 +167,12 @@ namespace Weblog.API.Services
                 .OrderBy(u => u.LastName)
                 .ThenBy(u => u.FirstName)
                 .ToList();
+        }
+
+        public bool PostExists(int postId)
+        {
+            return _context.Posts
+                .Any(p => p.PostId == postId);
         }
 
         public bool Save()

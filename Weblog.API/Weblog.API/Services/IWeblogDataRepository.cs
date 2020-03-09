@@ -41,6 +41,8 @@ namespace Weblog.API.Services
 
         Post GetPost(int postId, bool includeComments);
 
+        bool PostExists(int postId);
+
         void AddPost(int blogId, Post newPost);
 
         void UpdatePost(Post updatedPost);
@@ -49,6 +51,8 @@ namespace Weblog.API.Services
 
         //-- comments
         IEnumerable<Comment> GetComments(int postId);
+
+        Comment GetComment(int commentId);
 
         void AddComment(int postId, Comment newComment);
         

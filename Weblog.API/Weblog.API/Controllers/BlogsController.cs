@@ -52,7 +52,10 @@ namespace Weblog.API.Controllers
         {
             if (!_weblogDataRepository.UserExists((int)blog.UserId))
             {
-                return NotFound();
+                // adding blog with userId that doesn't exist
+                ModelState.AddModelError(nameof(blog.UserId),
+                                         "UserId does not exist.");
+                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
             }
 
             var blogEntity = _mapper.Map<Entities.Blog>(blog);
