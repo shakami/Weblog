@@ -15,11 +15,6 @@ namespace Weblog.API.Profiles
                             opt => opt.MapFrom(src =>
                                     $"{src.FirstName} {src.LastName}"));
 
-            CreateMap<Entities.User, Models.UserWithoutBlogsDto>()
-                .ForMember(dest => dest.Name,
-                            opt => opt.MapFrom(src =>
-                                    $"{src.FirstName} {src.LastName}"));
-
             CreateMap<Models.UserForManipulationDto, Entities.User>();
         }
     }

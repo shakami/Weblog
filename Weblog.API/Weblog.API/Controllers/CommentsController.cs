@@ -12,7 +12,7 @@ using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
 {
-    [Route("api/blogs/{blogId}/posts/{postId}/comments")]
+    [Route("api/users/{userId}/blogs/{blogId}/posts/{postId}/comments")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -29,10 +29,11 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetComments(int blogId, int postId,
+        public IActionResult GetComments(int userId, int blogId, int postId,
             [FromQuery] CommentsResourceParameters commentsResourceParameters)
         {
-            if (!_weblogDataRepository.BlogExists(blogId) ||
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
             {
                 return NotFound();
@@ -44,9 +45,10 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet("{commentId}", Name = nameof(GetComment))]
-        public IActionResult GetComment(int blogId, int postId, int commentId)
+        public IActionResult GetComment(int userId, int blogId, int postId, int commentId)
         {
-            if (!_weblogDataRepository.BlogExists(blogId) ||
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
             {
                 return NotFound();
@@ -63,10 +65,11 @@ namespace Weblog.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateComment(int blogId, int postId,
+        public IActionResult CreateComment(int userId, int blogId, int postId,
             [FromBody] CommentForCreationDto comment)
         {
-            if (!_weblogDataRepository.BlogExists(blogId) ||
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
             {
                 return NotFound();
@@ -90,16 +93,17 @@ namespace Weblog.API.Controllers
             return CreatedAtRoute
             (
                 nameof(GetComment),
-                new { blogId, postId, commentId = commentToReturn.CommentId },
+                new { userId, blogId, postId, commentId = commentToReturn.CommentId },
                 commentToReturn
             );
         }
 
         [HttpPut("{commentId}")]
-        public IActionResult UpdateComment(int blogId, int postId, int commentId,
+        public IActionResult UpdateComment(int userId, int blogId, int postId, int commentId,
             [FromBody] CommentForUpdateDto comment)
         {
-            if (!_weblogDataRepository.BlogExists(blogId) ||
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
             {
                 return NotFound();
@@ -121,9 +125,10 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{commentId}")]
-        public IActionResult DeleteComment(int blogId, int postId, int commentId)
+        public IActionResult DeleteComment(int userId, int blogId, int postId, int commentId)
         {
-            if (!_weblogDataRepository.BlogExists(blogId) ||
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId) ||
                 !_weblogDataRepository.PostExists(postId))
             {
                 return NotFound();
@@ -141,6 +146,5 @@ namespace Weblog.API.Controllers
 
             return NoContent();
         }
-
     }
 }

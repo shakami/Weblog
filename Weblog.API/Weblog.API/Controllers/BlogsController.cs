@@ -12,7 +12,7 @@ using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
 {
-    [Route("api/blogs")]
+    [Route("api/users/{userId}/blogs")]
     [ApiController]
     public class BlogsController : ControllerBase
     {
@@ -28,18 +28,29 @@ namespace Weblog.API.Controllers
                 ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
-        public IActionResult GetBlogs([FromQuery] BlogsResourceParameters blogsResourceParameters)
+        [HttpGet(Name = nameof(GetBlogs))]
+        public IActionResult GetBlogs(int userId,
+            [FromQuery] BlogsResourceParameters blogsResourceParameters)
         {
-            var blogEntities = _weblogDataRepository.GetBlogs(blogsResourceParameters);
+            if (!_weblogDataRepository.UserExists(userId))
+            {
+                return NotFound();
+            }
 
-            return Ok(_mapper.Map<IEnumerable<BlogWithoutPostsDto>>(blogEntities));
+            var blogEntities = _weblogDataRepository.GetBlogs(userId, blogsResourceParameters);
+
+            return Ok(_mapper.Map<IEnumerable<BlogDto>>(blogEntities));
         }
 
         [HttpGet("{blogId}", Name = nameof(GetBlog))]
-        public IActionResult GetBlog(int blogId)
+        public IActionResult GetBlog(int userId, int blogId)
         {
-            var blogEntity = _weblogDataRepository.GetBlog(blogId, includePosts: true);
+            if (!_weblogDataRepository.UserExists(userId))
+            {
+                return NotFound();
+            }
+
+            var blogEntity = _weblogDataRepository.GetBlog(blogId);
 
             if (blogEntity is null)
             {
@@ -49,33 +60,37 @@ namespace Weblog.API.Controllers
             return Ok(_mapper.Map<BlogDto>(blogEntity));
         }
 
-        [HttpPost]
-        public IActionResult CreateBlog([FromBody] BlogForCreationDto blog)
+        [HttpPost(Name = nameof(CreateBlog))]
+        public IActionResult CreateBlog(int userId,
+            [FromBody] BlogForManipulationDto blog)
         {
-            if (!_weblogDataRepository.UserExists((int)blog.UserId))
+            if (!_weblogDataRepository.UserExists(userId))
             {
-                // adding blog with userId that doesn't exist
-                ModelState.AddModelError(nameof(blog.UserId),
-                                         "UserId does not exist.");
-                return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
+                return NotFound();
             }
 
             var blogEntity = _mapper.Map<Entities.Blog>(blog);
 
-            _weblogDataRepository.AddBlog(blogEntity);
+            _weblogDataRepository.AddBlog(userId, blogEntity);
             _weblogDataRepository.Save();
 
-            var blogToReturn = _mapper.Map<BlogWithoutPostsDto>(blogEntity);
+            var blogToReturn = _mapper.Map<BlogDto>(blogEntity);
 
             return CreatedAtRoute(nameof(GetBlog),
-                                  new { blogId = blogToReturn.BlogId },
+                                  new { userId, blogId = blogToReturn.BlogId },
                                   blogToReturn);
         }
 
         [HttpPut("{blogId}")]
-        public IActionResult UpdateBlog(int blogId, [FromBody] BlogForUpdateDto blog)
+        public IActionResult UpdateBlog(int userId, int blogId,
+            [FromBody] BlogForManipulationDto blog)
         {
-            var blogFromRepo = _weblogDataRepository.GetBlog(blogId, includePosts: false);
+            if (!_weblogDataRepository.UserExists(userId))
+            {
+                return NotFound();
+            }
+
+            var blogFromRepo = _weblogDataRepository.GetBlog(blogId);
 
             if (blogFromRepo is null)
             {
@@ -91,10 +106,15 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{blogId}")]
-        public IActionResult DeleteBlog(int blogId)
+        public IActionResult DeleteBlog(int userId, int blogId)
         {
-            var blogFromRepo = _weblogDataRepository.GetBlog(blogId, includePosts: false);
-                
+            if (!_weblogDataRepository.UserExists(userId))
+            {
+                return NotFound();
+            }
+
+            var blogFromRepo = _weblogDataRepository.GetBlog(blogId);
+
             if (blogFromRepo is null)
             {
                 return NotFound();

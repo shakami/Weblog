@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -42,10 +43,10 @@ namespace Weblog.API.Controllers
 
             var userEntities = _weblogDataRepository.GetUsers(usersResourceParameters);
 
-            var usersToReturn = _mapper.Map<IEnumerable<UserWithoutBlogsDto>>(userEntities);
+            var usersToReturn = _mapper.Map<IEnumerable<UserDto>>(userEntities);
 
             Response.Headers.Add("X-Pagination",
-                PaginationHeader(usersResourceParameters, userEntities));
+                PaginationHeader(userEntities));
 
             var includeLinks = parsedMediaType.SubTypeWithoutSuffix
                                 .EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);
@@ -57,14 +58,62 @@ namespace Weblog.API.Controllers
 
             var usersWithLinks = usersToReturn.Select(user =>
             {
-                var links = CreateLinksForUsers(usersResourceParameters,
-                                            userEntities.HasPrevious,
-                                            userEntities.HasNext);
-                
+                var links = CreateLinksForUser(user.UserId);
+
                 return new UserDtoWithLinks(user, links);
             });
 
-            return Ok(usersWithLinks);
+            var resourceToReturn = new
+            {
+                users = usersWithLinks,
+                links = CreateLinksForUsers(usersResourceParameters,
+                                            userEntities.HasPrevious,
+                                            userEntities.HasNext)
+            };
+
+            return Ok(resourceToReturn);
+        }
+
+        private List<LinkDto> CreateLinksForUser(int userId)
+        {
+            var links = new List<LinkDto>
+            {
+                new LinkDto
+                (
+                    Url.Link(nameof(GetUser), new { userId }),
+                    "self",
+                    HttpMethods.Get
+                ),
+
+                new LinkDto
+                (
+                    Url.Link(nameof(UpdateUser), new { userId }),
+                    "update_user",
+                    HttpMethods.Put
+                ),
+
+                new LinkDto
+                (
+                    Url.Link(nameof(DeleteUser), new { userId }),
+                    "delete_user",
+                    HttpMethods.Delete
+                ),
+
+                new LinkDto
+                (
+                    Url.Link(nameof(BlogsController.GetBlogs), new { userId }),
+                    "see_blogs_by_user",
+                    HttpMethods.Get
+                ),
+
+                new LinkDto
+                (
+                    Url.Link(nameof(BlogsController.CreateBlog), new { userId }),
+                    "create_blog_for_user",
+                    HttpMethods.Get
+                )
+            };
+            return links;
         }
 
         private List<LinkDto> CreateLinksForUsers(
@@ -78,7 +127,7 @@ namespace Weblog.API.Controllers
                                     usersResourceParameters,
                                     ResourceUriType.Current),
                                   "self",
-                                  "GET")
+                                  HttpMethods.Get)
             };
 
             if (hasPrevious)
@@ -87,7 +136,7 @@ namespace Weblog.API.Controllers
                                         usersResourceParameters,
                                         ResourceUriType.PreviousPage),
                                       "previousPage",
-                                      "GET"));
+                                      HttpMethods.Get));
             }
 
             if (hasNext)
@@ -96,15 +145,13 @@ namespace Weblog.API.Controllers
                                         usersResourceParameters,
                                         ResourceUriType.NextPage),
                                       "nextPage",
-                                      "GET"));
+                                      HttpMethods.Get));
             }
 
             return links;
         }
 
-        private string PaginationHeader(
-            UsersResourceParameters usersResourceParameters,
-            PagedList<User> userEntities)
+        private string PaginationHeader(PagedList<User> userEntities)
         {
             var paginationMetadata = new
             {
@@ -120,7 +167,7 @@ namespace Weblog.API.Controllers
         [HttpGet("{userId}", Name = nameof(GetUser))]
         public IActionResult GetUser(int userId)
         {
-            var userEntity = _weblogDataRepository.GetUser(userId, includeBlogs: true);
+            var userEntity = _weblogDataRepository.GetUser(userId);
 
             if (userEntity is null)
             {
@@ -150,18 +197,18 @@ namespace Weblog.API.Controllers
                 return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
             }
 
-            var newUserToReturn = _mapper.Map<UserWithoutBlogsDto>(userEntity);
+            var newUserToReturn = _mapper.Map<UserDto>(userEntity);
 
             return CreatedAtRoute(nameof(GetUser),
                                   new { userId = newUserToReturn.UserId },
                                   newUserToReturn);
         }
 
-        [HttpPut("{userId}")]
+        [HttpPut("{userId}", Name = nameof(UpdateUser))]
         public IActionResult UpdateUser(int userId,
             [FromBody] UserForManipulationDto user)
         {
-            var userFromRepo = _weblogDataRepository.GetUser(userId, includeBlogs: false);
+            var userFromRepo = _weblogDataRepository.GetUser(userId);
 
             if (userFromRepo is null)
             {
@@ -188,10 +235,10 @@ namespace Weblog.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{userId}")]
+        [HttpDelete("{userId}", Name = nameof(DeleteUser))]
         public IActionResult DeleteUser(int userId)
         {
-            var userFromRepo = _weblogDataRepository.GetUser(userId, includeBlogs: false);
+            var userFromRepo = _weblogDataRepository.GetUser(userId);
 
             if (userFromRepo is null)
             {

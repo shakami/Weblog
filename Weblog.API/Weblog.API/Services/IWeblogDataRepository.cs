@@ -10,7 +10,7 @@ namespace Weblog.API.Services
         //--------- users ---------//
         PagedList<User> GetUsers(UsersResourceParameters resourceParameters);
 
-        User GetUser(int userId, bool includeBlogs);
+        User GetUser(int userId);
 
         bool UserExists(int userId);
 
@@ -25,11 +25,11 @@ namespace Weblog.API.Services
 
         PagedList<Blog> GetBlogs(int userId, BlogsResourceParameters resourceParameters);
         
-        Blog GetBlog(int blogId, bool includePosts);
+        Blog GetBlog(int blogId);
 
         bool BlogExists(int blogId);
 
-        void AddBlog(Blog newBlog);
+        void AddBlog(int userId, Blog newBlog);
 
         void UpdateBlog(Blog updatedBlog);
 
@@ -38,7 +38,7 @@ namespace Weblog.API.Services
         //--------- posts ---------//
         PagedList<Post> GetPosts(int blogId, PostsResourceParameters resourceParameters);
 
-        Post GetPost(int postId, bool includeComments);
+        Post GetPost(int postId);
 
         bool PostExists(int postId);
 

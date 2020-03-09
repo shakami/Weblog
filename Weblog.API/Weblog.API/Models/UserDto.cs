@@ -10,7 +10,5 @@ namespace Weblog.API.Models
         public int UserId { get; set; }
         public string EmailAddress { get; set; }
         public string Name { get; set; }
-        public ICollection<BlogWithoutPostsDto> Blogs { get; set; }
-            = new List<BlogWithoutPostsDto>();
     }
 }

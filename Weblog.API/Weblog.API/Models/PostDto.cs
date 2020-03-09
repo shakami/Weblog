@@ -16,8 +16,5 @@ namespace Weblog.API.Models
         public string Body { get; set; }
 
         public DateTime TimeCreated { get; set; }
-
-        public ICollection<CommentDto> Comments { get; set; }
-            = new List<CommentDto>();
     }
 }

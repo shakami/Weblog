@@ -11,9 +11,7 @@ namespace Weblog.API.Profiles
         public BlogProfile()
         {
             CreateMap<Entities.Blog, Models.BlogDto>();
-            CreateMap<Entities.Blog, Models.BlogWithoutPostsDto>();
-            CreateMap<Models.BlogForCreationDto, Entities.Blog>();
-            CreateMap<Models.BlogForUpdateDto, Entities.Blog>();
+            CreateMap<Models.BlogForManipulationDto, Entities.Blog>();
         }
     }
 }

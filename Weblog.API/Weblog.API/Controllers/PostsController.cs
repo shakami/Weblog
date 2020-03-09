@@ -11,7 +11,7 @@ using Weblog.API.Services;
 
 namespace Weblog.API.Controllers
 {
-    [Route("api/blogs/{blogId}/posts")]
+    [Route("api/users/{userId}/blogs/{blogId}/posts")]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -28,28 +28,30 @@ namespace Weblog.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPosts(int blogId,
+        public IActionResult GetPosts(int userId, int blogId,
             [FromQuery] PostsResourceParameters postsResourceParameters)
         {
-            if (!_weblogDataRepository.BlogExists(blogId))
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
 
             var postsFromRepo = _weblogDataRepository.GetPosts(blogId, postsResourceParameters);
 
-            return Ok(_mapper.Map<IEnumerable<PostWithoutCommentsDto>>(postsFromRepo));
+            return Ok(_mapper.Map<IEnumerable<PostDto>>(postsFromRepo));
         }
 
         [HttpGet("{postId}", Name = nameof(GetPost))]
-        public IActionResult GetPost(int blogId, int postId)
+        public IActionResult GetPost(int userId, int blogId, int postId)
         {
-            if (!_weblogDataRepository.BlogExists(blogId))
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
 
-            var postFromRepo = _weblogDataRepository.GetPost(postId, includeComments: true);
+            var postFromRepo = _weblogDataRepository.GetPost(postId);
 
             if (postFromRepo is null)
             {
@@ -60,10 +62,11 @@ namespace Weblog.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreatePost(int blogId,
+        public IActionResult CreatePost(int userId, int blogId,
             [FromBody] PostForManipulationDto post)
         {
-            if (!_weblogDataRepository.BlogExists(blogId))
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
@@ -73,23 +76,24 @@ namespace Weblog.API.Controllers
             _weblogDataRepository.AddPost(blogId, postEntity);
             _weblogDataRepository.Save();
 
-            var postToReturn = _mapper.Map<PostWithoutCommentsDto>(postEntity);
+            var postToReturn = _mapper.Map<PostDto>(postEntity);
 
             return CreatedAtRoute(nameof(GetPost),
-                                  new { blogId, postId = postToReturn.PostId },
+                                  new { userId, blogId, postId = postToReturn.PostId },
                                   postToReturn);
         }
 
         [HttpPut("{postId}")]
-        public IActionResult UpdatePost(int blogId, int postId,
+        public IActionResult UpdatePost(int userId, int blogId, int postId,
             [FromBody] PostForManipulationDto post)
         {
-            if (!_weblogDataRepository.BlogExists(blogId))
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
 
-            var postFromRepo = _weblogDataRepository.GetPost(postId, includeComments: false);
+            var postFromRepo = _weblogDataRepository.GetPost(postId);
 
             if (postFromRepo is null)
             {
@@ -105,14 +109,15 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{postId}")]
-        public IActionResult DeletePost(int blogId, int postId)
+        public IActionResult DeletePost(int userId, int blogId, int postId)
         {
-            if (!_weblogDataRepository.BlogExists(blogId))
+            if (!_weblogDataRepository.UserExists(userId) ||
+                !_weblogDataRepository.BlogExists(blogId))
             {
                 return NotFound();
             }
 
-            var postFromRepo = _weblogDataRepository.GetPost(postId, includeComments: false);
+            var postFromRepo = _weblogDataRepository.GetPost(postId);
 
             if (postFromRepo is null)
             {

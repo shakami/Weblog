@@ -10,7 +10,6 @@ namespace Weblog.API.Profiles
     {
         public PostProfile()
         {
-            CreateMap<Entities.Post, Models.PostWithoutCommentsDto>();
             CreateMap<Entities.Post, Models.PostDto>();
             CreateMap<Models.PostForManipulationDto, Entities.Post>();
         }

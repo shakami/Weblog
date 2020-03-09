@@ -19,25 +19,35 @@ namespace Weblog.API.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void AddBlog(Blog newBlog)
+        //--------- users ---------//
+        #region users
+        public PagedList<User> GetUsers(UsersResourceParameters resourceParameters)
         {
-            var user = GetUser(newBlog.UserId, includeBlogs: true);
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
 
-            user.Blogs.Add(newBlog);
+            var collection = _context.Users
+                                .OrderBy(u => u.LastName)
+                                .ThenBy(u => u.FirstName);
+
+            return PagedList<User>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
-        public void AddComment(int postId, Comment newComment)
+        public User GetUser(int userId)
         {
-            var post = GetPost(postId, includeComments: true);
-
-            post.Comments.Add(newComment);
+            return _context.Users
+                .Where(u => u.UserId == userId)
+                .FirstOrDefault();
         }
 
-        public void AddPost(int blogId, Post newPost)
+        public bool UserExists(int userId)
         {
-            var blog = GetBlog(blogId, includePosts: true);
-
-            blog.Posts.Add(newPost);
+            return _context.Users
+                .Any(u => u.UserId == userId);
         }
 
         public void AddUser(User newUser)
@@ -45,50 +55,24 @@ namespace Weblog.API.Services
             _context.Users.Add(newUser);
         }
 
-        public bool BlogExists(int blogId)
+        public void UpdateUser(User updatedUser)
         {
-            return _context.Blogs
-                .Any(b => b.BlogId == blogId);
-        }
-
-        public void DeleteBlog(Blog blog)
-        {
-            _context.Blogs.Remove(blog);
-        }
-
-        public void DeleteComment(Comment comment)
-        {
-            _context.Comments.Remove(comment);
-        }
-
-        public void DeletePost(Post post)
-        {
-            _context.Posts.Remove(post);
+            // no code
         }
 
         public void DeleteUser(User user)
         {
+            var comments = _context.Comments
+                .Where(c => c.UserId == user.UserId);
+
+            _context.Comments.RemoveRange(comments);
+
             _context.Users.Remove(user);
         }
+        #endregion
 
-        public Blog GetBlog(int blogId, bool includePosts)
-        {
-            if (includePosts)
-            {
-                var blog = _context.Blogs
-                    .Include(b => b.Posts)
-                    .Where(b => b.BlogId == blogId)
-                    .FirstOrDefault();
-
-                blog.Posts = blog.Posts.OrderByDescending(p => p.TimeCreated).ToList();
-
-                return blog;
-            }
-            return _context.Blogs
-                .Where(b => b.BlogId == blogId)
-                .FirstOrDefault();
-        }
-
+        //--------- blogs ---------//
+        #region blogs
         public PagedList<Blog> GetBlogs(BlogsResourceParameters resourceParameters)
         {
             if (resourceParameters is null)
@@ -134,46 +118,61 @@ namespace Weblog.API.Services
                                           resourceParameters.PageSize);
         }
 
-        public Comment GetComment(int commentId)
+        public Blog GetBlog(int blogId)
         {
-            return _context.Comments
-                .Where(c => c.CommentId == commentId)
+            return _context.Blogs
+                .Where(b => b.BlogId == blogId)
                 .FirstOrDefault();
         }
 
-        public PagedList<Comment> GetComments(int postId, CommentsResourceParameters resourceParameters)
+        public bool BlogExists(int blogId)
+        {
+            return _context.Blogs
+                .Any(b => b.BlogId == blogId);
+        }
+
+        public void AddBlog(int userId, Blog newBlog)
+        {
+            var user = GetUser(userId);
+
+            user.Blogs.Add(newBlog);
+        }
+
+        public void UpdateBlog(Blog updatedBlog)
+        {
+            // no code
+        }
+
+        public void DeleteBlog(Blog blog)
+        {
+            _context.Blogs.Remove(blog);
+        }
+        #endregion
+
+        //--------- posts ---------//
+        #region posts
+        public PagedList<Post> GetPosts(PostsResourceParameters resourceParameters)
         {
             if (resourceParameters is null)
             {
                 throw new ArgumentNullException(nameof(resourceParameters));
             }
 
-            var collection = _context.Comments
-                                .Where(c => c.PostId == postId)
-                                .OrderByDescending(c => c.TimeCreated);
+            var collection = _context.Posts as IQueryable<Post>;
 
-            return PagedList<Comment>.Create(collection,
-                                             resourceParameters.PageNumber,
-                                             resourceParameters.PageSize);
-        }
+            var searchQuery = resourceParameters.SearchQuery?.Trim();
 
-        public Post GetPost(int postId, bool includeComments)
-        {
-            if (includeComments)
+            if (searchQuery != null)
             {
-                var post = _context.Posts
-                    .Include(p => p.Comments)
-                    .Where(p => p.PostId == postId)
-                    .FirstOrDefault();
-
-                post.Comments = post.Comments.OrderByDescending(c => c.TimeCreated).ToList();
-
-                return post;
+                collection = collection.Where(p => p.Title.Contains(searchQuery));
             }
 
-            return _context.Posts
-                .Where(p => p.PostId == postId)
-                .FirstOrDefault();
+            collection = collection
+                            .OrderByDescending(p => p.TimeCreated);
+
+            return PagedList<Post>.Create(collection,
+                                          resourceParameters.PageNumber,
+                                          resourceParameters.PageSize);
         }
 
         public PagedList<Post> GetPosts(int blogId, PostsResourceParameters resourceParameters)
@@ -201,35 +200,11 @@ namespace Weblog.API.Services
                                           resourceParameters.PageSize);
         }
 
-        public User GetUser(int userId, bool includeBlogs)
+        public Post GetPost(int postId)
         {
-            if (includeBlogs)
-            {
-                return _context.Users
-                    .Include(u => u.Blogs)
-                    .Where(u => u.UserId == userId)
-                    .FirstOrDefault();
-            }
-
-            return _context.Users
-                .Where(u => u.UserId == userId)
+            return _context.Posts
+                .Where(p => p.PostId == postId)
                 .FirstOrDefault();
-        }
-
-        public PagedList<User> GetUsers(UsersResourceParameters resourceParameters)
-        {
-            if (resourceParameters is null)
-            {
-                throw new ArgumentNullException(nameof(resourceParameters));
-            }
-
-            var collection = _context.Users
-                                .OrderBy(u => u.LastName)
-                                .ThenBy(u => u.FirstName);
-
-            return PagedList<User>.Create(collection,
-                                          resourceParameters.PageNumber,
-                                          resourceParameters.PageSize);
         }
 
         public bool PostExists(int postId)
@@ -238,6 +213,68 @@ namespace Weblog.API.Services
                 .Any(p => p.PostId == postId);
         }
 
+        public void AddPost(int blogId, Post newPost)
+        {
+            var blog = GetBlog(blogId);
+
+            blog.Posts.Add(newPost);
+        }
+
+        public void UpdatePost(Post updatedPost)
+        {
+            // no code
+        }
+
+        public void DeletePost(Post post)
+        {
+            _context.Posts.Remove(post);
+        }
+        #endregion
+
+        //-------- comments -------//
+        #region comments
+        public PagedList<Comment> GetComments(int postId, CommentsResourceParameters resourceParameters)
+        {
+            if (resourceParameters is null)
+            {
+                throw new ArgumentNullException(nameof(resourceParameters));
+            }
+
+            var collection = _context.Comments
+                                .Where(c => c.PostId == postId)
+                                .OrderByDescending(c => c.TimeCreated);
+
+            return PagedList<Comment>.Create(collection,
+                                             resourceParameters.PageNumber,
+                                             resourceParameters.PageSize);
+        }
+
+        public Comment GetComment(int commentId)
+        {
+            return _context.Comments
+                .Where(c => c.CommentId == commentId)
+                .FirstOrDefault();
+        }
+
+        public void AddComment(int postId, Comment newComment)
+        {
+            var post = GetPost(postId);
+
+            post.Comments.Add(newComment);
+        }
+
+        public void UpdateComment(Comment updatedComment)
+        {
+            // no code
+        }
+
+        public void DeleteComment(Comment comment)
+        {
+            _context.Comments.Remove(comment);
+        }
+        #endregion
+
+        //--------- save ----------//
         public bool Save()
         {
             bool result;
@@ -268,32 +305,6 @@ namespace Weblog.API.Services
                 throw;
             }
             return result;
-        }
-
-        public void UpdateBlog(Blog updatedBlog)
-        {
-            // no code
-        }
-
-        public void UpdateComment(Comment updatedComment)
-        {
-            // no code
-        }
-
-        public void UpdatePost(Post updatedPost)
-        {
-            // no code
-        }
-
-        public void UpdateUser(User updatedUser)
-        {
-            // no code
-        }
-
-        public bool UserExists(int userId)
-        {
-            return _context.Users
-                .Any(u => u.UserId == userId);
         }
     }
 }
