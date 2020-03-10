@@ -276,7 +276,7 @@ namespace Weblog.API.Controllers
                 (
                     Url.Link(nameof(BlogsController.CreateBlog), new { userId }),
                     "create_blog_for_user",
-                    HttpMethods.Get
+                    HttpMethods.Post
                 )
             };
             return links;

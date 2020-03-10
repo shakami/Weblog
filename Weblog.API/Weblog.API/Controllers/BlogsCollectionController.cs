@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +29,8 @@ namespace Weblog.API.Controllers
                 ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
-        public IActionResult GetBlogs(
+        [HttpGet(Name = nameof(GetBlogsForAllUsers))]
+        public IActionResult GetBlogsForAllUsers(
             [FromQuery] BlogsResourceParameters blogsResourceParameters,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
@@ -48,8 +46,106 @@ namespace Weblog.API.Controllers
 
             Response.Headers.Add(PaginationHeader<Blog>.Get(blogEntities));
 
-            return Ok();
+            var includeLinks = parsedMediaType
+                .SubTypeWithoutSuffix
+                .EndsWith("hateoas",
+                          StringComparison.InvariantCultureIgnoreCase);
+
+            if (!includeLinks)
+            {
+                return Ok(blogsToReturn);
+            }
+
+            var blogsWithLinks = blogsToReturn.Select(blog =>
+            {
+                var links = BlogsController.CreateLinksForBlog(
+                    Url, blog.UserId, blog.BlogId);
+
+                return new BlogDtoWithLinks(blog, links);
+            });
+
+            var resourceToReturn = new
+            {
+                blogs = blogsWithLinks,
+                links = CreateLinksForBlogs(
+                    blogsResourceParameters,
+                    blogEntities.HasPrevious,
+                    blogEntities.HasNext)
+            };
+
+            return Ok(resourceToReturn);
         }
-        
+
+        private List<LinkDto> CreateLinksForBlogs(
+            BlogsResourceParameters blogsResourceParameters,
+            bool hasPrevious,
+            bool hasNext)
+        {
+            var links = new List<LinkDto>
+            {
+                new LinkDto(CreateBlogsResourceUri(
+                                    blogsResourceParameters,
+                                    ResourceUriType.Current),
+                                  "self",
+                                  HttpMethods.Get)
+            };
+
+            if (hasPrevious)
+            {
+                links.Add(new LinkDto(CreateBlogsResourceUri(
+                                        blogsResourceParameters,
+                                        ResourceUriType.PreviousPage),
+                                      "previousPage",
+                                      HttpMethods.Get));
+            }
+
+            if (hasNext)
+            {
+                links.Add(new LinkDto(CreateBlogsResourceUri(
+                                        blogsResourceParameters,
+                                        ResourceUriType.NextPage),
+                                      "nextPage",
+                                      HttpMethods.Get));
+            }
+
+            return links;
+        }
+
+        private string CreateBlogsResourceUri(
+            BlogsResourceParameters blogsResourceParameters,
+            ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetBlogsForAllUsers),
+                        new
+                        {
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber - 1,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetBlogsForAllUsers),
+                        new
+                        {
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber + 1,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.Current:
+                default:
+                    return Url.Link(nameof(GetBlogsForAllUsers),
+                        new
+                        {
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+            }
+        }
+
     }
 }

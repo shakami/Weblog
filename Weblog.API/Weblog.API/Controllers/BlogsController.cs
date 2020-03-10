@@ -81,7 +81,7 @@ namespace Weblog.API.Controllers
                                   blogToReturn);
         }
 
-        [HttpPut("{blogId}")]
+        [HttpPut("{blogId}", Name = nameof(UpdateBlog))]
         public IActionResult UpdateBlog(int userId, int blogId,
             [FromBody] BlogForManipulationDto blog)
         {
@@ -105,7 +105,7 @@ namespace Weblog.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{blogId}")]
+        [HttpDelete("{blogId}", Name = nameof(DeleteBlog))]
         public IActionResult DeleteBlog(int userId, int blogId)
         {
             if (!_weblogDataRepository.UserExists(userId))
@@ -124,6 +124,123 @@ namespace Weblog.API.Controllers
             _weblogDataRepository.Save();
 
             return NoContent();
+        }
+
+        internal static List<LinkDto> CreateLinksForBlog(IUrlHelper url, int userId, int blogId)
+        {
+            var links = new List<LinkDto>
+            {
+                new LinkDto
+                (
+                    url.Link(nameof(GetBlog), new { userId, blogId }),
+                    "self",
+                    HttpMethods.Get
+                ),
+
+                new LinkDto
+                (
+                    url.Link(nameof(UpdateBlog), new { userId, blogId }),
+                    "update_blog",
+                    HttpMethods.Put
+                ),
+
+                new LinkDto
+                (
+                    url.Link(nameof(DeleteBlog), new { userId, blogId }),
+                    "delete_blog",
+                    HttpMethods.Delete
+                ),
+
+                new LinkDto
+                (
+                    url.Link(nameof(UsersController.GetUser), new { userId }),
+                    "user",
+                    HttpMethods.Get
+                ),
+
+                new LinkDto
+                (
+                    url.Link(nameof(PostsController.CreatePost), new { userId, blogId }),
+                    "create_a_post",
+                    HttpMethods.Post
+                )
+            };
+            return links;
+        }
+
+        private List<LinkDto> CreateLinksForBlogs(int userId,
+             BlogsResourceParameters blogsResourceParameters,
+             bool hasPrevious,
+             bool hasNext)
+        {
+            var links = new List<LinkDto>
+            {
+                new LinkDto(CreateBlogsResourceUri(userId,
+                                    blogsResourceParameters,
+                                    ResourceUriType.Current),
+                                  "self",
+                                  HttpMethods.Get)
+            };
+
+            if (hasPrevious)
+            {
+                links.Add(new LinkDto(CreateBlogsResourceUri(userId,
+                                        blogsResourceParameters,
+                                        ResourceUriType.PreviousPage),
+                                      "previousPage",
+                                      HttpMethods.Get));
+            }
+
+            if (hasNext)
+            {
+                links.Add(new LinkDto(CreateBlogsResourceUri(userId,
+                                        blogsResourceParameters,
+                                        ResourceUriType.NextPage),
+                                      "nextPage",
+                                      HttpMethods.Get));
+            }
+
+            return links;
+        }
+
+        private string CreateBlogsResourceUri(
+            int userId,
+            BlogsResourceParameters blogsResourceParameters,
+            ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetBlogs),
+                        new
+                        {
+                            userId,
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber - 1,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetBlogs),
+                        new
+                        {
+                            userId,
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber + 1,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+
+                case ResourceUriType.Current:
+                default:
+                    return Url.Link(nameof(GetBlogs),
+                        new
+                        {
+                            userId,
+                            searchQuery = blogsResourceParameters.SearchQuery,
+                            pageNumber = blogsResourceParameters.PageNumber,
+                            pageSize = blogsResourceParameters.PageSize,
+                        });
+            }
         }
     }
 }

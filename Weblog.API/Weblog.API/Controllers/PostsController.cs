@@ -61,7 +61,7 @@ namespace Weblog.API.Controllers
             return Ok(_mapper.Map<PostDto>(postFromRepo));
         }
 
-        [HttpPost]
+        [HttpPost(Name = nameof(CreatePost))]
         public IActionResult CreatePost(int userId, int blogId,
             [FromBody] PostForManipulationDto post)
         {
