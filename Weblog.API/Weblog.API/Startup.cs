@@ -29,7 +29,7 @@ namespace Weblog.API
 
         public IConfiguration Configuration { get; }
 
-        readonly string TrustedFlashCardAppCorsPolicy = "_trustedFlashCardAppCorsPolicy";
+        readonly string TrustedCorsPolicy = "_trustedCorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -69,7 +69,7 @@ namespace Weblog.API
             var corsOrigin = Configuration.GetValue<string>("CORS_Origin");
             services.AddCors(options =>
             {
-                options.AddPolicy(TrustedFlashCardAppCorsPolicy,
+                options.AddPolicy(TrustedCorsPolicy,
                     builder =>
                     {
                         builder.WithOrigins(corsOrigin)
@@ -90,6 +90,8 @@ namespace Weblog.API
             {
                 app.UseExceptionHandler();
             }
+
+            app.UseCors(TrustedCorsPolicy);
 
             app.UseStatusCodePages();
 
