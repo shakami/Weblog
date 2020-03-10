@@ -11,15 +11,19 @@
     function BlogsController(dataService) {
         var vm = this;
 
-        vm.error = 'none';
-        vm.data = [];
         dataService.getAllBlogs()
             .then(function (data) {
-                vm.data = data;
+                vm.data = data.blogs;
+                vm.links = data.links;
             })
             .catch(function (reason) {
                 vm.error = reason;
             });
+
+        vm.getLinkForBlog = function (blog) {
+            var apiLink = blog.links[0].href;
+            return (apiLink).substr(apiLink.lastIndexOf("users"));
+        };
     }
 
 })();

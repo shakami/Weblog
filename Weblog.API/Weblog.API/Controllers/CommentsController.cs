@@ -259,7 +259,7 @@ namespace Weblog.API.Controllers
             ResourceParametersBase resourceParameters,
             ResourceUriType type)
         {
-            var blogParameters = resourceParameters as BlogsResourceParameters;
+            var commentParameters = resourceParameters as CommentsResourceParameters;
             var userId = ids[0];
             var blogId = ids[1];
             var postId = ids[2];
@@ -273,8 +273,8 @@ namespace Weblog.API.Controllers
                             userId,
                             blogId,
                             postId,
-                            pageNumber = blogParameters.PageNumber - 1,
-                            pageSize = blogParameters.PageSize
+                            pageNumber = commentParameters.PageNumber - 1,
+                            pageSize = commentParameters.PageSize
                         });
 
                 case ResourceUriType.NextPage:
@@ -284,8 +284,8 @@ namespace Weblog.API.Controllers
                             userId,
                             blogId,
                             postId,
-                            pageNumber = blogParameters.PageNumber + 1,
-                            pageSize = blogParameters.PageSize
+                            pageNumber = commentParameters.PageNumber + 1,
+                            pageSize = commentParameters.PageSize
                         });
 
                 case ResourceUriType.Current:
@@ -296,8 +296,8 @@ namespace Weblog.API.Controllers
                             userId,
                             blogId,
                             postId,
-                            pageNumber = blogParameters.PageNumber,
-                            pageSize = blogParameters.PageSize
+                            pageNumber = commentParameters.PageNumber,
+                            pageSize = commentParameters.PageSize
                         });
             }
         }

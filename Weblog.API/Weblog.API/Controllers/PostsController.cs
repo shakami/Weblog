@@ -250,7 +250,7 @@ namespace Weblog.API.Controllers
             ResourceParametersBase resourceParameters,
             ResourceUriType type)
         {
-            var blogParameters = resourceParameters as BlogsResourceParameters;
+            var postParameters = resourceParameters as PostsResourceParameters;
             var userId = ids[0];
             var blogId = ids[1];
 
@@ -262,9 +262,9 @@ namespace Weblog.API.Controllers
                         {
                             userId,
                             blogId,
-                            searchQuery = blogParameters.SearchQuery,
-                            pageNumber = blogParameters.PageNumber - 1,
-                            pageSize = blogParameters.PageSize,
+                            searchQuery = postParameters.SearchQuery,
+                            pageNumber = postParameters.PageNumber - 1,
+                            pageSize = postParameters.PageSize,
                         });
 
                 case ResourceUriType.NextPage:
@@ -273,9 +273,9 @@ namespace Weblog.API.Controllers
                         {
                             userId,
                             blogId,
-                            searchQuery = blogParameters.SearchQuery,
-                            pageNumber = blogParameters.PageNumber + 1,
-                            pageSize = blogParameters.PageSize,
+                            searchQuery = postParameters.SearchQuery,
+                            pageNumber = postParameters.PageNumber + 1,
+                            pageSize = postParameters.PageSize,
                         });
 
                 case ResourceUriType.Current:
@@ -285,9 +285,9 @@ namespace Weblog.API.Controllers
                         {
                             userId,
                             blogId,
-                            searchQuery = blogParameters.SearchQuery,
-                            pageNumber = blogParameters.PageNumber,
-                            pageSize = blogParameters.PageSize,
+                            searchQuery = postParameters.SearchQuery,
+                            pageNumber = postParameters.PageNumber,
+                            pageSize = postParameters.PageSize,
                         });
             }
         }

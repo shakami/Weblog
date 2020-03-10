@@ -1,5 +1,13 @@
-﻿<div>
-    <p ng-repeat="blog in vm.data">{{ blog }}</p>
-    <p>{{ vm.error }}</p>
+﻿<div class="container">
+    <h1>Blogs</h1>
 
+    <p ng-show="vm.error">{{ vm.error }}</p>
+
+    <div ng-repeat="blog in vm.data" class="jumbotron">
+        <h2>{{ blog.title }}</h2>
+        <hr class="my-4" />
+        <p class="lead">{{ blog.excerpt }}</p>
+        <a href={{vm.getLinkForBlog(blog)}}>read</a>
+    </div>
+    
 </div>

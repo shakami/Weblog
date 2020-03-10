@@ -12,7 +12,12 @@
             .when('/blogs', {
                 controller: 'BlogsController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/blogs.html',
+                templateUrl: '/app/src/templates/blogs.html'
+            })
+            .when('/users/:userId/blogs/:blogId', {
+                controller: 'BlogController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/blog.html'
             })
             .otherwise('/blogs');
     }]);
