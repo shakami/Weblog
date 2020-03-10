@@ -10,7 +10,7 @@ namespace Weblog.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class RootController : ControllerBase
     {
     }
 }

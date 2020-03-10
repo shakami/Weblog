@@ -35,22 +35,13 @@ namespace Weblog.API.Controllers
             [FromQuery] UsersResourceParameters usersResourceParameters,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType,
-                    out MediaTypeHeaderValue parsedMediaType))
-            {
-                return BadRequest();
-            }
-
             var userEntities = _weblogDataRepository.GetUsers(usersResourceParameters);
 
             var usersToReturn = _mapper.Map<IEnumerable<UserDto>>(userEntities);
 
             Response.Headers.Add(PaginationHeader<User>.Get(userEntities));
 
-            var includeLinks = parsedMediaType
-                .SubTypeWithoutSuffix
-                .EndsWith("hateoas",
-                          StringComparison.InvariantCultureIgnoreCase);
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
 
             if (!includeLinks)
             {
@@ -67,9 +58,11 @@ namespace Weblog.API.Controllers
             var resourceToReturn = new
             {
                 users = usersWithLinks,
-                links = CreateLinksForUsers(usersResourceParameters,
-                                            userEntities.HasPrevious,
-                                            userEntities.HasNext)
+                links = LinksForCollection.Create(CreateUsersResourceUri,
+                                                  Array.Empty<int>(),
+                                                  usersResourceParameters,
+                                                  userEntities.HasPrevious,
+                                                  userEntities.HasNext)
             };
 
             return Ok(resourceToReturn);
@@ -79,12 +72,6 @@ namespace Weblog.API.Controllers
         public IActionResult GetUser(int userId,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType,
-                    out MediaTypeHeaderValue parsedMediaType))
-            {
-                return BadRequest();
-            }
-
             var userEntity = _weblogDataRepository.GetUser(userId);
 
             if (userEntity is null)
@@ -94,10 +81,7 @@ namespace Weblog.API.Controllers
 
             var userToReturn = _mapper.Map<UserDto>(userEntity);
 
-            var includeLinks = parsedMediaType
-                .SubTypeWithoutSuffix
-                .EndsWith("hateoas",
-                          StringComparison.InvariantCultureIgnoreCase);
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
 
             if (!includeLinks)
             {
@@ -115,12 +99,6 @@ namespace Weblog.API.Controllers
             [FromBody] UserForManipulationDto user,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType,
-                    out MediaTypeHeaderValue parsedMediaType))
-            {
-                return BadRequest();
-            }
-
             var userEntity = _mapper.Map<User>(user);
 
             _weblogDataRepository.AddUser(userEntity);
@@ -140,10 +118,7 @@ namespace Weblog.API.Controllers
 
             var newUserToReturn = _mapper.Map<UserDto>(userEntity);
 
-            var includeLinks = parsedMediaType
-                .SubTypeWithoutSuffix
-                .EndsWith("hateoas",
-                          StringComparison.InvariantCultureIgnoreCase);
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
 
             if (!includeLinks)
             {
@@ -208,25 +183,28 @@ namespace Weblog.API.Controllers
         }
 
         private string CreateUsersResourceUri(
-            UsersResourceParameters usersResourceParameters,
+            int[] ids,
+            ResourceParametersBase resourceParameters,
             ResourceUriType type)
         {
+            var usersParameters = resourceParameters as UsersResourceParameters;
+
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
                     return Url.Link(nameof(GetUsers),
                         new
                         {
-                            pageNumber = usersResourceParameters.PageNumber - 1,
-                            pageSize = usersResourceParameters.PageSize,
+                            pageNumber = usersParameters.PageNumber - 1,
+                            pageSize = usersParameters.PageSize,
                         });
 
                 case ResourceUriType.NextPage:
                     return Url.Link(nameof(GetUsers),
                         new
                         {
-                            pageNumber = usersResourceParameters.PageNumber + 1,
-                            pageSize = usersResourceParameters.PageSize,
+                            pageNumber = usersParameters.PageNumber + 1,
+                            pageSize = usersParameters.PageSize,
                         });
 
                 case ResourceUriType.Current:
@@ -234,8 +212,8 @@ namespace Weblog.API.Controllers
                     return Url.Link(nameof(GetUsers),
                         new
                         {
-                            pageNumber = usersResourceParameters.PageNumber,
-                            pageSize = usersResourceParameters.PageSize,
+                            pageNumber = usersParameters.PageNumber,
+                            pageSize = usersParameters.PageSize,
                         });
             }
         }
@@ -254,66 +232,31 @@ namespace Weblog.API.Controllers
                 new LinkDto
                 (
                     Url.Link(nameof(UpdateUser), new { userId }),
-                    "update_user",
+                    "updateUser",
                     HttpMethods.Put
                 ),
 
                 new LinkDto
                 (
                     Url.Link(nameof(DeleteUser), new { userId }),
-                    "delete_user",
+                    "deleteUser",
                     HttpMethods.Delete
                 ),
 
                 new LinkDto
                 (
                     Url.Link(nameof(BlogsController.GetBlogs), new { userId }),
-                    "see_blogs_by_user",
+                    "getBlogsByUser",
                     HttpMethods.Get
                 ),
 
                 new LinkDto
                 (
                     Url.Link(nameof(BlogsController.CreateBlog), new { userId }),
-                    "create_blog_for_user",
+                    "createBlogForUser",
                     HttpMethods.Post
                 )
             };
-            return links;
-        }
-
-        private List<LinkDto> CreateLinksForUsers(
-            UsersResourceParameters usersResourceParameters,
-            bool hasPrevious,
-            bool hasNext)
-        {
-            var links = new List<LinkDto>
-            {
-                new LinkDto(CreateUsersResourceUri(
-                                    usersResourceParameters,
-                                    ResourceUriType.Current),
-                                  "self",
-                                  HttpMethods.Get)
-            };
-
-            if (hasPrevious)
-            {
-                links.Add(new LinkDto(CreateUsersResourceUri(
-                                        usersResourceParameters,
-                                        ResourceUriType.PreviousPage),
-                                      "previousPage",
-                                      HttpMethods.Get));
-            }
-
-            if (hasNext)
-            {
-                links.Add(new LinkDto(CreateUsersResourceUri(
-                                        usersResourceParameters,
-                                        ResourceUriType.NextPage),
-                                      "nextPage",
-                                      HttpMethods.Get));
-            }
-
             return links;
         }
     }

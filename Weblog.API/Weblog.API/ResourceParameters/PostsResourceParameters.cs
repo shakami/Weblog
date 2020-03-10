@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Weblog.API.ResourceParameters
 {
-    public class PostsResourceParameters
+    public class PostsResourceParameters : ResourceParametersBase
     {
         public string SearchQuery { get; set; }
         public int PageNumber { get; set; } = 1;

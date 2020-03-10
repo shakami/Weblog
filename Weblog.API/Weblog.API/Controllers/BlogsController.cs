@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using Weblog.API.Entities;
 using Weblog.API.Helpers;
 using Weblog.API.Models;
 using Weblog.API.ResourceParameters;
@@ -30,7 +32,8 @@ namespace Weblog.API.Controllers
 
         [HttpGet(Name = nameof(GetBlogs))]
         public IActionResult GetBlogs(int userId,
-            [FromQuery] BlogsResourceParameters blogsResourceParameters)
+            [FromQuery] BlogsResourceParameters blogsResourceParameters,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
             if (!_weblogDataRepository.UserExists(userId))
             {
@@ -39,11 +42,41 @@ namespace Weblog.API.Controllers
 
             var blogEntities = _weblogDataRepository.GetBlogs(userId, blogsResourceParameters);
 
-            return Ok(_mapper.Map<IEnumerable<BlogDto>>(blogEntities));
+            var blogsToReturn = _mapper.Map<IEnumerable<BlogDto>>(blogEntities);
+
+            Response.Headers.Add(PaginationHeader<Blog>.Get(blogEntities));
+
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
+
+            if (!includeLinks)
+            {
+                return Ok(blogsToReturn);
+            }
+
+            var blogsWithLinks = blogsToReturn.Select(blog =>
+            {
+                var links = CreateLinksForBlog(Url, userId, blog.BlogId);
+
+                return new BlogDtoWithLinks(blog, links);
+            });
+
+            var collectionToReturn = new
+            {
+                blogs = blogsWithLinks,
+                links = LinksForCollection.Create(
+                                    CreateBlogsResourceUri,
+                                    new int[] { userId },
+                                    blogsResourceParameters,
+                                    blogEntities.HasPrevious,
+                                    blogEntities.HasNext)
+            };
+
+            return Ok(collectionToReturn);
         }
 
         [HttpGet("{blogId}", Name = nameof(GetBlog))]
-        public IActionResult GetBlog(int userId, int blogId)
+        public IActionResult GetBlog(int userId, int blogId,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
             if (!_weblogDataRepository.UserExists(userId))
             {
@@ -57,12 +90,25 @@ namespace Weblog.API.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<BlogDto>(blogEntity));
+            var blogToReturn = _mapper.Map<BlogDto>(blogEntity);
+
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
+
+            if (!includeLinks)
+            {
+                return Ok(blogToReturn);
+            }
+
+            var links = CreateLinksForBlog(Url, userId, blogId);
+            var blogWithLinks = new BlogDtoWithLinks(blogToReturn, links);
+
+            return Ok(blogWithLinks);
         }
 
         [HttpPost(Name = nameof(CreateBlog))]
         public IActionResult CreateBlog(int userId,
-            [FromBody] BlogForManipulationDto blog)
+            [FromBody] BlogForManipulationDto blog,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
             if (!_weblogDataRepository.UserExists(userId))
             {
@@ -76,9 +122,21 @@ namespace Weblog.API.Controllers
 
             var blogToReturn = _mapper.Map<BlogDto>(blogEntity);
 
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
+
+            if (!includeLinks)
+            {
+                return CreatedAtRoute(nameof(GetBlog),
+                                      new { userId, blogId = blogToReturn.BlogId },
+                                      blogToReturn);
+            }
+
+            var links = CreateLinksForBlog(Url, userId, blogToReturn.BlogId);
+            var blogWithLinks = new BlogDtoWithLinks(blogToReturn, links);
+
             return CreatedAtRoute(nameof(GetBlog),
-                                  new { userId, blogId = blogToReturn.BlogId },
-                                  blogToReturn);
+                                      new { userId, blogId = blogToReturn.BlogId },
+                                      blogWithLinks);
         }
 
         [HttpPut("{blogId}", Name = nameof(UpdateBlog))]
@@ -140,14 +198,14 @@ namespace Weblog.API.Controllers
                 new LinkDto
                 (
                     url.Link(nameof(UpdateBlog), new { userId, blogId }),
-                    "update_blog",
+                    "updateBlog",
                     HttpMethods.Put
                 ),
 
                 new LinkDto
                 (
                     url.Link(nameof(DeleteBlog), new { userId, blogId }),
-                    "delete_blog",
+                    "deleteBlog",
                     HttpMethods.Delete
                 ),
 
@@ -161,53 +219,21 @@ namespace Weblog.API.Controllers
                 new LinkDto
                 (
                     url.Link(nameof(PostsController.CreatePost), new { userId, blogId }),
-                    "create_a_post",
+                    "createAPostForBlog",
                     HttpMethods.Post
                 )
             };
             return links;
         }
 
-        private List<LinkDto> CreateLinksForBlogs(int userId,
-             BlogsResourceParameters blogsResourceParameters,
-             bool hasPrevious,
-             bool hasNext)
-        {
-            var links = new List<LinkDto>
-            {
-                new LinkDto(CreateBlogsResourceUri(userId,
-                                    blogsResourceParameters,
-                                    ResourceUriType.Current),
-                                  "self",
-                                  HttpMethods.Get)
-            };
-
-            if (hasPrevious)
-            {
-                links.Add(new LinkDto(CreateBlogsResourceUri(userId,
-                                        blogsResourceParameters,
-                                        ResourceUriType.PreviousPage),
-                                      "previousPage",
-                                      HttpMethods.Get));
-            }
-
-            if (hasNext)
-            {
-                links.Add(new LinkDto(CreateBlogsResourceUri(userId,
-                                        blogsResourceParameters,
-                                        ResourceUriType.NextPage),
-                                      "nextPage",
-                                      HttpMethods.Get));
-            }
-
-            return links;
-        }
-
         private string CreateBlogsResourceUri(
-            int userId,
-            BlogsResourceParameters blogsResourceParameters,
+            int[] ids,
+            ResourceParametersBase resourceParameters,
             ResourceUriType type)
         {
+            var blogParameters = resourceParameters as BlogsResourceParameters;
+            var userId = ids[0];
+
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
@@ -215,9 +241,9 @@ namespace Weblog.API.Controllers
                         new
                         {
                             userId,
-                            searchQuery = blogsResourceParameters.SearchQuery,
-                            pageNumber = blogsResourceParameters.PageNumber - 1,
-                            pageSize = blogsResourceParameters.PageSize,
+                            searchQuery = blogParameters.SearchQuery,
+                            pageNumber = blogParameters.PageNumber - 1,
+                            pageSize = blogParameters.PageSize,
                         });
 
                 case ResourceUriType.NextPage:
@@ -225,9 +251,9 @@ namespace Weblog.API.Controllers
                         new
                         {
                             userId,
-                            searchQuery = blogsResourceParameters.SearchQuery,
-                            pageNumber = blogsResourceParameters.PageNumber + 1,
-                            pageSize = blogsResourceParameters.PageSize,
+                            searchQuery = blogParameters.SearchQuery,
+                            pageNumber = blogParameters.PageNumber + 1,
+                            pageSize = blogParameters.PageSize,
                         });
 
                 case ResourceUriType.Current:
@@ -236,9 +262,9 @@ namespace Weblog.API.Controllers
                         new
                         {
                             userId,
-                            searchQuery = blogsResourceParameters.SearchQuery,
-                            pageNumber = blogsResourceParameters.PageNumber,
-                            pageSize = blogsResourceParameters.PageSize,
+                            searchQuery = blogParameters.SearchQuery,
+                            pageNumber = blogParameters.PageNumber,
+                            pageSize = blogParameters.PageSize,
                         });
             }
         }
