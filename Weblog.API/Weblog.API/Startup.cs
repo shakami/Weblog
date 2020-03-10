@@ -29,6 +29,8 @@ namespace Weblog.API
 
         public IConfiguration Configuration { get; }
 
+        readonly string TrustedFlashCardAppCorsPolicy = "_trustedFlashCardAppCorsPolicy";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -54,14 +56,27 @@ namespace Weblog.API
                 }
             });
 
+            var connectionString = Configuration.GetConnectionString("WeblogDB");
             services.AddDbContext<WeblogContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("WeblogDB"));
+                options.UseSqlServer(connectionString);
             });
 
             services.AddScoped<IWeblogDataRepository, WeblogDataRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            var corsOrigin = Configuration.GetValue<string>("CORS_Origin");
+            services.AddCors(options =>
+            {
+                options.AddPolicy(TrustedFlashCardAppCorsPolicy,
+                    builder =>
+                    {
+                        builder.WithOrigins(corsOrigin)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
