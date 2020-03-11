@@ -1,7 +1,13 @@
 ﻿<div class="container">
-    <h1 class="display-4 mb-4">{{vm.blog.title}}</h1>
+    <h1 class="display-4 mb-4">{{ vm.blog.title }}</h1>
+    <h6 class="text-muted">{{vm.blog.excerpt}}</h6>
+
+    <h2 class="mt-5">Posts</h2>
     <div class="jumbotron" ng-repeat="post in vm.posts">
-        <h2>{{post.title}}</h2>
-        <p>{{post.body}}</p>
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.body.substr(0, 500) }}...</p>
+        <a href={{vm.getLinkForPost(post)}}>Full Article</a>
     </div>
+
+    <h6 ng-if="vm.posts.length === 0">It's pretty lonely here...</h6>
 </div>

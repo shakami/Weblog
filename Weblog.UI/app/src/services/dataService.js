@@ -12,13 +12,18 @@
             getAllBlogs: getAllBlogs,
             getBlog: getBlog,
 
-            getPosts: getPosts
+            getPosts: getPosts,
+            getPost: getPost,
+
+            getComments: getComments
         };
 
-        function getAllBlogs() {
+        function getAllBlogs(pageNumber, pageSize) {
+            var paging = "pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "9")
+
             var req =
             {
-                url: API_URL + '/blogs',
+                url: API_URL + '/blogs?' + paging,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
@@ -49,6 +54,39 @@
         }
 
         function getPosts(path) {
+            var req =
+            {
+                url: API_URL + path,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function getPost(path) {
+            var req =
+            {
+                url: API_URL + path,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(req)
+                .then(function (data) {
+                    return getComments(path + '/comments')
+                        .then(function (result) {
+                            data.comments = result.comments;
+                            return data;
+                        })
+                        .catch(sendError);
+                })
+                .catch(sendError);
+        }
+
+        function getComments(path) {
             var req =
             {
                 url: API_URL + path,

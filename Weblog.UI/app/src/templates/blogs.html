@@ -1,13 +1,35 @@
 ﻿<div class="container">
-    <h1>Blogs</h1>
-
     <p ng-show="vm.error">{{ vm.error }}</p>
 
-    <div ng-repeat="blog in vm.data" class="jumbotron">
-        <h2>{{ blog.title }}</h2>
-        <hr class="my-4" />
-        <p class="lead">{{ blog.excerpt }}</p>
-        <a href={{vm.getLinkForBlog(blog)}}>read</a>
+    <h1>Blogs</h1>
+
+    <div class="container card-deck">
+        <div ng-repeat="blog in vm.data" class="card my-4" style="min-width: 30%; max-width: 30%; min-height: 15rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ blog.title }}</h5>
+                <p class="card-text text-muted">
+                    {{blog.excerpt.substr(0, 350)}}
+                    <span ng-if="blog.excerpt.length > 350">...</span>
+                </p>
+            </div>
+            <div class="card-footer">
+                <a class="card-link" href={{vm.getLinkForBlog(blog)}}>read</a>
+            </div>
+        </div>
     </div>
-    
+
+    <div class="text-center">
+
+        <a href={{vm.previousPageLink}} class="d-inline-block">
+            <i class="fa fa-chevron-circle-left"></i>
+            <p class="small">Previous Page</p>
+        </a>
+        <span>-</span>
+        <a href={{vm.nextPageLink}} class="d-inline-block">
+            <i class="fa fa-chevron-circle-right"></i>
+            <p class="small">Next Page</p>
+        </a>
+
+    </div>
+
 </div>

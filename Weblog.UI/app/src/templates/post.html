@@ -1,0 +1,14 @@
+﻿<div class="container">
+    <h1 class="display-4">{{vm.post.title}}</h1>
+    <p>{{vm.post.body}}</p>
+
+
+    <h2>
+        Comments
+        <button class="btn btn-primary btn-sm">Add Comment</button>
+    </h2>
+
+    <div ng-repeat="comment in vm.comments" class="jumbotron py-2 my-4">
+        <p>{{comment.body}}</p>
+    </div>
+</div>

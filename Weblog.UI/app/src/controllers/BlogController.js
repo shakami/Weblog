@@ -13,7 +13,6 @@
 
         vm.path = $location.path();
         
-        
         dataService.getBlog(vm.path)
             .then(function (result) {
                 vm.blog = result.data;
@@ -22,6 +21,11 @@
             .catch(function (reason) {
                 vm.error = reason;
             });
+
+        vm.getLinkForPost = function (post) {
+            var apiLink = post.links[0].href;
+            return (apiLink).substr(apiLink.lastIndexOf("users"));
+        };
     }
 
 })();

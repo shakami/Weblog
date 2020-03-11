@@ -19,6 +19,11 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/blog.html'
             })
+            .when('/users/:userId/blogs/:blogId/posts/:postId', {
+                controller: 'PostController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/post.html'
+            })
             .otherwise('/blogs');
     }]);
 
