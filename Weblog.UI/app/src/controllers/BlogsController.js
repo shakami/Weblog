@@ -11,35 +11,50 @@
     function BlogsController(dataService, $location) {
         var vm = this;
 
-        vm.pageSize = $location.search().pageSize;
-        vm.pageNumber = $location.search().pageNumber;
+        vm.data = [];
+        vm.error = null;
 
-        dataService.getAllBlogs(vm.pageNumber, vm.pageSize)
-            .then(function (data) {
-                vm.data = data.blogs;
-                vm.links = data.links;
+        vm.nextPageLink = null;
+        vm.previousPageLink = null;
 
-                vm.hasNextPage = vm.links.find(e => e.rel === "nextPage");
-                vm.hasPreviousPage = vm.links.find(e => e.rel === "previousPage");
+        vm.getLinkForBlog = getLinkForBlog;
 
-                if (vm.hasNextPage) {
-                    var apiLink = vm.hasNextPage.href;
-                    console.log(apiLink);
-                    vm.nextPageLink = (apiLink).substr(apiLink.lastIndexOf("blogs"));
-                }
+        activate();
 
-                if (vm.hasPreviousPage) {
-                    var apiLink = vm.hasPreviousPage.href;
-                    vm.previousPageLink = (apiLink).substr(apiLink.lastIndexOf("blogs"));
-                }
-            })
-            .catch(function (reason) {
-                vm.error = reason;
-            });
+        function activate() {
+            var pageSize = $location.search().pageSize;
+            var pageNumber = $location.search().pageNumber;
 
-        
+            getAllBlogs(pageNumber, pageSize);
+        }
 
-        vm.getLinkForBlog = function (blog) {
+        function getAllBlogs(pageNumber, pageSize) {
+            dataService.getAllBlogs(pageNumber, pageSize)
+                .then(function (data) {
+                    vm.data = data.blogs;
+                    generatePagingLinks(data.links);
+                })
+                .catch(function (reason) {
+                    vm.error = reason;
+                });
+        }
+
+        function generatePagingLinks(links) {
+            var hasNextPage = links.find(e => e.rel === "nextPage");
+            var hasPreviousPage = links.find(e => e.rel === "previousPage");
+
+            if (hasNextPage) {
+                var apiLink = hasNextPage.href;
+                vm.nextPageLink = (apiLink).substr(apiLink.lastIndexOf("blogs"));
+            }
+
+            if (hasPreviousPage) {
+                var apiLink = hasPreviousPage.href;
+                vm.previousPageLink = (apiLink).substr(apiLink.lastIndexOf("blogs"));
+            }
+        }
+
+        function getLinkForBlog(blog) {
             var apiLink = blog.links[0].href;
             return (apiLink).substr(apiLink.lastIndexOf("users"));
         };

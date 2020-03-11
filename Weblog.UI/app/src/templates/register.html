@@ -1,0 +1,40 @@
+﻿<div class="container">
+    <h1 class="display-4">Register as a New User</h1>
+
+    <form class="mt-5" name="registerForm">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>FirstName</label>
+                    <input ng-model="vm.firstName" type="text" class="form-control" placeholder="First Name" required>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input ng-model="vm.lastName" type="text" class="form-control" placeholder="Last Name" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Email address</label>
+            <input ng-model="vm.email" type="email" class="form-control" placeholder="Email Address" required>
+            <small class="form-text text-muted">You'll use your email address to log in later.</small>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input ng-model="vm.password" type="password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <label>Confirm Password</label>
+            <input ng-model="vm.confirmPassword" type="password" class="form-control" placeholder="Password" required>
+        </div>
+
+        <div ng-show="vm.error" class="alert alert-warning" role="alert">
+            {{vm.error}}
+        </div>
+
+        <button ng-click="vm.register(registerForm)" type="submit" class="btn btn-success">Register</button>
+
+    </form>
+</div>

@@ -11,18 +11,33 @@
     function BlogController(dataService, $location) {
         var vm = this;
 
-        vm.path = $location.path();
-        
-        dataService.getBlog(vm.path)
-            .then(function (result) {
-                vm.blog = result.data;
-                vm.posts = result.posts;
-            })
-            .catch(function (reason) {
-                vm.error = reason;
-            });
+        vm.blog = {};
+        vm.posts = [];
 
-        vm.getLinkForPost = function (post) {
+        vm.error = null;
+
+        vm.getLinkForPost = getLinkForPost;
+
+        activate();
+
+        function activate() {
+            var path = $location.path();
+
+            getBlog(path);
+        }
+
+        function getBlog(path) {
+            dataService.getBlog(path)
+                .then(function (result) {
+                    vm.blog = result.data;
+                    vm.posts = result.posts;
+                })
+                .catch(function (reason) {
+                    vm.error = reason;
+                });
+        }
+
+        function getLinkForPost(post) {
             var apiLink = post.links[0].href;
             return (apiLink).substr(apiLink.lastIndexOf("users"));
         };

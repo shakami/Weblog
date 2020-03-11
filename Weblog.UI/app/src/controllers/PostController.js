@@ -11,16 +11,29 @@
     function PostController(dataService, $location) {
         var vm = this;
 
-        vm.path = $location.path();
+        vm.post = {};
+        vm.comments = [];
 
-        dataService.getPost(vm.path)
-            .then(function (post) {
-                vm.post = post.data;
-                vm.comments = post.comments;
-            })
-            .catch(function (reason) {
-                vm.error = reason;
-            });
+        vm.error = null;
+
+        activate();
+
+        function activate() {
+            var path = $location.path();
+
+            getPost(path);
+        }
+
+        function getPost(path) {
+            dataService.getPost(path)
+                .then(function (post) {
+                    vm.post = post.data;
+                    vm.comments = post.comments;
+                })
+                .catch(function (reason) {
+                    vm.error = reason;
+                });
+        }
     }
 
 })();
