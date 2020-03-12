@@ -13,5 +13,8 @@ namespace Weblog.API.Models
         public string Title { get; set; }
 
         public string Body { get; set; }
+
+        [Required]
+        public UserCredentialsDto Credentials { get; set; }
     }
 }

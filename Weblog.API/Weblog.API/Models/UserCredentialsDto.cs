@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Weblog.API.Models
 {
-    public class BlogForManipulationDto
+    public class UserCredentialsDto
     {
         [Required]
-        [StringLength(255)]
-        public string Title { get; set; }
-
-        public string Excerpt { get; set; }
+        [EmailAddress]
+        [StringLength(50)]
+        public string EmailAddress { get; set; }
 
         [Required]
-        public UserCredentialsDto Credentials { get; set; }
+        [StringLength(25)]
+        public string Password { get; set; }
     }
 }

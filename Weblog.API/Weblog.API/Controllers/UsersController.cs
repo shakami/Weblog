@@ -139,6 +139,13 @@ namespace Weblog.API.Controllers
         public IActionResult UpdateUser(int userId,
             [FromBody] UserForManipulationDto user)
         {
+            var emailAddress = user.Credentials.EmailAddress;
+            var password = user.Credentials.Password;
+            if (!_weblogDataRepository.Authorized(userId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             var userFromRepo = _weblogDataRepository.GetUser(userId);
 
             if (userFromRepo is null)
@@ -167,8 +174,16 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{userId}", Name = nameof(DeleteUser))]
-        public IActionResult DeleteUser(int userId)
+        public IActionResult DeleteUser(int userId,
+            [FromBody] UserCredentialsDto credentials)
         {
+            var emailAddress = credentials.EmailAddress;
+            var password = credentials.Password;
+            if (!_weblogDataRepository.Authorized(userId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             var userFromRepo = _weblogDataRepository.GetUser(userId);
 
             if (userFromRepo is null)

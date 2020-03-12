@@ -10,5 +10,9 @@ namespace Weblog.API.Models
     {
         [Required]
         public string Body { get; set; }
+
+
+        [Required]
+        public UserCredentialsDto Credentials { get; set; }
     }
 }

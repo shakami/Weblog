@@ -131,6 +131,13 @@ namespace Weblog.API.Controllers
                 return ErrorHandler.UnprocessableEntity(ModelState, HttpContext);
             }
 
+            var emailAddress = comment.Credentials.EmailAddress;
+            var password = comment.Credentials.Password;
+            if (!_weblogDataRepository.Authorized((int)comment.UserId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             var commentEntity = _mapper.Map<Entities.Comment>(comment);
 
             _weblogDataRepository.AddComment(postId, commentEntity);
@@ -181,6 +188,13 @@ namespace Weblog.API.Controllers
                 return NotFound();
             }
 
+            var emailAddress = comment.Credentials.EmailAddress;
+            var password = comment.Credentials.Password;
+            if (!_weblogDataRepository.Authorized(commentFromRepo.UserId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             _mapper.Map(comment, commentFromRepo);
 
             _weblogDataRepository.UpdateComment(commentFromRepo);
@@ -190,7 +204,8 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{commentId}", Name = nameof(DeleteComment))]
-        public IActionResult DeleteComment(int userId, int blogId, int postId, int commentId)
+        public IActionResult DeleteComment(int userId, int blogId, int postId, int commentId,
+            [FromBody] UserCredentialsDto credentials)
         {
             if (!_weblogDataRepository.UserExists(userId) ||
                 !_weblogDataRepository.BlogExists(blogId) ||
@@ -204,6 +219,13 @@ namespace Weblog.API.Controllers
             if (commentFromRepo is null)
             {
                 return NotFound();
+            }
+
+            var emailAddress = credentials.EmailAddress;
+            var password = credentials.Password;
+            if (!_weblogDataRepository.Authorized(commentFromRepo.UserId, emailAddress, password))
+            {
+                return Unauthorized();
             }
 
             _weblogDataRepository.DeleteComment(commentFromRepo);

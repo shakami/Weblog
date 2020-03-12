@@ -115,6 +115,13 @@ namespace Weblog.API.Controllers
                 return NotFound();
             }
 
+            var emailAddress = blog.Credentials.EmailAddress;
+            var password = blog.Credentials.Password;
+            if (!_weblogDataRepository.Authorized(userId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             var blogEntity = _mapper.Map<Entities.Blog>(blog);
 
             _weblogDataRepository.AddBlog(userId, blogEntity);
@@ -148,6 +155,13 @@ namespace Weblog.API.Controllers
                 return NotFound();
             }
 
+            var emailAddress = blog.Credentials.EmailAddress;
+            var password = blog.Credentials.Password;
+            if (!_weblogDataRepository.Authorized(userId, emailAddress, password))
+            {
+                return Unauthorized();
+            }
+
             var blogFromRepo = _weblogDataRepository.GetBlog(blogId);
 
             if (blogFromRepo is null)
@@ -164,11 +178,19 @@ namespace Weblog.API.Controllers
         }
 
         [HttpDelete("{blogId}", Name = nameof(DeleteBlog))]
-        public IActionResult DeleteBlog(int userId, int blogId)
+        public IActionResult DeleteBlog(int userId, int blogId,
+            [FromBody] UserCredentialsDto credentials)
         {
             if (!_weblogDataRepository.UserExists(userId))
             {
                 return NotFound();
+            }
+
+            var emailAddress = credentials.EmailAddress;
+            var password = credentials.Password;
+            if (!_weblogDataRepository.Authorized(userId, emailAddress, password))
+            {
+                return Unauthorized();
             }
 
             var blogFromRepo = _weblogDataRepository.GetBlog(blogId);
