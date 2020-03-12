@@ -21,6 +21,33 @@ namespace Weblog.API.Services
 
         //--------- users ---------//
         #region users
+        public User Authenticate(string emailAddress, string password)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress))
+            {
+                throw new ArgumentException(nameof(emailAddress));
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException(nameof(password));
+            }
+
+            var user = _context.Users
+                .FirstOrDefault(u => u.EmailAddress == emailAddress);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            if (user.Password != password)
+            {
+                return null;
+            }
+
+            return user;
+        }
 
         public bool Authorized(int userId, string emailAddress, string password)
         {

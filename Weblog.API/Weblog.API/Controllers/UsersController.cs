@@ -94,6 +94,32 @@ namespace Weblog.API.Controllers
             return Ok(userWithLinks);
         }
 
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody] UserCredentialsDto credentials,
+            [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
+        {
+            var user = _weblogDataRepository.Authenticate(
+                credentials.EmailAddress, credentials.Password);
+
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            var userToReturn = _mapper.Map<UserDto>(user);
+
+            var includeLinks = MediaTypes.IncludeLinks(mediaType);
+
+            if (!includeLinks)
+            {
+                return Ok(userToReturn);
+            }
+
+            var links = CreateLinksForUser(user.UserId);
+            var userWithLinks = new UserDtoWithLinks(userToReturn, links);
+            return Ok(userWithLinks);
+        }
+
         [HttpPost]
         public IActionResult CreateUser(
             [FromBody] UserForManipulationDto user,

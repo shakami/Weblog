@@ -8,6 +8,8 @@ namespace Weblog.API.Services
     public interface IWeblogDataRepository
     {
         //--------- users ---------//
+        User Authenticate(string emailAddress, string password);
+
         bool Authorized(int userId, string emailAddress, string password);
 
         PagedList<User> GetUsers(UsersResourceParameters resourceParameters);
