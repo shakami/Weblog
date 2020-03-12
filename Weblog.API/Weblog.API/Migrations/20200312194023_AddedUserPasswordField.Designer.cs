@@ -10,8 +10,8 @@ using Weblog.API.DbContexts;
 namespace Weblog.API.Migrations
 {
     [DbContext(typeof(WeblogContext))]
-    [Migration("20200309163051_CommentBodyShouldNotBeNull")]
-    partial class CommentBodyShouldNotBeNull
+    [Migration("20200312194023_AddedUserPasswordField")]
+    partial class AddedUserPasswordField
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -126,6 +126,11 @@ namespace Weblog.API.Migrations
                         .HasMaxLength(25);
 
                     b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(25)")
+                        .HasMaxLength(25);
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(25)")
                         .HasMaxLength(25);

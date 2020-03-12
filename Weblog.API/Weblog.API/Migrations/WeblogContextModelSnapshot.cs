@@ -128,6 +128,11 @@ namespace Weblog.API.Migrations
                         .HasColumnType("nvarchar(25)")
                         .HasMaxLength(25);
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(25)")
+                        .HasMaxLength(25);
+
                     b.HasKey("UserId");
 
                     b.HasIndex("EmailAddress")

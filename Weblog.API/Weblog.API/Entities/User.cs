@@ -15,7 +15,11 @@ namespace Weblog.API.Entities
         [EmailAddress]
         [StringLength(50)]
         public string EmailAddress { get; set; }
-        
+
+        [Required]
+        [StringLength(25)]
+        public string Password { get; set; }
+
         [Required]
         [StringLength(25)]
         public string FirstName { get; set; }

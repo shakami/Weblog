@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200306205137_RemoveClustered_Comments_PostId.cs" />
+    <Compile Remove="Migrations\20200306205137_RemoveClustered_Comments_PostId.Designer.cs" />
+    <Compile Remove="Migrations\20200309163051_CommentBodyShouldNotBeNull.cs" />
+    <Compile Remove="Migrations\20200309163051_CommentBodyShouldNotBeNull.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
