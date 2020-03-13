@@ -31,7 +31,7 @@ footer {
     padding-top: 1rem;
 }
 
-.navbar, .dropdown-menu {
+.navbar {
     background-color: var(--dark-green);
 }
 

@@ -11,33 +11,42 @@
                     <a class="nav-link" href="/latest">Latest Content</a>
                 </li>
 
-                <li class="nav-item dropdown" ng-hide="loggedIn">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                        Login
-                    </a>
-                    <div class="dropdown-menu">
-                        <form class="form-inline" name="loginForm">
-                            <input ng-model="emailAddress" class="form-control m-2" type="email" placeholder="Email Address" required>
-                            <input ng-model="password" class="form-control m-2" type="password" placeholder="Password" required>
-
-                            <div class="dropdown-divider"></div>
-
-                            <a ng-click="closeDropdown()" href="/register" class="text-light small m-2">New here? Click to register</a>
-                            <button ng-click="login(loginForm)" class="btn btn-success m-2" type="submit">Login</button>
-                        </form>
-                    </div>
-                </li>
-
                 <li class="nav-item dropdown mx-2" ng-show="loggedIn">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                         {{userName}}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" ng-href={{userBlogsLink}}>Action</a>
+                        <a class="dropdown-item" ng-href={{userBlogsLink}}>Your Blogs</a>
                         <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a ng-click="logout()" class="dropdown-item" href="#">Logout</a>
                     </div>
                 </li>
+
+
+                <li class="nav-item dropdown" ng-hide="loggedIn">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                        Login
+                    </a>
+                    <div class="dropdown-menu">
+                        <form class="px-4 py-3" name="loginForm">
+                            <div class="form-group">
+                                <label for="exampleDropdownFormEmail1">Email address</label>
+                                <input required ng-model="emailAddress" type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleDropdownFormPassword1">Password</label>
+                                <input required ng-model="password" type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+                            </div>
+                            <button ng-click="login(loginForm)" type="submit" class="btn btn-success">Sign in</button>
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/register">New here? Click to register</a>
+                    </div>
+                </li>
+               
             </ul>
 
 

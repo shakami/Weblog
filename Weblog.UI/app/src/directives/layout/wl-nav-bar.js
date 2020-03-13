@@ -21,10 +21,6 @@
 
                 $scope.error = null;
 
-                $scope.closeDropdown = function () {
-                    $('#navbarDropdown').click();
-                }
-
                 $scope.login = function (form) {
                     if (form.$valid) {
                         dataService.authenticate($scope.emailAddress, $scope.password)
@@ -34,12 +30,15 @@
 
                                 var links = data.links;
                                 $scope.userBlogsLink = hateoasService.getBlogsByUserLink(links);
-                                console.log($scope.userBlogsLink);
                             })
                             .catch(function (reason) {
                                 $scope.error = reason
                             });
                     }
+                }
+
+                $scope.logout = function () {
+                    $scope.loggedIn = false;
                 }
             }
         };
