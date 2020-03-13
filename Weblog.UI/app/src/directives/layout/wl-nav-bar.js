@@ -24,11 +24,12 @@
                 $scope.login = function (form) {
                     if (form.$valid) {
                         dataService.authenticate($scope.emailAddress, $scope.password)
-                            .then(function (data) {
+                            .then(function (response) {
+                                var user = response.data;
                                 $scope.loggedIn = true;
-                                $scope.userName = data.name;
+                                $scope.userName = user.name;
 
-                                var links = data.links;
+                                var links = user.links;
                                 $scope.userBlogsLink = hateoasService.getBlogsByUserLink(links);
                             })
                             .catch(function (reason) {

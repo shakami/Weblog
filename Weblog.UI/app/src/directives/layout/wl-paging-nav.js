@@ -4,12 +4,12 @@
 
     angular
         .module('app')
-        .directive('wlPageNav', wlPageNav);
+        .directive('wlPagingNav', wlPagingNav);
 
-    function wlPageNav() {
+    function wlPagingNav() {
         return {
             restrict: 'E',
-            templateUrl: 'app/src/directives/layout/wl-page-nav.html',
+            templateUrl: 'app/src/directives/layout/wl-paging-nav.html',
             scope: {
                 currentUrl: '=',
                 pageInfo: '='
@@ -22,14 +22,14 @@
 
                 $timeout(function () {
                     generatePageLinks($scope.pageInfo);
-                }, 100);
+                }, 250);
 
                 function generatePageLinks(pageInfo) {
                     if (pageInfo.currentPage !== 1) {
                         $scope.previousPageLink = $scope.currentUrl +
                             '?pageNumber=' + (pageInfo.currentPage - 1);
                     }
-                    if (pageInfo.currentPage !== pageInfo.totalPages) {
+                    if (pageInfo.totalPages !== 0 && pageInfo.currentPage !== pageInfo.totalPages) {
                         $scope.nextPageLink = $scope.currentUrl +
                             '?pageNumber=' + (pageInfo.currentPage + 1);
                     }

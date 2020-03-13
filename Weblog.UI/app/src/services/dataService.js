@@ -11,7 +11,7 @@
         return {
             authenticate: authenticate,
 
-            getAllBlogs: getAllBlogs,
+            getBlogs: getBlogs,
             getBlog: getBlog,
 
             getPosts: getPosts,
@@ -38,12 +38,18 @@
                 .catch(sendError);
         }
 
-        function getAllBlogs(pageNumber, pageSize) {
+        function getBlogs(userId, pageNumber, pageSize) {
             var paging = "?pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "9")
+
+            var url = API_URL;
+            if (userId) {
+                url += /users/ + userId;
+            }
+            url += '/blogs' + paging;
 
             var req =
             {
-                url: API_URL + '/blogs' + paging,
+                url: url,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };

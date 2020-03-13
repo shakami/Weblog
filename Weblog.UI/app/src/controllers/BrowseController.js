@@ -6,9 +6,9 @@
         .module('app')
         .controller('BrowseController', BrowseController);
 
-    BrowseController.$inject = ['dataService', '$location'];
+    BrowseController.$inject = ['dataService', '$location', '$routeParams'];
 
-    function BrowseController(dataService, $location) {
+    function BrowseController(dataService, $location, $routeParams) {
         var vm = this;
 
         vm.blogs = [];
@@ -25,11 +25,13 @@
             var pageSize = $location.search().pageSize;
             var pageNumber = $location.search().pageNumber;
 
-            getAllBlogs(pageNumber, pageSize);
+            var userId = $routeParams.userId;
+
+            getBlogs(userId, pageNumber, pageSize);
         }
 
-        function getAllBlogs(pageNumber, pageSize) {
-            dataService.getAllBlogs(pageNumber, pageSize)
+        function getBlogs(userId, pageNumber, pageSize) {
+            dataService.getBlogs(userId, pageNumber, pageSize)
                 .then(function (response) {
                     vm.blogs = response.data.blogs;
                     vm.pageInfo = response.pagingHeader;
