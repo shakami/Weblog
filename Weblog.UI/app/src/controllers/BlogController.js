@@ -28,9 +28,11 @@
 
         function getBlog(path) {
             dataService.getBlog(path)
-                .then(function (result) {
-                    vm.blog = result.data;
-                    vm.posts = result.posts;
+                .then(function (response) {
+                    console.log(response);
+                    vm.blog = response.data.blog;
+                    vm.posts = response.data.posts;
+                    vm.pageInfo = response.pagingHeader;
                 })
                 .catch(function (reason) {
                     vm.error = reason;

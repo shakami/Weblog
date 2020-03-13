@@ -19,7 +19,7 @@
                     $scope.owner = ($scope.blog.userId === args.userId);
                 });
 
-                $scope.$on('loggedOutEvent', function (e, args) {
+                $scope.$on('loggedOutEvent', function () {
                     $scope.owner = false;
                 });
 

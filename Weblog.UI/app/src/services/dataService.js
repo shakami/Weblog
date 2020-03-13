@@ -68,11 +68,16 @@
             };
 
             return $http(req)
-                .then(function (data) {
+                .then(function (blogResponse) {
                     return getPosts(path + '/posts')
-                        .then(function (result) {
-                            data.posts = result.posts;
-                            return data;
+                        .then(function (postsResponse) {
+                            return {
+                                data: {
+                                    blog: blogResponse.data,
+                                    posts: postsResponse.data.posts
+                                },
+                                pagingHeader: postsResponse.pagingHeader
+                            };
                         })
                         .catch(sendError);
                 })
