@@ -10,7 +10,7 @@
         return {
             restrict: 'E',
             templateUrl: 'app/src/directives/layout/wl-nav-bar.html',
-            controller: function ($scope, dataService, hateoasService) {
+            controller: function ($scope, dataService, $rootScope) {
                 $scope.loggedIn = false;
 
                 $scope.emailAddress = null;
@@ -29,8 +29,15 @@
                                 $scope.loggedIn = true;
                                 $scope.userName = user.name;
 
-                                var links = user.links;
-                                $scope.userBlogsLink = hateoasService.getBlogsByUserLink(links);
+                                $scope.userBlogsLink = '/users/' + user.userId + '/blogs';
+
+                                $rootScope.activeUserId = user.userId;
+
+                                $scope.$broadcast('loggedInEvent', { userId: user.userId });
+
+                                form.$setPristine();
+                                $scope.emailAddress = null;
+                                $scope.password = null;
                             })
                             .catch(function (reason) {
                                 $scope.error = reason
@@ -40,6 +47,8 @@
 
                 $scope.logout = function () {
                     $scope.loggedIn = false;
+                    $rootScope.activeUserId = null;
+                    $scope.$broadcast('loggedOutEvent');
                 }
             }
         };
