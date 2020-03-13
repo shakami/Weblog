@@ -1,0 +1,15 @@
+﻿<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item {{previousPageLink ? null : 'disabled'}}">
+            <a class="page-link" ng-href={{previousPageLink}}>Previous</a>
+        </li>
+
+        <li ng-repeat="page in pages" class="page-item {{page.current ? 'disabled' : null}}">
+            <a class="page-link " ng-href={{page.link}}>{{page.number}}</a>
+        </li>
+
+        <li class="page-item {{nextPageLink ? null : 'disabled'}}">
+            <a class="page-link" ng-href={{nextPageLink}}>Next</a>
+        </li>
+    </ul>
+</nav>

@@ -32,7 +32,7 @@
         <wl-nav-bar></wl-nav-bar>
     </header>
 
-    <main class="main-content" ng-view></main>
+    <main class="main-content" ng-view autoscroll="true"></main>
 
     <footer>
         <wl-footer></wl-footer>
@@ -66,8 +66,14 @@
     <!-- directives -->
     <script src="app/src/directives/layout/wl-nav-bar.js"></script>
     <script src="app/src/directives/layout/wl-footer.js"></script>
+    <script src="app/src/directives/layout/wl-page-nav.js"></script>
+    <script src="app/src/directives/blogs/wl-blog-collection.js"></script>
+    <script src="app/src/directives/blogs/wl-blog-card.js"></script>
+    <script src="app/src/directives/posts/wl-post-collection.js"></script>
+
 
     <!-- controllers -->
+    <script src="app/src/controllers/BrowseController.js"></script>
     <script src="app/src/controllers/BlogsController.js"></script>
     <script src="app/src/controllers/BlogController.js"></script>
     <script src="app/src/controllers/PostController.js"></script>

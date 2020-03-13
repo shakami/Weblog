@@ -39,11 +39,11 @@
         }
 
         function getAllBlogs(pageNumber, pageSize) {
-            var paging = "pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "9")
+            var paging = "?pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "9")
 
             var req =
             {
-                url: API_URL + '/blogs?' + paging,
+                url: API_URL + '/blogs' + paging,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
@@ -120,7 +120,10 @@
         }
 
         function sendResponseData(response) {
-            return response.data;
+            return {
+                data: response.data,
+                pagingHeader: angular.fromJson(response.headers('X-Pagination'))
+            };
         }
 
         function sendError(response) {

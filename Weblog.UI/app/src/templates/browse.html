@@ -1,0 +1,24 @@
+﻿<div class="container">
+
+    <p class="alert-danger" ng-show="vm.error">{{ vm.error }}</p>
+
+    <wl-blog-collection blogs="vm.blogs" ng-hide="vm.error"></wl-blog-collection>
+
+    <wl-page-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-page-nav>
+
+
+
+    <!--<div class="text-center">
+
+        <a href={{vm.previousPageLink}} class="d-inline-block">
+            <i class="fa fa-chevron-circle-left"></i>
+            <p class="small">Previous Page</p>
+        </a>
+        <span>-</span>
+        <a href={{vm.nextPageLink}} class="d-inline-block">
+            <i class="fa fa-chevron-circle-right"></i>
+            <p class="small">Next Page</p>
+        </a>
+
+    </div>-->
+</div>

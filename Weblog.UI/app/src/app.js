@@ -9,10 +9,10 @@
         $locationProvider.html5Mode(true);
 
         $routeProvider
-            .when('/blogs', {
-                controller: 'BlogsController',
+            .when('/browse', {
+                controller: 'BrowseController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/blogs.html'
+                templateUrl: '/app/src/templates/browse.html'
             })
             .when('/users/:userId/blogs/:blogId', {
                 controller: 'BlogController',
@@ -34,7 +34,7 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/register.html'
             })
-            .otherwise('/blogs');
+            .otherwise('/latest');
     }]);
 
 })();

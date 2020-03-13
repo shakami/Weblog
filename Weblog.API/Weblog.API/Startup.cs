@@ -74,7 +74,8 @@ namespace Weblog.API
                     {
                         builder.WithOrigins(corsOrigin)
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .WithExposedHeaders("X-Pagination");
                     });
             });
         }
