@@ -8,6 +8,8 @@
     </div>
     <div class="card-footer">
         <a class="card-link" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">Read</a>
-        <a ng-show="owner" class="card-link" ng-href="#">Edit</a>
+        <a ng-show="owner" class="card-link" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/posts/new">New Post</a>
+        <a ng-show="owner" class="card-link" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/edit">Edit Blog</a>
+
     </div>
 </div>

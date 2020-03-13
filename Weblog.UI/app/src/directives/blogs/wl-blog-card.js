@@ -14,7 +14,7 @@
             scope: {
                 blog: '='
             },
-            controller: function ($scope, $rootScope) {
+            controller: function ($scope, $window) {
                 $scope.$on('loggedInEvent', function (e, args) {
                     $scope.owner = ($scope.blog.userId === args.userId);
                 });
@@ -23,7 +23,7 @@
                     $scope.owner = false;
                 });
 
-                $scope.owner = $scope.blog.userId === $rootScope.activeUserId;
+                $scope.owner = $scope.blog.userId === parseInt($window.localStorage.getItem('activeUserId'));
             }
         };
     }

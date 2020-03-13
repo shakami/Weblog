@@ -24,6 +24,16 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/blog.html'
             })
+            .when('/users/:userId/blogs/:blogId/edit', {
+                controller: 'EditBlogController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/edit-blog.html'
+            })
+            .when('/users/:userId/blogs/:blogId/posts/new', {
+                controller: 'NewPostController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/new-post.html'
+            })
             .when('/users/:userId/blogs/:blogId/posts/:postId', {
                 controller: 'PostController',
                 controllerAs: 'vm',
