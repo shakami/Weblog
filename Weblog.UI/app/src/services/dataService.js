@@ -9,6 +9,8 @@
 
     function dataService($http, $q, API_URL) {
         return {
+            authenticate: authenticate,
+
             getAllBlogs: getAllBlogs,
             getBlog: getBlog,
 
@@ -17,6 +19,24 @@
 
             getComments: getComments
         };
+
+        function authenticate(emailAddress, password) {
+            var req =
+            {
+                url: API_URL + "/users/authenticate",
+                method: 'POST',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: { emailAddress, password }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
 
         function getAllBlogs(pageNumber, pageSize) {
             var paging = "pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "9")

@@ -16,19 +16,32 @@
                         Login
                     </a>
                     <div class="dropdown-menu">
-                        <form class="form-inline">
-                            <input class="form-control m-2" type="email" placeholder="Email Address" required>
-                            <input class="form-control m-2" type="password" placeholder="Password" required>
+                        <form class="form-inline" name="loginForm">
+                            <input ng-model="emailAddress" class="form-control m-2" type="email" placeholder="Email Address" required>
+                            <input ng-model="password" class="form-control m-2" type="password" placeholder="Password" required>
 
                             <div class="dropdown-divider"></div>
 
                             <a ng-click="closeDropdown()" href="/register" class="text-light small m-2">New here? Click to register</a>
-                            <button class="btn btn-success m-2" type="submit">Login</button>
+                            <button ng-click="login(loginForm)" class="btn btn-success m-2" type="submit">Login</button>
                         </form>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown mx-2" ng-show="loggedIn">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                        {{userName}}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" ng-href={{userBlogsLink}}>Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </li>
             </ul>
 
+
+            
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
