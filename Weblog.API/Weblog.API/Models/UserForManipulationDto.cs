@@ -25,7 +25,5 @@ namespace Weblog.API.Models
         [StringLength(25)]
         public string LastName { get; set; }
 
-        [Required]
-        public UserCredentialsDto Credentials { get; set; }
     }
 }

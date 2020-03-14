@@ -10,6 +10,7 @@
     function dataService($http, $q, API_URL) {
         return {
             authenticate: authenticate,
+            register: register,
 
             getBlogs: getBlogs,
             getBlog: getBlog,
@@ -31,6 +32,23 @@
                     'Content-Type': 'application/json'
                 },
                 data: { emailAddress, password }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function register(user) {
+            var req = {
+                url: API_URL + '/users',
+                method: 'POST',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: user
             };
 
             return $http(req)
@@ -138,7 +156,15 @@
         }
 
         function sendError(response) {
-            return $q.reject('Status Code: ' + response.status);
+            if (response.status === 422) {
+                var errors = [];
+
+                angular.forEach(response.data.errors, function (value, key) {
+                    errors.push(value);
+                });
+                return $q.reject(errors);
+            }
+            return $q.reject(response);
         }
     }
 

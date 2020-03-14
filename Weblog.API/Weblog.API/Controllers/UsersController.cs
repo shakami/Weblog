@@ -122,7 +122,7 @@ namespace Weblog.API.Controllers
 
         [HttpPost]
         public IActionResult CreateUser(
-            [FromBody] UserForManipulationDto user,
+            [FromBody] UserForCreationDto user,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
             var userEntity = _mapper.Map<User>(user);
@@ -163,7 +163,7 @@ namespace Weblog.API.Controllers
 
         [HttpPut("{userId}", Name = nameof(UpdateUser))]
         public IActionResult UpdateUser(int userId,
-            [FromBody] UserForManipulationDto user)
+            [FromBody] UserForUpdateDto user)
         {
             var emailAddress = user.Credentials.EmailAddress;
             var password = user.Credentials.Password;
