@@ -14,6 +14,11 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/browse.html'
             })
+            .when('/users/:userId', {
+                controller: 'UserProfileController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/user-profile.html'
+            })
             .when('/users/:userId/blogs', {
                 controller: 'BrowseController',
                 controllerAs: 'vm',

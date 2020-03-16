@@ -51,7 +51,8 @@
                             $scope.loggedIn = true;
                             $scope.userName = user.name;
 
-                            $scope.userBlogsLink = '/users/' + user.userId + '/blogs';
+                            $scope.userProfileLink = '/users/' + user.userId;
+                            $scope.userBlogsLink = $scope.userProfileLink + '/blogs';
 
                             $window.localStorage.setItem('activeUserId', user.userId);
                             $window.localStorage.setItem('email', $scope.emailAddress);

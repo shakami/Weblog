@@ -11,6 +11,7 @@
         return {
             authenticate: authenticate,
             register: register,
+            getUser: getUser,
 
             getBlogs: getBlogs,
             getBlog: getBlog,
@@ -53,6 +54,19 @@
                     'Content-Type': 'application/json'
                 },
                 data: user
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function getUser(userId) {
+            var req =
+            {
+                url: API_URL + '/users/' + userId,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
 
             return $http(req)
