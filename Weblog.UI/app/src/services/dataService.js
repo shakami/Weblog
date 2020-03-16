@@ -12,6 +12,7 @@
             authenticate: authenticate,
             register: register,
             getUser: getUser,
+            editUser: editUser,
 
             getBlogs: getBlogs,
             getBlog: getBlog,
@@ -67,6 +68,25 @@
                 url: API_URL + '/users/' + userId,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function editUser(userId, user, credentials) {
+            user.credentials = credentials;
+
+            var req = {
+                url: API_URL + '/users/' + userId,
+                method: 'PUT',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: user
             };
 
             return $http(req)

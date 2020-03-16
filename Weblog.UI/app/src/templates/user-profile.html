@@ -1,11 +1,45 @@
-﻿<div class="container">
+﻿<div class="container text-center">
 
-    <h1>{{vm.userName}}</h1>
+    <picture>
+        <img style="max-height: 10rem;" class="img-thumbnail mb-4" src="app/assets/user.png" />
+    </picture>
 
-    <div class="form-group m-4">
-        <label>Email Address:</label>
-        <input class="ml-5" value="{{vm.email}}" disabled/>
-    </div>
+    <form name="profileForm" class="col-7 mx-auto">
+        <h1 ng-hide="vm.editing" class="my-4">{{vm.userName}}</h1>
+        <div ng-show="vm.editing" class="form-row">
+            <div class="col">
+                <label>First Name</label>
+                <input ng-model="vm.firstNameForEdit" class="form-control" type="text" placeholder="First Name" required />
+            </div>
+            <div class="col">
+                <label>Last Name</label>
+                <input ng-model="vm.lastNameForEdit" class="form-control" type="text" placeholder="Last Name" required />
+            </div>
+        </div>
 
+        <div ng-hide="vm.editing" class="my-4">
+            <label class="small">Email Address</label>
+            <h4 class="text-muted">{{vm.email}}</h4>
+        </div>
+        <div ng-show="vm.editing">
+            <div class="form-group my-4">
+                <label>Email Address</label>
+                <input ng-model="vm.emailForEdit" class="form-control" type="email" placeholder="email@example.com" required />
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <label>Password</label>
+                    <input ng-model="vm.passwordForEdit" type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="col">
+                    <label>Confirm Password</label>
+                    <input ng-model="vm.confirmPassword" type="password" class="form-control" placeholder="Password" required>
+                </div>
+            </div>
+        </div>
 
+        <button ng-hide="vm.editing" ng-click="vm.toggleEdit()" type="button" class="btn btn-success mt-4">Edit</button>
+        <button ng-show="vm.editing" ng-click="vm.toggleEdit()" type="button" class="btn btn-dark mt-3">Cancel</button>
+        <button ng-show="vm.editing" ng-click="vm.save(profileForm)" type="submit" class="btn btn-success mt-3">Save</button>
+    </form>
 </div>
