@@ -4,11 +4,11 @@
 
     angular
         .module('app')
-        .controller('EditBlogController', EditBlogController);
+        .controller('BlogEditController', BlogEditController);
 
-    EditBlogController.$inject = ['dataService', '$routeParams', '$window'];
+    BlogEditController.$inject = ['dataService', '$routeParams', '$window'];
 
-    function EditBlogController(dataService, $routeParams, $window) {
+    function BlogEditController(dataService, $routeParams, $window) {
         var vm = this;
 
         vm.title = null;

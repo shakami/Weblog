@@ -25,9 +25,14 @@
                 templateUrl: '/app/src/templates/blog.html'
             })
             .when('/users/:userId/blogs/:blogId/edit', {
-                controller: 'EditBlogController',
+                controller: 'BlogEditController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/edit-blog.html'
+                templateUrl: '/app/src/templates/blog-form.html'
+            })
+            .when('/new-blog', {
+                controller: 'BlogCreateController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/blog-form.html'
             })
             .when('/users/:userId/blogs/:blogId/posts/new', {
                 controller: 'NewPostController',

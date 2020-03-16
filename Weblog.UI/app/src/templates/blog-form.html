@@ -1,7 +1,7 @@
 ﻿<div class="container">
-    <h1 class="display-4">Edit Your Blog</h1>
+    <h1 class="display-4">Blog Information</h1>
 
-    <form class="mt-5" name="blogEditForm">
+    <form class="mt-5" name="blogForm">
         <div class="form-group">
             <label>Title</label>
             <input ng-model="vm.title" type="text" class="form-control" placeholder="Title" required>
@@ -11,6 +11,6 @@
             <textarea ng-model="vm.excerpt" class="form-control" rows="4" placeholder="Excerpt"></textarea>
         </div>
 
-        <button ng-click="vm.submit(blogEditForm)" type="submit" class="btn btn-success">Submit</button>
+        <button ng-click="vm.submit(blogForm)" type="submit" class="btn btn-success">Submit</button>
     </form>
 </div>

@@ -16,7 +16,7 @@
             getBlog: getBlog,
             editBlog: editBlog,
             getBlogWithPosts: getBlogWithPosts,
-
+            createBlog: createBlog,
 
             getPosts: getPosts,
             getPost: getPost,
@@ -99,6 +99,26 @@
             {
                 url: API_URL + '/users/' + userId + '/blogs/' + blogId,
                 method: 'PUT',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: blog
+            }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function createBlog(userId, blog, credentials) {
+            blog.credentials = credentials;
+
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs',
+                method: 'POST',
                 headers:
                 {
                     'Accept': 'application/vnd.sepehr.hateoas+json',
