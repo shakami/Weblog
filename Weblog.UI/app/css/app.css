@@ -75,11 +75,8 @@ a {
             color: var(--muted-green);
         }
 
-.unauthorized-background {
-    background-image: url('/app/assets/private.jpg');
-    background-size: 100%;
-    min-height:600px;
-    background-repeat:no-repeat;
+.unauthorized-background h1 {
+    font-size: x-large;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -91,11 +88,21 @@ a {
         min-width: 43%;
         max-width: 43%;
     }
+
+    .unauthorized-background {
+        background-image: url('/app/assets/private.jpg');
+        background-size: 100%;
+        min-height: 600px;
+        background-repeat: no-repeat;
+    }
 }
 
 @media only screen and (min-width: 992px) {
     .card-deck .card {
         min-width: 30%;
         max-width: 30%;
+    }
+    .unauthorized-background h1 {
+        font-size: xx-large;
     }
 }
