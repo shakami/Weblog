@@ -44,6 +44,9 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/register.html'
             })
+            .when('/unauthorized', {
+                templateUrl: '/app/src/templates/unauthorized.html'
+            })
             .otherwise('/browse');
     }]);
 

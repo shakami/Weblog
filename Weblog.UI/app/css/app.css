@@ -75,10 +75,16 @@ a {
             color: var(--muted-green);
         }
 
+.unauthorized-background {
+    background-image: url('/app/assets/private.jpg');
+    background-size: 100%;
+    min-height:600px;
+    background-repeat:no-repeat;
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
-
 
 @media only screen and (min-width: 576px) {
     .card-deck .card {

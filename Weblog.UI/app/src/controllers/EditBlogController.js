@@ -22,7 +22,22 @@
             vm.userId = $routeParams.userId;
             vm.blogId = $routeParams.blogId;
 
+            if (!userAuthorized(vm.userId)) {
+                $window.location.href = '/unauthorized';
+            }
+
             getBlog(vm.userId, vm.blogId);
+        }
+
+        function userAuthorized(userId) {
+            var loggedInUser = $window.localStorage.getItem('activeUserId');
+            if (!loggedInUser) {
+                return false;
+            }
+            if (loggedInUser !== userId) {
+                return false;
+            }
+            return true;
         }
 
         function getBlog(userId, blogId) {
@@ -55,7 +70,7 @@
 
             dataService.editBlog(userId, blogId, blog, credentials)
                 .then(function () {
-                    console.log('yes');
+                    $window.history.back();
                 })
                 .catch(function (reason) {
                     console.log(reason);
