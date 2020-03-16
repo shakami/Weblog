@@ -38,10 +38,23 @@
                     $scope.$broadcast('loggedOutEvent');
                 }
 
-                if ($window.localStorage.getItem('activeUserId')) {
+                activate();
+
+                function activate() {
+                    if ($window.localStorage.getItem('activeUserId')) {
+                        initialize();
+                        userLogin();
+                    }
+
+                    $scope.$on('userUpdateEvent', function (e, args) {
+                        e.stopPropagation();
+                        $scope.userName = args.userName;
+                    });
+                }
+
+                function initialize() {
                     $scope.emailAddress = $window.localStorage.getItem('email');
                     $scope.password = $window.localStorage.getItem('password');
-                    userLogin();
                 }
 
                 function userLogin() {

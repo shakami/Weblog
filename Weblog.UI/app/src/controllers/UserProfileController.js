@@ -6,9 +6,9 @@
         .module('app')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['$routeParams', 'dataService', '$window'];
+    UserProfileController.$inject = ['$routeParams', 'dataService', '$window', '$scope'];
 
-    function UserProfileController($routeParams, dataService, $window) {
+    function UserProfileController($routeParams, dataService, $window, $scope) {
         var vm = this;
 
         vm.userName = null;
@@ -101,9 +101,12 @@
                 };
 
                 dataService.editUser(vm.userId, user, credentials)
-                    .then(function (response) {
-                        console.log('yes');
-                        console.log(response);
+                    .then(function () {
+                        // update credentials
+                        $window.localStorage.setItem('email', vm.email);
+                        $window.localStorage.setItem('password', vm.password);
+
+                        $scope.$emit('userUpdateEvent', { userName: vm.userName });
                     })
                     .catch(function (reason) {
                         console.log(reason);
