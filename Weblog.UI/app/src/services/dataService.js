@@ -17,6 +17,7 @@
             editBlog: editBlog,
             getBlogWithPosts: getBlogWithPosts,
             createBlog: createBlog,
+            deleteBlog: deleteBlog,
 
             getPosts: getPosts,
             getPost: getPost,
@@ -125,6 +126,24 @@
                     'Content-Type': 'application/json'
                 },
                 data: blog
+            }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function deleteBlog(userId, blogId, credentials) {
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs/' + blogId,
+                method: 'DELETE',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: credentials
             }
 
             return $http(req)

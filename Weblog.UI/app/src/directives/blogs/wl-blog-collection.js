@@ -13,7 +13,7 @@
             scope: {
                 blogs: '='
             },
-            controller: function ($scope, $window) {
+            controller: function ($scope, $window, dataService) {
                 $scope.user = $window.localStorage.getItem('activeUserId');
 
                 $scope.$on('loggedInEvent', function (e, args) {
@@ -22,6 +22,21 @@
 
                 $scope.$on('loggedOutEvent', function () {
                     $scope.user = null;
+                });
+
+                $scope.$on('blogDeleteEvent', function (e, args) {
+                    var credentials = {
+                        emailAddress: $window.localStorage.getItem('email'),
+                        password: $window.localStorage.getItem('password')
+                    };
+
+                    dataService.deleteBlog(args.userId, args.blogId, credentials)
+                        .then(function () {
+                            $window.location.reload();
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
                 });
             }
         };

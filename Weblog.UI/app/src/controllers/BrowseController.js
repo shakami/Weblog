@@ -41,8 +41,6 @@
                 });
         }
 
-
-
         function getLinkForBlog(blog) {
             var apiLink = blog.links[0].href;
             return (apiLink).substr(apiLink.lastIndexOf("users"));

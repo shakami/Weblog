@@ -15,6 +15,10 @@
                 blog: '='
             },
             controller: function ($scope, $window) {
+                $scope.deleting = false;
+
+                $scope.owner = $scope.blog.userId === parseInt($window.localStorage.getItem('activeUserId'));
+
                 $scope.$on('loggedInEvent', function (e, args) {
                     $scope.owner = ($scope.blog.userId === args.userId);
                 });
@@ -23,7 +27,13 @@
                     $scope.owner = false;
                 });
 
-                $scope.owner = $scope.blog.userId === parseInt($window.localStorage.getItem('activeUserId'));
+                $scope.toggleDelete = function () {
+                    $scope.deleting = !$scope.deleting;
+                };
+
+                $scope.confirmDelete = function () {
+                    $scope.$emit('blogDeleteEvent', { userId: $scope.blog.userId, blogId: $scope.blog.blogId });
+                };
             }
         };
     }
