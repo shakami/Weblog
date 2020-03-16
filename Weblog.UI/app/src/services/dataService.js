@@ -14,6 +14,9 @@
 
             getBlogs: getBlogs,
             getBlog: getBlog,
+            editBlog: editBlog,
+            getBlogWithPosts: getBlogWithPosts,
+
 
             getPosts: getPosts,
             getPost: getPost,
@@ -77,7 +80,39 @@
                 .catch(sendError);
         }
 
-        function getBlog(path) {
+        function getBlog(userId, blogId) {
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs/' + blogId,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function editBlog(userId, blogId, blog, credentials) {
+            blog.credentials = credentials;
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs/' + blogId,
+                method: 'PUT',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: blog
+            }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function getBlogWithPosts(path) {
             var req =
             {
                 url: API_URL + path,

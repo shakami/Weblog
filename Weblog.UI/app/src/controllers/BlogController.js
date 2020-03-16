@@ -27,7 +27,7 @@
         }
 
         function getBlog(path) {
-            dataService.getBlog(path)
+            dataService.getBlogWithPosts(path)
                 .then(function (response) {
                     console.log(response);
                     vm.blog = response.data.blog;
