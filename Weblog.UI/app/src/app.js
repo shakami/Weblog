@@ -34,12 +34,12 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/blog-form.html'
             })
-            .when('/new-blog', {
+            .when('/users/:userId/new-blog', {
                 controller: 'BlogCreateController',
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/blog-form.html'
             })
-            .when('/users/:userId/blogs/:blogId/posts/new', {
+            .when('/users/:userId/blogs/:blogId/new-post', {
                 controller: 'NewPostController',
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/new-post.html'
