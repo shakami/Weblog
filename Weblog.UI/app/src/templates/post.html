@@ -8,12 +8,29 @@
 
     <hr class="my-4" />
 
+    <!--comments-->
     <div>
-        <h2>Comments</h2>
-        <button class="btn btn-success btn-sm">Add Comment</button>
+        <div class="row">
+            <h2 class="col-4">Comments</h2>
+
+            <div class="col-8 text-right mt-2">
+                <button ng-hide="vm.commenting" ng-click="vm.toggleComment()" class="btn btn-success btn-sm">Add Comment</button>
+            </div>
+        </div>
+
+        <div ng-show="vm.commenting">
+            <h6 class="text-muted">Type your comment below</h6>
+            <textarea froala ng-model="vm.comment"></textarea>
+
+            <div class="my-4">
+                <button class="btn btn-success">Submit</button>
+                <button ng-click="vm.toggleComment()" class="btn btn-dark">Cancel</button>
+            </div>
+        </div>
+
+        <div ng-repeat="comment in vm.comments" class="jumbotron py-2 m-4">
+            <p>{{comment.body}}</p>
+        </div>
     </div>
 
-    <div ng-repeat="comment in vm.comments" class="jumbotron py-2 my-4">
-        <p>{{comment.body}}</p>
-    </div>
 </div>

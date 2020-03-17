@@ -1,6 +1,9 @@
 ﻿<div class="card my-4">
     <div class="card-header text-right font-italic small">
-        <a ng-href="/users/{{blog.userId}}/blogs" class="card-link" data-toggle="tooltip" title="Author">{{blog.userName}}</a>
+        <a ng-href="/users/{{blog.userId}}/blogs"
+           class="card-link" data-toggle="tooltip" title="Author">
+            {{blog.userName}}
+        </a>
     </div>
     <div class="card-body" ng-hide="deleting">
         <a ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">

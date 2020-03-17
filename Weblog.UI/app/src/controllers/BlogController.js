@@ -36,10 +36,16 @@
         function getBlog(userId, blogId, pageNumber, pageSize) {
             dataService.getBlogWithPosts(userId, blogId, pageNumber, pageSize)
                 .then(function (response) {
-                    console.log(response);
                     vm.blog = response.data.blog;
                     vm.posts = response.data.posts;
                     vm.pageInfo = response.pagingHeader;
+                    dataService.getUser(userId)
+                        .then(function (response) {
+                            vm.blog.userName = response.data.name;
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
                 })
                 .catch(function (reason) {
                     vm.error = reason;

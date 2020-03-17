@@ -14,6 +14,10 @@
         vm.post = {};
         vm.comments = [];
 
+        vm.comment = null;
+        vm.commenting = false;
+        vm.toggleComment = toggleComment;
+
         vm.error = null;
 
         activate();
@@ -35,6 +39,10 @@
                 .catch(function (reason) {
                     vm.error = reason;
                 });
+        }
+
+        function toggleComment() {
+            vm.commenting = !vm.commenting;
         }
     }
 
