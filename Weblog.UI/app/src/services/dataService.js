@@ -186,17 +186,22 @@
                 .catch(sendError);
         }
 
-        function getBlogWithPosts(path) {
+        function getBlogWithPosts(userId, blogId, pageNumber, pageSize) {
+            var paging = "?pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "10")
+
+            var blogUrl = API_URL + /users/ + userId + '/blogs/' + blogId;
+            var postsUrl = blogUrl + '/posts' + paging;
+
             var req =
             {
-                url: API_URL + path,
+                url: blogUrl,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
 
             return $http(req)
                 .then(function (blogResponse) {
-                    return getPosts(path + '/posts')
+                    return getPosts(postsUrl)
                         .then(function (postsResponse) {
                             return {
                                 data: {
@@ -211,10 +216,10 @@
                 .catch(sendError);
         }
 
-        function getPosts(path) {
+        function getPosts(url) {
             var req =
             {
-                url: API_URL + path,
+                url: url,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };

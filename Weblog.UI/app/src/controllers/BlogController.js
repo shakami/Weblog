@@ -6,13 +6,16 @@
         .module('app')
         .controller('BlogController', BlogController);
 
-    BlogController.$inject = ['dataService', '$location'];
+    BlogController.$inject = ['dataService', '$location', '$routeParams'];
 
-    function BlogController(dataService, $location) {
+    function BlogController(dataService, $location, $routeParams) {
         var vm = this;
 
         vm.blog = {};
         vm.posts = [];
+
+        vm.currentUrl = $location.path();
+        vm.pageInfo = {};
 
         vm.error = null;
 
@@ -21,13 +24,17 @@
         activate();
 
         function activate() {
-            var path = $location.path();
+            var pageSize = $location.search().pageSize;
+            var pageNumber = $location.search().pageNumber;
 
-            getBlog(path);
+            var userId = $routeParams.userId;
+            var blogId = $routeParams.blogId;
+
+            getBlog(userId, blogId, pageNumber, pageSize);
         }
 
-        function getBlog(path) {
-            dataService.getBlogWithPosts(path)
+        function getBlog(userId, blogId, pageNumber, pageSize) {
+            dataService.getBlogWithPosts(userId, blogId, pageNumber, pageSize)
                 .then(function (response) {
                     console.log(response);
                     vm.blog = response.data.blog;
