@@ -23,6 +23,7 @@
 
             getPosts: getPosts,
             getPost: getPost,
+            createPost: createPost,
 
             getComments: getComments
         };
@@ -240,6 +241,26 @@
                         })
                         .catch(sendError);
                 })
+                .catch(sendError);
+        }
+
+        function createPost(userId, blogId, post, credentials) {
+            post.credentials = credentials;
+
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs/' + blogId + '/posts',
+                method: 'POST',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: post
+            }
+
+            return $http(req)
+                .then(sendResponseData)
                 .catch(sendError);
         }
 

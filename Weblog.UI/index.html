@@ -9,6 +9,10 @@
 
     <title>Weblog</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0/css/froala_editor.pkgd.min.css"
+          rel="stylesheet"
+          integrity="sha256-PGLnuwWCANLxvfh2eTnsSxTonnah3FH7dpKfiyg7BhQ="
+          crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/fontawesome.min.css"
           rel="stylesheet"
           crossorigin="anonymous" />
@@ -50,6 +54,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-route.min.js"
             crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0/js/froala_editor.pkgd.min.js"
+            integrity="sha256-f2AOjoqrNCYbE9jHyXdYIAfbTL1Gue4Xn/iE3CAzBP8="
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/angular-froala@3.1.0/src/angular-froala.min.js">
+    </script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
             crossorigin="anonymous"></script>
 
@@ -74,12 +85,13 @@
 
     <!-- controllers -->
     <script src="app/src/controllers/BrowseController.js"></script>
-    
+
     <script src="app/src/controllers/BlogController.js"></script>
     <script src="app/src/controllers/BlogEditController.js"></script>
     <script src="app/src/controllers/BlogCreateController.js"></script>
 
     <script src="app/src/controllers/PostController.js"></script>
+    <script src="app/src/controllers/NewPostController.js"></script>
 
     <script src="app/src/controllers/UserProfileController.js"></script>
     <script src="app/src/controllers/RegisterController.js"></script>

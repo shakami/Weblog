@@ -1,0 +1,17 @@
+﻿<div class="container">
+    <h1 class="my-4">Create a New Post</h1>
+
+    <form class="m-4" name="newPostForm">
+        <div class="form-group">
+            <label>Title</label>
+            <input ng-model="vm.title" class="form-control" type="text" placeholder="Title" required />
+        </div>
+        
+        <div class="form-group">
+            <label>Body</label>
+            <textarea froala="vm.froalaOptions" ng-model="vm.content"></textarea>
+        </div>
+
+        <button class="btn btn-success my-4" type="submit" ng-click="vm.submit(newPostForm)">Submit</button>
+    </form>
+</div>
