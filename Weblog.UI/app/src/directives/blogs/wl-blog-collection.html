@@ -2,7 +2,7 @@
     <h1>Blogs</h1>
 
     <a ng-if="user" class="btn btn-success" role="button" href="/new-blog">Create New Blog</a>
-
+    
     <div class="card-deck">
         <wl-blog-card ng-repeat="blog in blogs" blog="blog"></wl-blog-card>
     </div>

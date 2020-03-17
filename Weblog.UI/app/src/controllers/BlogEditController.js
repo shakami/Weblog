@@ -15,6 +15,7 @@
         vm.excerpt = null;
 
         vm.submit = submit;
+        vm.cancel = cancel;
 
         activate();
 
@@ -75,6 +76,10 @@
                 .catch(function (reason) {
                     console.log(reason);
                 });
+        }
+
+        function cancel() {
+            $window.history.back();
         }
     }
 

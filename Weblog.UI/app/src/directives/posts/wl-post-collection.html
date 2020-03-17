@@ -3,11 +3,12 @@
     <div class="jumbotron" ng-repeat="post in posts">
         <p>{{post.timeCreated | date : 'MMM d, y h a'}}</p>
 
-        <h3>{{ post.title }}</h3>
-        <div>
+        <a href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}">
+            <h3>{{ post.title }}</h3>
+        </a>
+        <div class="m-2">
             {{postExcerpt(post.body)}}
         </div>
-        <!--<div froala-view="post.body.substr(0, 250)"></div>-->
         <a href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}">Read Full Article</a>
     </div>
 
