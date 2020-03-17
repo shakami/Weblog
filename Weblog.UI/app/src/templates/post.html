@@ -1,8 +1,10 @@
 ﻿<div class="container">
     <h1 class="display-4">{{vm.post.title}}</h1>
     <h6>{{vm.post.timeCreated | date: 'EEEE, MMMM d, y @ h:mm a'}}</h6>
-    <!--<p>{{vm.post.body}}</p>-->
-    <div froala-view="vm.post.body"></div>
+
+    <hr class="my-4" />
+
+    <div froala-view="vm.post.body" class="bg-light p-4"></div>
 
     <hr class="my-4" />
 

@@ -7,10 +7,26 @@
         </p>
     </div>
     <div class="card-footer" ng-hide="deleting">
-        <a class="btn btn-sm btn-info" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">Read</a>
-        <a ng-show="owner" class="btn btn-sm btn-success" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/posts/new">New Post</a>
-        <a ng-show="owner" class="btn btn-sm btn-dark" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/edit">Edit</a>
-        <a ng-show="owner" class="btn btn-sm btn-danger" ng-click="toggleDelete()" href="">Delete</a>
+        <a data-toggle="tooltip" title="Read"
+           class="btn btn-sm btn-info" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
+            <i class="fa fa-glasses"></i>
+        </a>
+        <div ng-show="owner" class="d-inline float-right">
+            <a data-toggle="tooltip" title="New Post"
+               class="btn btn-sm btn-success"
+               ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/posts/new">
+                <i class="fa fa-plus"></i>
+            </a>
+            <a data-toggle="tooltip" title="Edit Blog"
+               class="btn btn-sm btn-dark"
+               ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/edit">
+                <i class="fa fa-pencil-alt"></i>
+            </a>
+            <a data-toggle="tooltip" title="Delete Blog"
+               class="btn btn-sm btn-danger" ng-click="toggleDelete()" href="">
+                <i class="fa fa-trash-alt"></i>
+            </a>
+        </div>
     </div>
 
     <div class="card-body bg-danger" ng-show="deleting">

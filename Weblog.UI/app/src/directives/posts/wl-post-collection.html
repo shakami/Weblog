@@ -4,10 +4,11 @@
         <p>{{post.timeCreated | date : 'MMM d, y h a'}}</p>
 
         <h3>{{ post.title }}</h3>
-        <!--<p>{{ post.body.substr(0, 500) }}...</p>-->
-        <div froala-view="post.body.substr(0, 500)"></div>
-        <a href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}">go</a>
-        <!--<a href={{vm.getLinkForPost(post)}}>Full Article</a>-->
+        <div>
+            {{postExcerpt(post.body)}}
+        </div>
+        <!--<div froala-view="post.body.substr(0, 250)"></div>-->
+        <a href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}">Read Full Article</a>
     </div>
 
     <h6 ng-if="posts.length === 0" class="text-muted">

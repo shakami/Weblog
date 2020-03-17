@@ -15,6 +15,12 @@
                 blog: '='
             },
             controller: function ($scope, $window) {
+                $('[data-toggle="tooltip"]').tooltip({
+                    trigger: 'hover'
+                }).on('click', function () {
+                    $(this).tooltip('hide');
+                });
+
                 $scope.deleting = false;
 
                 $scope.owner = $scope.blog.userId === parseInt($window.localStorage.getItem('activeUserId'));
