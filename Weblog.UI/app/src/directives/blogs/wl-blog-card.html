@@ -1,6 +1,9 @@
 ﻿<div class="card my-4">
     <div class="card-body" ng-hide="deleting">
-        <h5 class="card-title">{{ blog.title }}</h5>
+        <a ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
+            <h5 class="card-title">{{ blog.title }}</h5>
+        </a>
+        
         <p class="card-text text-muted">
             {{blog.excerpt.substr(0, 350)}}
             <span ng-if="blog.excerpt.length > 350">...</span>

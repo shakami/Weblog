@@ -13,7 +13,7 @@
             scope: {
                 blogs: '='
             },
-            controller: function ($scope, $window, dataService) {
+            controller: function ($scope, $window, $routeParams, dataService) {
                 $scope.user = $window.localStorage.getItem('activeUserId');
 
                 $scope.$on('loggedInEvent', function (e, args) {
@@ -38,6 +38,8 @@
                             console.log(reason);
                         });
                 });
+
+                $scope.isCurrentUserBlogs = $scope.user === $routeParams.userId;
             }
         };
 
