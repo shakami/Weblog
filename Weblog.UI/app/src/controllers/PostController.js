@@ -6,9 +6,9 @@
         .module('app')
         .controller('PostController', PostController);
 
-    PostController.$inject = ['dataService', '$location'];
+    PostController.$inject = ['dataService', '$routeParams'];
 
-    function PostController(dataService, $location) {
+    function PostController(dataService, $routeParams) {
         var vm = this;
 
         vm.post = {};
@@ -19,16 +19,19 @@
         activate();
 
         function activate() {
-            var path = $location.path();
+            var userId = $routeParams.userId;
+            var blogId = $routeParams.blogId;
+            var postId = $routeParams.postId;
+            // var path = $location.path();
 
-            getPost(path);
+            getPost(userId, blogId, postId);
         }
 
-        function getPost(path) {
-            dataService.getPost(path)
-                .then(function (post) {
-                    vm.post = post.data;
-                    vm.comments = post.comments;
+        function getPost(userId, blogId, postId) {
+            dataService.getPost(userId, blogId, postId)
+                .then(function (response) {
+                    vm.post = response.data.post;
+                    vm.comments = response.data.comments;
                 })
                 .catch(function (reason) {
                     vm.error = reason;

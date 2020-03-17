@@ -229,20 +229,28 @@
                 .catch(sendError);
         }
 
-        function getPost(path) {
+        function getPost(userId, blogId, postId) {
+            var postUrl = API_URL + '/users/' + userId + '/blogs/' + blogId + '/posts/' + postId;
+            var commentsUrl = postUrl + '/comments';
+
             var req =
             {
-                url: API_URL + path,
+                url: postUrl,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
 
             return $http(req)
-                .then(function (data) {
-                    return getComments(path + '/comments')
-                        .then(function (result) {
-                            data.comments = result.comments;
-                            return data;
+                .then(function (postResponse) {
+                    return getComments(commentsUrl)
+                        .then(function (commentsResponse) {
+                            return {
+                                data: {
+                                    post: postResponse.data,
+                                    comments: commentsResponse.data.comments
+                                },
+                                pagingHeader: commentsResponse.pagingHeader
+                            };
                         })
                         .catch(sendError);
                 })
@@ -269,10 +277,10 @@
                 .catch(sendError);
         }
 
-        function getComments(path) {
+        function getComments(url) {
             var req =
             {
-                url: API_URL + path,
+                url: url,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
