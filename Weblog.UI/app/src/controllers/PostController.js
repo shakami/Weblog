@@ -22,7 +22,6 @@
             var userId = $routeParams.userId;
             var blogId = $routeParams.blogId;
             var postId = $routeParams.postId;
-            // var path = $location.path();
 
             getPost(userId, blogId, postId);
         }

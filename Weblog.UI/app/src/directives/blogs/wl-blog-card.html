@@ -1,9 +1,12 @@
 ﻿<div class="card my-4">
+    <div class="card-header text-right font-italic small">
+        <a ng-href="/users/{{blog.userId}}/blogs" class="card-link" data-toggle="tooltip" title="Author">{{blog.userName}}</a>
+    </div>
     <div class="card-body" ng-hide="deleting">
         <a ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
             <h5 class="card-title">{{ blog.title }}</h5>
         </a>
-        
+
         <p class="card-text text-muted">
             {{blog.excerpt.substr(0, 350)}}
             <span ng-if="blog.excerpt.length > 350">...</span>

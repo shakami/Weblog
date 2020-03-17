@@ -27,18 +27,39 @@
 
             var userId = $routeParams.userId;
 
-            getBlogs(userId, pageNumber, pageSize);
+            getBlogs(userId, pageNumber, pageSize)
+                .then(function (blogs) {
+                    angular.forEach(blogs, function (blog, key) {
+                        dataService.getUser(blog.userId)
+                            .then(function (response) {
+                                blog.userName = response.data.name;
+                            })
+                            .catch(function (reason) {
+                                console.log(reason);
+                            });
+                    });
+                })
+                .catch(function (reason) {
+                    console.log(reason);
+                });
         }
 
         function getBlogs(userId, pageNumber, pageSize) {
-            dataService.getBlogs(userId, pageNumber, pageSize)
+            return dataService.getBlogs(userId, pageNumber, pageSize)
                 .then(function (response) {
                     vm.blogs = response.data.blogs;
                     vm.pageInfo = response.pagingHeader;
+                    return vm.blogs;
                 })
                 .catch(function (reason) {
                     vm.error = reason;
                 });
+        }
+
+        function getUsersForBlogs(blogs) {
+            angular.forEach(blogs, function (blog, key) {
+                console.log(blog);
+            });
         }
 
         function getLinkForBlog(blog) {
