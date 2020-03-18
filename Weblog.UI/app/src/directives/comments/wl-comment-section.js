@@ -15,13 +15,23 @@
                 blogId: '@',
                 postId: '@'
             },
-            controller: function ($scope, dataService, textEditorService) {
+            controller: function ($scope, dataService, textEditorService, $window) {
                 $scope.editorOptions = textEditorService.commentOptions();
 
                 $scope.dataResolved = false;
                 $scope.comments = [];
 
                 $scope.commenting = false;
+
+                $scope.addComment = function () {
+                    if ($window.localStorage.getItem('activeUserId')) {
+                        $('[data-toggle="popover"]').popover('dispose');
+                        $scope.toggleComment();
+                    } else {
+                        $('[data-toggle="popover"]').popover('toggle');
+                    }
+                }
+
                 $scope.toggleComment = function () {
                     $scope.commenting = !$scope.commenting;
                 }
