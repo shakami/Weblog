@@ -2,8 +2,10 @@
 
     <p class="alert-danger" ng-show="vm.error">{{ vm.error }}</p>
 
-    <wl-blog-collection blogs="vm.blogs" ng-hide="vm.error"></wl-blog-collection>
+    <section ng-show="vm.dataResolved">
+        <wl-blog-collection blogs="vm.blogs" ng-hide="vm.error"></wl-blog-collection>
 
-    <wl-paging-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-paging-nav>
-
+        <wl-paging-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-paging-nav>
+    </section>
+    
 </div>

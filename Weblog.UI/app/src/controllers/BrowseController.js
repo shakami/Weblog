@@ -11,13 +11,12 @@
     function BrowseController(dataService, $location, $routeParams, notifierService) {
         var vm = this;
 
+        vm.dataResolved = false;
         vm.blogs = [];
-        vm.error = null;
 
+        // used to handle paging
         vm.currentUrl = $location.path();
         vm.pageInfo = {};
-
-        vm.getLinkForBlog = getLinkForBlog;
 
         activate();
 
@@ -27,45 +26,33 @@
 
             var userId = $routeParams.userId;
 
-            getBlogs(userId, pageNumber, pageSize)
-                .then(function (blogs) {
-                    angular.forEach(blogs, function (blog, key) {
+            getBlogs(userId, pageNumber, pageSize);
+        }
+
+        function getBlogs(userId, pageNumber, pageSize) {
+            dataService.getBlogs(userId, pageNumber, pageSize)
+                .then(function (response) {
+                    vm.blogs = response.data.blogs;
+                    vm.pageInfo = response.pagingHeader;
+
+                    // grab author's name for each blog
+                    angular.forEach(vm.blogs, function (blog, key) {
                         dataService.getUser(blog.userId)
                             .then(function (response) {
                                 blog.userName = response.data.name;
                             })
                             .catch(function (reason) {
-                                console.log(reason);
+                                notifierService.error("Status Code: " + reason.status);
                             });
                     });
-                })
-                .catch(function (reason) {
-                    console.log(reason);
-                });
-        }
 
-        function getBlogs(userId, pageNumber, pageSize) {
-            return dataService.getBlogs(userId, pageNumber, pageSize)
-                .then(function (response) {
-                    vm.blogs = response.data.blogs;
-                    vm.pageInfo = response.pagingHeader;
-                    return vm.blogs;
+                    // signal the view to display data
+                    vm.dataResolved = true;
                 })
                 .catch(function (reason) {
                     notifierService.error("Status Code: " + reason.status);
                 });
         }
-
-        function getUsersForBlogs(blogs) {
-            angular.forEach(blogs, function (blog, key) {
-                console.log(blog);
-            });
-        }
-
-        function getLinkForBlog(blog) {
-            var apiLink = blog.links[0].href;
-            return (apiLink).substr(apiLink.lastIndexOf("users"));
-        };
     }
 
 })();
