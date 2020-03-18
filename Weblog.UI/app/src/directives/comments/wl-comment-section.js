@@ -21,20 +21,11 @@
                 $scope.dataResolved = false;
                 $scope.comments = [];
 
+                $scope.newComment = null;
                 $scope.commenting = false;
-
-                $scope.addComment = function () {
-                    if ($window.localStorage.getItem('activeUserId')) {
-                        $('[data-toggle="popover"]').popover('dispose');
-                        $scope.toggleComment();
-                    } else {
-                        $('[data-toggle="popover"]').popover('toggle');
-                    }
-                }
-
-                $scope.toggleComment = function () {
-                    $scope.commenting = !$scope.commenting;
-                }
+                $scope.toggleComment = toggleComment;
+                $scope.addComment = addComment;
+                $scope.submit = submit;
 
                 activate();
 
@@ -59,6 +50,44 @@
                             });
 
                             $scope.dataResolved = true;
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
+                }
+
+                function toggleComment() {
+                    $scope.commenting = !$scope.commenting;
+                }
+
+                function addComment() {
+                    if ($window.localStorage.getItem('activeUserId')) {
+                        $('[data-toggle="popover"]').popover('dispose');
+                        toggleComment();
+                    } else {
+                        $('[data-toggle="popover"]').popover('toggle');
+                    }
+                }
+
+                function submit(form) {
+                    if (form.$dirty) {
+
+                        var comment = {
+                            userId: parseInt($window.localStorage.getItem('activeUserId')),
+                            body: $scope.newComment
+                        };
+                        createComment($scope.userId, $scope.blogId, $scope.postId, comment);
+                    }
+                }
+
+                function createComment(userId, blogId, postId, comment) {
+                    var credentials = {
+                        emailAddress: $window.localStorage.getItem('email'),
+                        password: $window.localStorage.getItem('password')
+                    };
+                    dataService.createComment(userId, blogId, postId, comment, credentials)
+                        .then(function () {
+                            $window.location.reload();
                         })
                         .catch(function (reason) {
                             console.log(reason);

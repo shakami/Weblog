@@ -15,14 +15,14 @@
         </div>
     </div>
 
-    <div ng-show="commenting">
-        <textarea froala="editorOptions" ng-model="comment"></textarea>
+    <form ng-show="commenting" name="newCommentForm">
+        <textarea froala="editorOptions" ng-model="newComment"></textarea>
 
         <div class="my-4 text-right">
-            <button class="btn btn-success">Submit</button>
-            <button ng-click="toggleComment()" class="btn btn-dark">Cancel</button>
+            <button ng-click="submit(newCommentForm)" class="btn btn-success" type="submit">Submit</button>
+            <button ng-click="toggleComment()" class="btn btn-dark" type="button">Cancel</button>
         </div>
-    </div>
+    </form>
 
     <div ng-hide="dataResolved" class="spinner-container">
         <div class="spinner-border" role="status"></div>

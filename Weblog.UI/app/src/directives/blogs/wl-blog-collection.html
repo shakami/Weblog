@@ -3,8 +3,19 @@
         <h1 class="col-4">Blogs</h1>
 
         <div class="col-8 text-right mt-2">
-            <a ng-if="user" class="btn btn-success" role="button" ng-href="/users/{{user}}/new-blog">Create New Blog</a>
-            <a ng-if="user" ng-hide="isCurrentUserBlogs" class="btn btn-success" role="button" ng-href="/users/{{user}}/blogs">See My Blogs</a>
+            <a ng-if="user"
+               ng-href="/users/{{user}}/new-blog"
+               class="btn btn-success"
+               role="button">
+                Create New Blog
+            </a>
+            <a ng-if="user"
+               ng-hide="isCurrentUserBlogs"
+               ng-href="/users/{{user}}/blogs"
+               class="btn btn-success"
+               role="button">
+                See My Blogs
+            </a>
         </div>
     </div>
 

@@ -25,7 +25,8 @@
             getPost: getPost,
             createPost: createPost,
 
-            getComments: getComments
+            getComments: getComments,
+            createComment: createComment
         };
 
         function authenticate(emailAddress, password) {
@@ -278,6 +279,32 @@
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function createComment(userId, blogId, postId, comment, credentials) {
+            comment.credentials = credentials;
+
+            var url = API_URL +
+                '/users/' + userId +
+                '/blogs/' + blogId +
+                '/posts/' + postId +
+                '/comments'
+
+            var req =
+            {
+                url: url,
+                method: 'POST',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: comment
+            }
 
             return $http(req)
                 .then(sendResponseData)
