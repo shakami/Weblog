@@ -6,9 +6,9 @@
         .module('app')
         .controller('BrowseController', BrowseController);
 
-    BrowseController.$inject = ['dataService', '$location', '$routeParams'];
+    BrowseController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
 
-    function BrowseController(dataService, $location, $routeParams) {
+    function BrowseController(dataService, $location, $routeParams, notifierService) {
         var vm = this;
 
         vm.blogs = [];
@@ -52,7 +52,7 @@
                     return vm.blogs;
                 })
                 .catch(function (reason) {
-                    vm.error = reason;
+                    notifierService.error("Status Code: " + reason.status);
                 });
         }
 
