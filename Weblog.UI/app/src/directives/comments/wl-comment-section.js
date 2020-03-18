@@ -21,6 +21,8 @@
                 $scope.dataResolved = false;
                 $scope.comments = [];
                 $scope.commentCount = null;
+                $scope.hasMoreComments = hasMoreComments;
+                $scope.getMoreComments = getMoreComments;
 
                 $scope.newComment = null;
                 $scope.commenting = false;
@@ -38,22 +40,8 @@
                     dataService.getComments(userId, blogId, postId)
                         .then(function (response) {
                             $scope.comments = response.data.comments;
-                            console.log(response.pagingHeader);
-                            $scope.commentCount = response.pagingHeader.totalCount;
+                            $scope.commentCount = parseInt(response.pagingHeader.totalCount);
 
-                            var totalPages = response.pagingHeader.totalPages;
-                            for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++) {
-                                dataService.getComments(userId, blogId, postId, pageNumber)
-                                    .then(function (response) {
-                                        angular.forEach(response.data.comments, function (comment, key) {
-                                            $scope.comments.push(comment);
-                                        });
-                                    })
-                                    .catch(function (reason) {
-                                        console.log(reason);
-                                    });
-                            }
-                            
                             // get the author name for each comment
                             angular.forEach($scope.comments, function (comment, key) {
                                 dataService.getUser(comment.userId)
@@ -66,6 +54,33 @@
                             });
 
                             $scope.dataResolved = true;
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
+                }
+
+                function hasMoreComments() {
+                    return $scope.commentCount > $scope.comments.length
+                }
+
+                function getMoreComments() {
+                    var pageNumber = ($scope.comments.length / 10) + 1;
+                    dataService.getComments($scope.userId, $scope.blogId, $scope.postId, pageNumber)
+                        .then(function (response) {
+                            angular.forEach(response.data.comments, function (comment, key) {
+                                // get the author name comment
+                                dataService.getUser(comment.userId)
+                                    .then(function (response) {
+                                        comment.userName = response.data.name;
+                                    })
+                                    .catch(function (reason) {
+                                        console.log(reason);
+                                    });
+
+                                // add comment to the list
+                                $scope.comments.push(comment);
+                            });
                         })
                         .catch(function (reason) {
                             console.log(reason);

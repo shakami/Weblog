@@ -39,5 +39,15 @@
 
     <section ng-show="dataResolved" class="collapse" id="comments">
         <wl-comment-collection comments="comments"></wl-comment-collection>
+
+        <nav ng-show="hasMoreComments()">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a ng-click="getMoreComments()"
+                       class="page-link"
+                       href="">More</a>
+                </li>
+            </ul>
+        </nav>
     </section>
 </div>
