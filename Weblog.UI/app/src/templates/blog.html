@@ -1,13 +1,19 @@
 ﻿<div class="container">
-    <h1 class="display-4">{{ vm.blog.title }}</h1>
-    
-    <a ng-href="/users/{{vm.blog.userId}}/blogs" class="font-italic">{{vm.blog.userName}}</a>
-    
-    <h6 class="text-muted my-3">{{vm.blog.excerpt}}</h6>
+    <div ng-hide="vm.dataResolved" class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+    </div>
 
-    <hr class="my-4" />
+    <section ng-show="vm.dataResolved">
+        <h1 class="display-4">{{ vm.blog.title }}</h1>
 
-    <wl-post-collection posts="vm.posts" user-ID="{{vm.blog.userId}}"></wl-post-collection>
+        <a ng-href="/users/{{vm.blog.userId}}/blogs" class="font-italic">{{vm.blog.userName}}</a>
 
-    <wl-paging-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-paging-nav>
+        <h6 class="text-muted my-3">{{vm.blog.excerpt}}</h6>
+
+        <hr class="my-4" />
+
+        <wl-post-collection posts="vm.posts" user-ID="{{vm.blog.userId}}"></wl-post-collection>
+
+        <wl-paging-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-paging-nav>
+    </section>
 </div>  

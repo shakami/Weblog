@@ -6,20 +6,18 @@
         .module('app')
         .controller('BlogController', BlogController);
 
-    BlogController.$inject = ['dataService', '$location', '$routeParams'];
+    BlogController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
 
-    function BlogController(dataService, $location, $routeParams) {
+    function BlogController(dataService, $location, $routeParams, notifierService) {
         var vm = this;
 
         vm.blog = {};
         vm.posts = [];
+        vm.dataResolved = false;
 
+        // used to handle paging
         vm.currentUrl = $location.path();
         vm.pageInfo = {};
-
-        vm.error = null;
-
-        vm.getLinkForPost = getLinkForPost;
 
         activate();
 
@@ -39,23 +37,22 @@
                     vm.blog = response.data.blog;
                     vm.posts = response.data.posts;
                     vm.pageInfo = response.pagingHeader;
+
+                    // get the name for the blog author
                     dataService.getUser(userId)
                         .then(function (response) {
                             vm.blog.userName = response.data.name;
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.error("Status Code: " + reason.status);
+                            $location.path("/error");
                         });
                 })
                 .catch(function (reason) {
-                    vm.error = reason;
+                    notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
-
-        function getLinkForPost(post) {
-            var apiLink = post.links[0].href;
-            return (apiLink).substr(apiLink.lastIndexOf("users"));
-        };
     }
 
 })();
