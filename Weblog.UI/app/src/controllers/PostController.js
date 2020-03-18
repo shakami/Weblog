@@ -32,6 +32,17 @@
             dataService.getPost(userId, blogId, postId)
                 .then(function (response) {
                     vm.post = response.data;
+
+                    vm.post.userId = userId;
+                    // get author name for the post
+                    dataService.getUser(vm.post.userId)
+                        .then(function (response) {
+                            vm.post.userName = response.data.name;
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
+
                     vm.dataResolved = true;
                 })
                 .catch(function (reason) {

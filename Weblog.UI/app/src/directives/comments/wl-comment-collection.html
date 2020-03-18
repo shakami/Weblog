@@ -1,5 +1,7 @@
 ﻿<div>
-    <h6>{{comments.length}} comment(s) on this post:</h6>
+    <h6 class="text-muted m-4">
+        {{comments.length > 0 ? comments.length + ' comment(s) on this post:' : 'No Comments yet...'}}
+    </h6>
 
     <div ng-repeat="comment in comments" class="jumbotron py-2 m-4">
         <div class="row">
