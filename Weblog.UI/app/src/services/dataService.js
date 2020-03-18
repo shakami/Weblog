@@ -241,19 +241,7 @@
             };
 
             return $http(req)
-                .then(function (postResponse) {
-                    return getComments(commentsUrl)
-                        .then(function (commentsResponse) {
-                            return {
-                                data: {
-                                    post: postResponse.data,
-                                    comments: commentsResponse.data.comments
-                                },
-                                pagingHeader: commentsResponse.pagingHeader
-                            };
-                        })
-                        .catch(sendError);
-                })
+                .then(sendResponseData)
                 .catch(sendError);
         }
 
@@ -277,7 +265,13 @@
                 .catch(sendError);
         }
 
-        function getComments(url) {
+        function getComments(userId, blogId, postId) {
+            var url = API_URL +
+                '/users/' + userId +
+                '/blogs/' + blogId +
+                '/posts/' + postId +
+                '/comments';
+
             var req =
             {
                 url: url,

@@ -42,6 +42,7 @@
                     dataService.getUser(userId)
                         .then(function (response) {
                             vm.blog.userName = response.data.name;
+                            vm.dataResolved = true;
                         })
                         .catch(function (reason) {
                             notifierService.error("Status Code: " + reason.status);

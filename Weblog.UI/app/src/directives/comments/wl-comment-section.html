@@ -1,0 +1,28 @@
+﻿<div>
+    <div class="row">
+        <h2 class="col-4">Comments</h2>
+
+        <div class="col-8 text-right mt-2">
+            <button ng-hide="commenting" ng-click="toggleComment()" class="btn btn-success btn-sm">Add Comment</button>
+        </div>
+    </div>
+
+    <div ng-show="commenting">
+        <h6 class="text-muted">Type your comment below</h6>
+        <textarea froala ng-model="comment"></textarea>
+
+        <div class="my-4">
+            <button class="btn btn-success">Submit</button>
+            <button ng-click="toggleComment()" class="btn btn-dark">Cancel</button>
+        </div>
+    </div>
+    
+    <div ng-hide="dataResolved" class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+    </div>
+
+    <section ng-show="dataResolved">
+        <wl-comment-collection comments="comments"></wl-comment-collection>
+        
+    </section>
+</div>

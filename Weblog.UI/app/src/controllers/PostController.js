@@ -11,39 +11,34 @@
     function PostController(dataService, $routeParams) {
         var vm = this;
 
+        vm.userId = null;
+        vm.blogId = null;
+        vm.postId = null;
+
         vm.post = {};
-        vm.comments = [];
-
-        vm.comment = null;
-        vm.commenting = false;
-        vm.toggleComment = toggleComment;
-
-        vm.error = null;
+        vm.dataResolved = false;
 
         activate();
 
         function activate() {
-            var userId = $routeParams.userId;
-            var blogId = $routeParams.blogId;
-            var postId = $routeParams.postId;
+            vm.userId = $routeParams.userId;
+            vm.blogId = $routeParams.blogId;
+            vm.postId = $routeParams.postId;
 
-            getPost(userId, blogId, postId);
+            getPost(vm.userId, vm.blogId, vm.postId);
         }
 
         function getPost(userId, blogId, postId) {
             dataService.getPost(userId, blogId, postId)
                 .then(function (response) {
-                    vm.post = response.data.post;
-                    vm.comments = response.data.comments;
+                    vm.post = response.data;
+                    vm.dataResolved = true;
                 })
                 .catch(function (reason) {
                     vm.error = reason;
                 });
         }
 
-        function toggleComment() {
-            vm.commenting = !vm.commenting;
-        }
     }
 
 })();

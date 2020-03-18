@@ -1,36 +1,21 @@
 ﻿<div class="container">
-    <h1 class="display-4">{{vm.post.title}}</h1>
-    <h6>{{vm.post.timeCreated | date: 'EEEE, MMMM d, y @ h:mm a'}}</h6>
-
-    <hr class="my-4" />
-
-    <div froala-view="vm.post.body" class="bg-light p-4"></div>
-
-    <hr class="my-4" />
-
-    <!--comments-->
-    <div>
-        <div class="row">
-            <h2 class="col-4">Comments</h2>
-
-            <div class="col-8 text-right mt-2">
-                <button ng-hide="vm.commenting" ng-click="vm.toggleComment()" class="btn btn-success btn-sm">Add Comment</button>
-            </div>
-        </div>
-
-        <div ng-show="vm.commenting">
-            <h6 class="text-muted">Type your comment below</h6>
-            <textarea froala ng-model="vm.comment"></textarea>
-
-            <div class="my-4">
-                <button class="btn btn-success">Submit</button>
-                <button ng-click="vm.toggleComment()" class="btn btn-dark">Cancel</button>
-            </div>
-        </div>
-
-        <div ng-repeat="comment in vm.comments" class="jumbotron py-2 m-4">
-            <p>{{comment.body}}</p>
-        </div>
+    <div ng-hide="vm.dataResolved" class="spinner-container">
+        <div class="spinner-border" role="status"></div>
     </div>
 
+    <section ng-show="vm.dataResolved">
+
+        <h1 class="display-4">{{vm.post.title}}</h1>
+        <h6>{{vm.post.timeCreated | date: 'EEEE, MMMM d, y @ h:mm a'}}</h6>
+
+        <hr class="my-4" />
+        <div froala-view="vm.post.body" class="bg-light p-4"></div>
+
+        <hr class="my-4" />
+        <wl-comment-section user-Id={{vm.userId}}
+                            blog-Id={{vm.blogId}}
+                            post-Id={{vm.postId}}>
+        </wl-comment-section>
+
+    </section>
 </div>
