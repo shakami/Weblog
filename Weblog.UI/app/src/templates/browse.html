@@ -1,9 +1,12 @@
 ﻿<div class="container">
 
-    <p class="alert-danger" ng-show="vm.error">{{ vm.error }}</p>
+    <div ng-hide="vm.dataResolved" class="text-center m-5" style="color: var(--dark-green);">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+        </div>
+    </div>
 
     <section ng-show="vm.dataResolved">
-        <wl-blog-collection blogs="vm.blogs" ng-hide="vm.error"></wl-blog-collection>
+        <wl-blog-collection blogs="vm.blogs"></wl-blog-collection>
 
         <wl-paging-nav current-url="vm.currentUrl" page-info="vm.pageInfo"></wl-paging-nav>
     </section>

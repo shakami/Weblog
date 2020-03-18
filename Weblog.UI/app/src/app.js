@@ -57,6 +57,9 @@
             .when('/unauthorized', {
                 templateUrl: '/app/src/templates/unauthorized.html'
             })
+            .when('/error', {
+                templateUrl: '/app/src/templates/error.html'
+            })
             .otherwise('/browse');
     }]);
 

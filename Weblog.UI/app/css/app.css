@@ -75,7 +75,8 @@ a {
             color: var(--muted-green);
         }
 
-.unauthorized-background h1 {
+.unauthorized-background h1,
+.error-background h1 {
     font-size: x-large;
 }
 
@@ -95,6 +96,13 @@ a {
         min-height: 600px;
         background-repeat: no-repeat;
     }
+
+    .error-background {
+        background-image: url('/app/assets/error.jpg');
+        background-size: 100%;
+        min-height: 600px;
+        background-repeat: no-repeat;
+    }
 }
 
 @media only screen and (min-width: 992px) {
@@ -102,7 +110,9 @@ a {
         min-width: 30%;
         max-width: 30%;
     }
-    .unauthorized-background h1 {
+
+    .unauthorized-background h1,
+    .error-background h1 {
         font-size: xx-large;
     }
 }

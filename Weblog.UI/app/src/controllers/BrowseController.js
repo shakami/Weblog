@@ -43,6 +43,7 @@
                             })
                             .catch(function (reason) {
                                 notifierService.error("Status Code: " + reason.status);
+                                $location.path("/error");
                             });
                     });
 
@@ -51,6 +52,7 @@
                 })
                 .catch(function (reason) {
                     notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
     }
