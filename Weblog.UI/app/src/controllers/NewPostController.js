@@ -4,37 +4,11 @@
 
     angular
         .module('app')
-        .value('froalaConfig', {
-            placeholderText: 'Body',
-            toolbarButtons: {
-                'moreText': {
-                    'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'clearFormatting'],
-                    'buttonsVisible': 2
-                },
-                'moreParagraph': {
-                    'buttons': ['formatOLSimple', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote'],
-                    'buttonsVisible': 1
-                },
-                'moreRich': {
-                    'buttons': ['insertLink', 'emoticons', 'insertHR', 'insertImage', 'insertVideo', 'insertTable', 'specialCharacters']
-                },
-                'moreMisc': {
-                    'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'help'],
-                    'align': 'right',
-                    'buttonsVisible': 2
-                }
-            },
-            quickInsertEnabled: false,
-            imagePaste: false,
-            imageUpload: false,
-            videoUpload: false,
-            fileUpload: false
-        })
         .controller('NewPostController', NewPostController);
 
-    NewPostController.$inject = ['$routeParams', '$window', 'dataService', '$scope'];
+    NewPostController.$inject = ['$routeParams', '$window', 'dataService', '$scope', 'textEditorService'];
 
-    function NewPostController($routeParams, $window, dataService, $scope) {
+    function NewPostController($routeParams, $window, dataService, $scope, textEditorService) {
         var vm = this;
 
         vm.title = null;
@@ -45,6 +19,8 @@
         activate();
 
         function activate() {
+            vm.editorOptions = textEditorService.postOptions();
+
             vm.userId = $routeParams.userId;
             vm.blogId = $routeParams.blogId;
 

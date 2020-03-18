@@ -15,7 +15,9 @@
                 blogId: '@',
                 postId: '@'
             },
-            controller: function ($scope, dataService) {
+            controller: function ($scope, dataService, textEditorService) {
+                $scope.editorOptions = textEditorService.commentOptions();
+
                 $scope.dataResolved = false;
                 $scope.comments = [];
 
@@ -34,6 +36,18 @@
                     dataService.getComments(userId, blogId, postId)
                         .then(function (response) {
                             $scope.comments = response.data.comments;
+
+                            // get the author name for each comment
+                            angular.forEach($scope.comments, function (comment, key) {
+                                dataService.getUser(comment.userId)
+                                    .then(function (response) {
+                                        comment.userName = response.data.name;
+                                    })
+                                    .catch(function (reason) {
+                                        console.log(reason);
+                                    });
+                            });
+
                             $scope.dataResolved = true;
                         })
                         .catch(function (reason) {

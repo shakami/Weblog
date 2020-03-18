@@ -1,3 +1,12 @@
-﻿<div ng-repeat="comment in comments" class="jumbotron py-2 m-4">
-    <p>{{comment.body}}</p>
+﻿<div>
+    <h6>{{comments.length}} comment(s) on this post:</h6>
+
+    <div ng-repeat="comment in comments" class="jumbotron py-2 m-4">
+        <div class="row">
+            <a ng-href="/users/{{comment.userId}}/blogs"><i class="fa fa-user-circle"></i> {{comment.userName}}</a>
+            <p class="small text-muted ml-auto">{{comment.timeCreated | date : 'MMM d, y h a'}}</p>
+        </div>
+
+        <p>{{comment.body}}</p>
+    </div>
 </div>
