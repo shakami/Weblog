@@ -266,7 +266,9 @@
                 .catch(sendError);
         }
 
-        function getComments(userId, blogId, postId) {
+        function getComments(userId, blogId, postId, pageNumber) {
+            var paging = "?pageNumber=" + (pageNumber ?? "1");
+
             var url = API_URL +
                 '/users/' + userId +
                 '/blogs/' + blogId +
@@ -275,7 +277,7 @@
 
             var req =
             {
-                url: url,
+                url: url + paging,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };

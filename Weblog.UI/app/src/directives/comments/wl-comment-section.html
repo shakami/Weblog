@@ -1,12 +1,21 @@
 ﻿<div>
-    <div class="row">
-        <h2 class="col-4">Comments</h2>
+    <div ng-show="dataResolved" class="row my-2">
+        <!--<h2 class="col-4">Comments <span class="text-muted font-italic small">({{commentCount}})</span></h2>-->
 
-        <div class="col-8 text-right mt-2">
+        <div class="col-8">
+            <button class="btn btn-success"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#comments">
+                Show Comments <span class="badge badge-light">{{commentCount}}</span>
+            </button>
+        </div>
+
+        <div class="col-4 text-right">
             <button ng-hide="commenting"
                     ng-click="addComment()"
                     type="button"
-                    class="btn btn-success btn-sm"
+                    class="btn btn-success"
                     data-toggle="popover"
                     title="Login Required"
                     data-content="Please log in or sign up to access this function.">
@@ -28,8 +37,7 @@
         <div class="spinner-border" role="status"></div>
     </div>
 
-    <section ng-show="dataResolved">
+    <section ng-show="dataResolved" class="collapse" id="comments">
         <wl-comment-collection comments="comments"></wl-comment-collection>
-
     </section>
 </div>
