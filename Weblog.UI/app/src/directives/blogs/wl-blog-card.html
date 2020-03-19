@@ -11,8 +11,8 @@
         </a>
 
         <p class="card-text text-muted">
-            {{blog.excerpt.substr(0, 350)}}
-            <span ng-if="blog.excerpt.length > 350">...</span>
+            {{blog.excerpt.substr(0, 200)}}
+            <span ng-if="blog.excerpt.length > 200">...</span>
         </p>
     </div>
     <div class="card-footer" ng-hide="deleting">

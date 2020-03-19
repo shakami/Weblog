@@ -40,14 +40,19 @@
                 templateUrl: '/app/src/templates/blog-form.html'
             })
             .when('/users/:userId/blogs/:blogId/new-post', {
-                controller: 'NewPostController',
+                controller: 'PostCreateController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/new-post.html'
+                templateUrl: '/app/src/templates/post-form.html'
             })
             .when('/users/:userId/blogs/:blogId/posts/:postId', {
                 controller: 'PostController',
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/post.html'
+            })
+            .when('/users/:userId/blogs/:blogId/posts/:postId/edit', {
+                controller: 'PostEditController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/post-form.html'
             })
             .when('/register', {
                 controller: 'RegisterController',

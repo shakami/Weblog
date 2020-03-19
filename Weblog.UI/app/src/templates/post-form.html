@@ -1,7 +1,7 @@
 ﻿<div class="container">
-    <h1 class="my-4">Create a New Post</h1>
+    <h1 class="my-4">Post Details</h1>
 
-    <form class="m-4" name="newPostForm">
+    <form class="m-4" name="postForm">
         <div class="form-group">
             <label>Title</label>
             <input ng-model="vm.title" class="form-control" type="text" placeholder="Title" required />
@@ -12,6 +12,7 @@
             <textarea froala="vm.editorOptions" ng-model="vm.content"></textarea>
         </div>
 
-        <button class="btn btn-success my-4" type="submit" ng-click="vm.submit(newPostForm)">Submit</button>
+        <button class="btn btn-success my-4" type="submit" ng-click="vm.submit(postForm)">Submit</button>
+        <button class="btn btn-dark my-4" type="button" ng-click="vm.cancel()">Cancel</button>
     </form>
 </div>

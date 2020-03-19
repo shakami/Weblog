@@ -14,7 +14,11 @@
                 userId: '@',
                 posts: '='
             },
-            controller: function ($scope) {
+            controller: function ($scope, $window) {
+                $scope.isOwner = function () {
+                    return $scope.userId === $window.localStorage.getItem('activeUserId');
+                }
+
                 $scope.postExcerpt = function (text) {
                     var html = '<div>' + text + '</div>';
                     html = String(html).replace(/<\//g, ' <\/')

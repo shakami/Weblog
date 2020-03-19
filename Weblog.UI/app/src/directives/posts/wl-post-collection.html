@@ -9,7 +9,15 @@
         <div class="m-2">
             {{postExcerpt(post.body)}}
         </div>
-        <a href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}">Read Full Article</a>
+        <div class="row mt-4">
+            <a ng-href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}"
+               class="ml-4">Read Full Article</a>
+            <a ng-if="isOwner()"
+               ng-href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}/edit"
+               class="ml-auto mr-5">
+                Edit Post
+            </a>
+        </div>
     </div>
 
     <h6 ng-if="posts.length === 0" class="text-muted">

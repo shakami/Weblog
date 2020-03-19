@@ -24,6 +24,7 @@
             var pageSize = $location.search().pageSize;
             var pageNumber = $location.search().pageNumber;
 
+            // userId is set when browsing blogs from one certain author
             var userId = $routeParams.userId;
 
             getBlogs(userId, pageNumber, pageSize);
@@ -36,7 +37,7 @@
                     vm.pageInfo = response.pagingHeader;
 
                     // grab author's name for each blog
-                    angular.forEach(vm.blogs, function (blog, key) {
+                    angular.forEach(vm.blogs, function (blog, index) {
                         dataService.getUser(blog.userId)
                             .then(function (response) {
                                 blog.userName = response.data.name;

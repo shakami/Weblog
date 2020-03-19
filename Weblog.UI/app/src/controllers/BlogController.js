@@ -6,10 +6,12 @@
         .module('app')
         .controller('BlogController', BlogController);
 
-    BlogController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
+    BlogController.$inject = ['dataService', '$window', '$location', '$routeParams', 'notifierService'];
 
-    function BlogController(dataService, $location, $routeParams, notifierService) {
+    function BlogController(dataService, $window, $location, $routeParams, notifierService) {
         var vm = this;
+
+        vm.owner = false;
 
         vm.blog = {};
         vm.posts = [];
@@ -28,6 +30,8 @@
             var userId = $routeParams.userId;
             var blogId = $routeParams.blogId;
 
+            vm.owner = userId === $window.localStorage.getItem('activeUserId');
+
             getBlog(userId, blogId, pageNumber, pageSize);
         }
 
@@ -42,6 +46,8 @@
                     dataService.getUser(userId)
                         .then(function (response) {
                             vm.blog.userName = response.data.name;
+
+                            // signal the view to display data
                             vm.dataResolved = true;
                         })
                         .catch(function (reason) {
