@@ -34,6 +34,13 @@
 
                 function activate() {
                     getComments($scope.userId, $scope.blogId, $scope.postId);
+
+                    $scope.$on('commentUpdatedEvent', function (event, args) {
+                        event.stopPropagation();
+
+                        editComment($scope.userId, $scope.blogId, $scope.postId,
+                            args.comment.commentId, args.comment);
+                    });
                 }
 
                 function getComments(userId, blogId, postId) {
@@ -54,6 +61,21 @@
                             });
 
                             $scope.dataResolved = true;
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
+                }
+
+                function editComment(userId, blogId, postId, commentId, comment) {
+                    var credentials = {
+                        emailAddress: $window.localStorage.getItem('email'),
+                        password: $window.localStorage.getItem('password')
+                    };
+
+                    dataService.editComment(userId, blogId, postId, commentId, comment, credentials)
+                        .then(function () {
+
                         })
                         .catch(function (reason) {
                             console.log(reason);

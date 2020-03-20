@@ -28,7 +28,8 @@
             deletePost: deletePost,
 
             getComments: getComments,
-            createComment: createComment
+            createComment: createComment,
+            editComment: editComment
         };
 
         function authenticate(emailAddress, password) {
@@ -339,6 +340,32 @@
             {
                 url: url,
                 method: 'POST',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: comment
+            }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function editComment(userId, blogId, postId, commentId, comment, credentials) {
+            comment.credentials = credentials;
+
+            var url = API_URL +
+                '/users/' + userId +
+                '/blogs/' + blogId +
+                '/posts/' + postId +
+                '/comments/' + commentId;
+
+            var req =
+            {
+                url: url,
+                method: 'PUT',
                 headers:
                 {
                     'Accept': 'application/vnd.sepehr.hateoas+json',

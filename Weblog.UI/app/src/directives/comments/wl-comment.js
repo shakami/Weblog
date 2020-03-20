@@ -1,0 +1,41 @@
+﻿(function () {
+
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('wlComment', wlComment);
+
+    function wlComment() {
+        return {
+            restrict: 'E',
+            templateUrl: 'app/src/directives/comments/wl-comment.html',
+            scope: {
+                comment: '='
+            },
+            controller: function ($scope, $window, textEditorService) {
+                $scope.editorOptions = textEditorService.commentOptions();
+
+                $scope.isOwner = function (comment) {
+                    return comment.userId === parseInt($window.localStorage.getItem('activeUserId'));
+                }
+
+                $scope.editing = false;
+                $scope.toggleEdit = function () {
+                    $scope.editing = !$scope.editing;
+                    if ($scope.editing) {
+                        $scope.commentBeforeEdit = angular.copy($scope.comment);
+                    } else {
+                        $scope.comment = angular.copy($scope.commentBeforeEdit);
+                    }
+                }
+
+                $scope.submit = function () {
+                    $scope.$emit('commentUpdatedEvent', { comment: $scope.comment })
+                    $scope.editing = false;
+                }
+            }
+        };
+    }
+
+})();
