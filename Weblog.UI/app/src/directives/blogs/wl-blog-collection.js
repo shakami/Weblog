@@ -30,9 +30,10 @@
                         password: $window.localStorage.getItem('password')
                     };
 
-                    dataService.deleteBlog(args.userId, args.blogId, credentials)
+                    dataService.deleteBlog(args.blog.userId, args.blog.blogId, credentials)
                         .then(function () {
-                            $window.location.reload();
+                            var index = $scope.blogs.indexOf(args.blog);
+                            $scope.blogs.splice(index, 1);
                         })
                         .catch(function (reason) {
                             console.log(reason);

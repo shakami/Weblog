@@ -38,7 +38,7 @@
                 };
 
                 $scope.confirmDelete = function () {
-                    $scope.$emit('blogDeleteEvent', { userId: $scope.blog.userId, blogId: $scope.blog.blogId });
+                    $scope.$emit('blogDeleteEvent', { blog: $scope.blog });
                 };
             }
         };

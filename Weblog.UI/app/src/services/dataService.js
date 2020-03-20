@@ -25,6 +25,7 @@
             getPost: getPost,
             createPost: createPost,
             editPost: editPost,
+            deletePost: deletePost,
 
             getComments: getComments,
             createComment: createComment
@@ -279,6 +280,24 @@
                     'Content-Type': 'application/json'
                 },
                 data: post
+            }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function deletePost(userId, blogId, postId, credentials) {
+            var req =
+            {
+                url: API_URL + '/users/' + userId + '/blogs/' + blogId + '/posts/' + postId,
+                method: 'DELETE',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: credentials
             }
 
             return $http(req)

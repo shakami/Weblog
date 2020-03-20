@@ -12,11 +12,32 @@
         <div class="row mt-4">
             <a ng-href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}"
                class="ml-4">Read Full Article</a>
+            <button ng-if="isOwner()"
+                    data-toggle="collapse"
+                    data-target="#deleteAlert{{post.postId}}"
+                    class="btn btn-link text-danger ml-auto mr-3"
+                    type="button">
+                Delete Post
+            </button>
             <a ng-if="isOwner()"
                ng-href="users/{{userId}}/blogs/{{post.blogId}}/posts/{{post.postId}}/edit"
-               class="ml-auto mr-5">
+               class="btn btn-link mr-5">
                 Edit Post
             </a>
+        </div>
+        <div class="collapse card bg-danger text-light" id="deleteAlert{{post.postId}}">
+            <div class="card-body">
+                <p class="lead">Do you really want to delete this post?</p>
+                <p class="small">This can NOT be undone.</p>
+                <div class="text-right">
+                    <button ng-click="confirmDelete(post)" class="btn btn-sm btn-dark">Yes</button>
+                    <button class="btn btn-sm btn-success"
+                            data-toggle="collapse"
+                            data-target="#deleteAlert{{post.postId}}">
+                        No
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
