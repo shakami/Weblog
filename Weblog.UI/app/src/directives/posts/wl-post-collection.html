@@ -25,18 +25,16 @@
                 Edit Post
             </a>
         </div>
-        <div class="collapse card bg-danger text-light" id="deleteAlert{{post.postId}}">
-            <div class="card-body">
-                <p class="lead">Do you really want to delete this post?</p>
-                <p class="small">This can NOT be undone.</p>
-                <div class="text-right">
-                    <button ng-click="confirmDelete(post)" class="btn btn-sm btn-dark">Yes</button>
-                    <button class="btn btn-sm btn-success"
-                            data-toggle="collapse"
-                            data-target="#deleteAlert{{post.postId}}">
-                        No
-                    </button>
-                </div>
+        <div class="collapse alert alert-danger" id="deleteAlert{{post.postId}}">
+            <p class="lead">Do you really want to delete this post?</p>
+            <p class="small">This can NOT be undone.</p>
+            <div class="text-right">
+                <button ng-click="confirmDelete(post)" class="btn btn-sm btn-danger">Yes</button>
+                <button class="btn btn-sm btn-success"
+                        data-toggle="collapse"
+                        data-target="#deleteAlert{{post.postId}}">
+                    No
+                </button>
             </div>
         </div>
     </div>

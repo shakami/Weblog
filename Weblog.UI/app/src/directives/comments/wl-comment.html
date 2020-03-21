@@ -4,21 +4,39 @@
         <p class="small text-muted ml-auto">{{comment.timeCreated | date : 'MMM d, y h:m a'}}</p>
     </div>
 
-    <div ng-hide="editing">
+    <div class="my-2 collapse show delete-collapse{{comment.commentId}} edit-collapse{{comment.commentId}}">
         <div froala-view="comment.body"></div>
 
         <div ng-if="isOwner(comment)">
-            <button ng-click="toggleEdit()" class="btn btn-sm btn-success">Edit</button>
-            <button class="btn btn-sm btn-danger">Delete</button>
+            <button data-toggle="collapse"
+                    data-target=".edit-collapse{{comment.commentId}}"
+                    class="btn btn-sm btn-success">Edit</button>
+            <button class="btn btn-sm btn-danger"
+                    data-toggle="collapse"
+                    data-target=".delete-collapse{{comment.commentId}}">Delete</button>
         </div>
     </div>
 
-    <div ng-show="editing">
+    <div ng-hide="editing" class="collapse alert alert-danger delete-collapse{{comment.commentId}}">
+            <p class="lead">Do you really want to delete this comment?</p>
+            <div class="text-right">
+                <button ng-click="confirmDelete()" class="btn btn-sm btn-danger">Yes</button>
+                <button class="btn btn-sm btn-success"
+                        data-toggle="collapse"
+                        data-target=".delete-collapse{{comment.commentId}}">
+                    No
+                </button>
+            </div>
+    </div>
+
+    <div class="collapse edit-collapse{{comment.commentId}}">
         <textarea froala="editorOptions" ng-model="comment.body"></textarea>
 
         <div class="mt-2">
             <button ng-click="submit()" class="btn btn-sm btn-success" type="submit">Submit</button>
-            <button ng-click="toggleEdit()" class="btn btn-sm btn-dark">Cancel</button>
+            <button data-toggle="collapse"
+                    data-target=".edit-collapse{{comment.commentId}}"
+                    class="btn btn-sm btn-dark">Cancel</button>
         </div>
     </div>
 </div>

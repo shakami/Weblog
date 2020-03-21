@@ -11,6 +11,7 @@
     function UserProfileController($routeParams, dataService, $window, $scope) {
         var vm = this;
 
+        vm.userId = null;
         vm.userName = null;
         vm.firstName = null;
         vm.lastName = null;

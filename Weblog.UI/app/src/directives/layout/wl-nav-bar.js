@@ -50,6 +50,13 @@
                         e.stopPropagation();
                         $scope.userName = args.userName;
                     });
+
+                    $scope.$on('userRegisteredEvent', function (e, args) {
+                        e.stopPropagation();
+                        $scope.emailAddress = args.emailAddress;
+                        $scope.password = args.password;
+                        userLogin();
+                    });
                 }
 
                 function initialize() {

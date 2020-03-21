@@ -24,22 +24,47 @@
         <div ng-show="vm.editing">
             <div class="form-group my-4">
                 <label>Email Address</label>
-                <input ng-model="vm.emailForEdit" class="form-control" type="email" placeholder="email@example.com" required />
+                <input ng-model="vm.emailForEdit"
+                       class="form-control"
+                       type="email"
+                       placeholder="email@example.com"
+                       ng-required="true" />
             </div>
             <div class="form-row">
                 <div class="col">
                     <label>Password</label>
-                    <input ng-model="vm.passwordForEdit" type="password" class="form-control" placeholder="Password" required>
+                    <input ng-model="vm.passwordForEdit"
+                           type="password"
+                           class="form-control"
+                           placeholder="Password"
+                           ng-required="true" />
                 </div>
                 <div class="col">
                     <label>Confirm Password</label>
-                    <input ng-model="vm.confirmPassword" type="password" class="form-control" placeholder="Password" required>
+                    <input ng-model="vm.confirmPassword"
+                           type="password" class="form-control"
+                           placeholder="Password"
+                           ng-required="true" />
                 </div>
             </div>
         </div>
-
-        <button ng-hide="vm.editing" ng-click="vm.toggleEdit()" type="button" class="btn btn-success mt-4">Edit</button>
-        <button ng-show="vm.editing" ng-click="vm.toggleEdit()" type="button" class="btn btn-dark mt-3">Cancel</button>
-        <button ng-show="vm.editing" ng-click="vm.save(profileForm)" type="submit" class="btn btn-success mt-3">Save</button>
+        <div ng-show="vm.editing">
+            <button ng-click="vm.toggleEdit()" type="button" class="btn btn-dark mt-3">Cancel</button>
+            <button ng-click="vm.save(profileForm)" type="submit" class="btn btn-success mt-3">Save</button>
+        </div>
     </form>
+
+    <div ng-hide="vm.editing" class="mt-4">
+        <button ng-click="vm.toggleEdit()" type="button" class="btn btn-success">Edit My Profile</button>
+        <button data-toggle="collapse" data-target="#deleteAlert" class="btn btn-danger">Delete My Account</button>
+        <a ng-href="/users/{{vm.userId}}/blogs" role="button" class="btn btn-success">See My Blogs</a>
+    </div>
+
+    <div id="deleteAlert" class="collapse alert alert-danger mt-2">
+        <p class="lead">Are you sure you want to delete your account and erase all data?</p>
+        <p class="small">It would make us sad to see you go... <i class="fa fa-sad-tear"></i></p>
+
+        <button ng-dblclick="console.log('hi');" class="btn btn-sm btn-danger">Yes</button>
+        <button class="btn btn-sm btn-success">No</button>
+    </div>
 </div>
