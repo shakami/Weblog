@@ -20,19 +20,13 @@
                     return comment.userId === parseInt($window.localStorage.getItem('activeUserId'));
                 }
 
-                $scope.editing = false;
-                $scope.toggleEdit = function () {
-                    $scope.editing = !$scope.editing;
-                    if ($scope.editing) {
-                        $scope.commentBeforeEdit = angular.copy($scope.comment);
-                    } else {
-                        $scope.comment = angular.copy($scope.commentBeforeEdit);
-                    }
+                $scope.submit = function () {
+                    $scope.$emit('commentUpdatedEvent', { comment: $scope.comment });
+                    $('.edit-collapse' + $scope.comment.commentId).collapse('toggle');
                 }
 
-                $scope.submit = function () {
-                    $scope.$emit('commentUpdatedEvent', { comment: $scope.comment })
-                    $scope.editing = false;
+                $scope.confirmDelete = function () {
+                    $scope.$emit('commentDeletedEvent', { comment: $scope.comment });
                 }
             }
         };

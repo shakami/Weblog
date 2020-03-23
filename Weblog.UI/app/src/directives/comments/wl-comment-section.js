@@ -41,6 +41,13 @@
                         editComment($scope.userId, $scope.blogId, $scope.postId,
                             args.comment.commentId, args.comment);
                     });
+
+                    $scope.$on('commentDeletedEvent', function (event, args) {
+                        event.stopPropagation();
+
+                        deleteComment($scope.userId, $scope.blogId, $scope.postId,
+                            args.comment.commentId, args.comment);
+                    });
                 }
 
                 function getComments(userId, blogId, postId) {
@@ -76,6 +83,23 @@
                     dataService.editComment(userId, blogId, postId, commentId, comment, credentials)
                         .then(function () {
 
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        });
+                }
+
+                function deleteComment(userId, blogId, postId, commentId, comment) {
+                    var credentials = {
+                        emailAddress: $window.localStorage.getItem('email'),
+                        password: $window.localStorage.getItem('password')
+                    };
+
+                    dataService.deleteComment(userId, blogId, postId, commentId, credentials)
+                        .then(function () {
+                            var index = $scope.comments.indexOf(comment);
+                            $scope.comments.splice(index, 1);
+                            $scope.commentCount--;
                         })
                         .catch(function (reason) {
                             console.log(reason);
