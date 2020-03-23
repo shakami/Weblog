@@ -56,7 +56,7 @@ namespace Weblog.API.Controllers
 
             var postsWithLinks = postsToReturn.Select(post =>
             {
-                var links = CreateLinksForPost(userId, blogId, post.PostId);
+                var links = CreateLinksForPost(Url, userId, blogId, post.PostId);
 
                 return new PostDtoWithLinks(post, links);
             });
@@ -101,7 +101,7 @@ namespace Weblog.API.Controllers
                 return Ok(postToReturn);
             }
 
-            var links = CreateLinksForPost(userId, blogId, postToReturn.PostId);
+            var links = CreateLinksForPost(Url, userId, blogId, postToReturn.PostId);
             var postWithLinks = new PostDtoWithLinks(postToReturn, links);
 
             return Ok(postWithLinks);
@@ -141,7 +141,7 @@ namespace Weblog.API.Controllers
                                       postToReturn);
             }
 
-            var links = CreateLinksForPost(userId, blogId, postToReturn.PostId);
+            var links = CreateLinksForPost(Url, userId, blogId, postToReturn.PostId);
             var postWithLinks = new PostDtoWithLinks(postToReturn, links);
 
             return CreatedAtRoute(nameof(GetPost),
@@ -211,55 +211,55 @@ namespace Weblog.API.Controllers
             return NoContent();
         }
 
-        private List<LinkDto> CreateLinksForPost(int userId, int blogId, int postId)
+        internal static List<LinkDto> CreateLinksForPost(IUrlHelper url, int userId, int blogId, int postId)
         {
             var links = new List<LinkDto>
             {
                 new LinkDto
                 (
-                    Url.Link(nameof(GetPost), new { userId, blogId, postId }),
+                    url.Link(nameof(GetPost), new { userId, blogId, postId }),
                     "self",
                     HttpMethods.Get
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(UpdatePost), new { userId, blogId, postId }),
+                    url.Link(nameof(UpdatePost), new { userId, blogId, postId }),
                     "updatePost",
                     HttpMethods.Put
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(DeletePost), new { userId, blogId, postId }),
+                    url.Link(nameof(DeletePost), new { userId, blogId, postId }),
                     "deletePost",
                     HttpMethods.Delete
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(BlogsController.GetBlog), new { userId, blogId }),
+                    url.Link(nameof(BlogsController.GetBlog), new { userId, blogId }),
                     "getBlog",
                     HttpMethods.Get
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(UsersController.GetUser), new { userId }),
+                    url.Link(nameof(UsersController.GetUser), new { userId }),
                     "getUser",
                     HttpMethods.Get
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(CommentsController.GetComments), new { userId, blogId, postId }),
+                    url.Link(nameof(CommentsController.GetComments), new { userId, blogId, postId }),
                     "getComments",
                     HttpMethods.Get
                 ),
 
                 new LinkDto
                 (
-                    Url.Link(nameof(CommentsController.CreateComment), new { userId, blogId, postId }),
+                    url.Link(nameof(CommentsController.CreateComment), new { userId, blogId, postId }),
                     "addComment",
                     HttpMethods.Post
                 )
