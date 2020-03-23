@@ -11,7 +11,7 @@
             restrict: 'E',
             templateUrl: 'app/src/directives/layout/wl-nav-bar.html',
             controller: function ($scope, dataService, $window) {
-                
+
                 $scope.loggedIn = false;
 
                 $scope.emailAddress = null;
@@ -19,6 +19,9 @@
 
                 $scope.userName = null;
                 $scope.userBlogsLink = "";
+
+                $scope.searchPhrase = null;
+                $scope.search = search;
 
                 $scope.error = null;
 
@@ -87,6 +90,12 @@
                         .catch(function (reason) {
                             $scope.error = reason
                         });
+                }
+
+                function search(form) {
+                    if (form.$valid) {
+                        $window.location.href = '/search/?q=' + $scope.searchPhrase;
+                    }
                 }
             }
         };

@@ -14,6 +14,11 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/browse.html'
             })
+            .when('/search/', {
+                controller: 'SearchController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/search.html'
+            })
             .when('/users/:userId', {
                 controller: 'UserProfileController',
                 controllerAs: 'vm',

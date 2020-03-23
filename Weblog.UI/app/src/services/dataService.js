@@ -30,7 +30,9 @@
             getComments: getComments,
             createComment: createComment,
             editComment: editComment,
-            deleteComment: deleteComment
+            deleteComment: deleteComment,
+
+            search: search
         };
 
         function authenticate(emailAddress, password) {
@@ -398,6 +400,23 @@
                 },
                 data: credentials
             }
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function search(query, pageNumber, pageSize) {
+           var paging = "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
+
+            var url = API_URL + '/blogs/?searchQuery=' + query + paging;
+
+            var req =
+            {
+                url: url,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
 
             return $http(req)
                 .then(sendResponseData)
