@@ -31,9 +31,6 @@
             createComment: createComment,
             editComment: editComment,
             deleteComment: deleteComment,
-
-            searchBlogs: searchBlogs,
-            searchUserPosts: searchUserPosts
         };
 
         function authenticate(emailAddress, password) {
@@ -422,38 +419,6 @@
             }
 
             return $http(req)
-                .then(sendResponseData)
-                .catch(sendError);
-        }
-
-        function searchBlogs(query, pageNumber, pageSize) {
-           var paging = "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
-
-            var blogsUrl = API_URL + '/blogs/?searchQuery=' + query + paging;
-            var blogsReq =
-            {
-                url: blogsUrl,
-                method: 'GET',
-                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
-            };
-
-            return $http(blogsReq)
-                .then(sendResponseData)
-                .catch(sendError);
-        }
-
-        function searchUserPosts(userId, query, pageNumber, pageSize) {
-            var paging = "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
-
-            var postsUrl = API_URL + '/users/' + userId + '/posts/?searchQuery=' + query + paging;
-            var postsReq =
-            {
-                url: postsUrl,
-                method: 'GET',
-                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
-            };
-
-            return $http(postsReq)
                 .then(sendResponseData)
                 .catch(sendError);
         }

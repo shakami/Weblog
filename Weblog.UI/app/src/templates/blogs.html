@@ -1,8 +1,6 @@
 ﻿<div class="container">
 
-    <div ng-hide="vm.dataResolved" class="spinner-container">
-        <div class="spinner-border" role="status"></div>
-    </div>
+    <wl-spinner ng-hide="vm.dataResolved"></wl-spinner>
 
     <section ng-show="vm.dataResolved">
         <wl-blog-collection blogs="vm.blogs"></wl-blog-collection>

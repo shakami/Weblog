@@ -4,12 +4,12 @@
 
     angular
         .module('app')
-        .directive('wlNavBar', wlNavBar);
+        .directive('wlSpinner', wlSpinner);
 
-    function wlNavBar() {
+    function wlSpinner() {
         return {
             restrict: 'E',
-            templateUrl: 'app/src/directives/layout/wl-nav-bar.html'
+            templateUrl: 'app/src/directives/layout/wl-spinner.html'
         };
     }
 

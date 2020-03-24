@@ -6,26 +6,26 @@
         .module('app')
         .controller('BlogCreateController', BlogCreateController);
 
-    BlogCreateController.$inject = ['$window', 'dataService', 'notifierService'];
+    BlogCreateController.$inject = ['$location', 'dataService', 'notifierService', 'userService'];
 
-    function BlogCreateController($window, dataService, notifierService) {
+    function BlogCreateController($location, dataService, notifierService, userService) {
         var vm = this;
 
         vm.title = null;
         vm.excerpt = null;
 
         vm.submit = submit;
-        vm.cancel = cancel;
 
         vm.errors = null;
 
         activate();
 
         function activate() {
-            vm.userId = $window.localStorage.getItem('activeUserId');
+            vm.userId = userService.loggedInUser();
 
             if (!vm.userId) {
-                $window.location.href = '/unauthorized';
+                // not logged in
+                $location.path('/unauthorized');
             }
         }
 
@@ -41,25 +41,18 @@
         }
 
         function createBlog(userId, blog) {
-            var credentials = {
-                emailAddress: $window.localStorage.getItem('email'),
-                password: $window.localStorage.getItem('password')
-            };
+            var credentials = userService.getCredentials();
 
             return dataService.createBlog(userId, blog, credentials)
                 .then(function (response) {
                     var newBlogId = response.data.blogId;
 
                     notifierService.success();
-                    $window.location.href = '/users/' + vm.userId + '/blogs/' + newBlogId;
+                    $location.path('/users/' + userId + '/blogs/' + newBlogId);
                 })
                 .catch(function (reason) {
                     vm.errors = reason;
                 });
-        }
-
-        function cancel() {
-            $window.history.back();
         }
     }
 

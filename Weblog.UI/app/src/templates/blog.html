@@ -1,7 +1,5 @@
 ﻿<div class="container">
-    <div ng-hide="vm.dataResolved" class="spinner-container">
-        <div class="spinner-border" role="status"></div>
-    </div>
+    <wl-spinner ng-hide="vm.dataResolved"></wl-spinner>
 
     <section ng-show="vm.dataResolved">
         <h1 class="display-4 mb-5">{{ vm.blog.title }}</h1>
@@ -12,9 +10,9 @@
                 <a ng-href="/users/{{vm.blog.userId}}/blogs" class="font-italic">{{vm.blog.userName}}</a>
             </div>
             <div class="ml-auto mr-3">
-                <a ng-if="vm.owner" class="btn btn-success"
+                <a ng-if="vm.isOwner()" class="btn btn-success"
                    ng-href="{{vm.currentUrl + '/edit'}}">Edit Blog</a>
-                <a ng-if="vm.owner" class="btn btn-success"
+                <a ng-if="vm.isOwner()" class="btn btn-success"
                    ng-href="{{vm.currentUrl + '/new-post'}}">New Post</a>
             </div>
         </div>

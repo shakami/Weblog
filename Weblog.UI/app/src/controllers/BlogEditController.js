@@ -6,16 +6,15 @@
         .module('app')
         .controller('BlogEditController', BlogEditController);
 
-    BlogEditController.$inject = ['dataService', '$routeParams', '$window', 'notifierService'];
+    BlogEditController.$inject = ['$location', '$routeParams', 'dataService', 'userService', 'notifierService'];
 
-    function BlogEditController(dataService, $routeParams, $window, notifierService) {
+    function BlogEditController($location, $routeParams, dataService, userService, notifierService) {
         var vm = this;
 
         vm.title = null;
         vm.excerpt = null;
 
         vm.submit = submit;
-        vm.cancel = cancel;
 
         vm.errors = null;
 
@@ -25,22 +24,11 @@
             vm.userId = $routeParams.userId;
             vm.blogId = $routeParams.blogId;
 
-            if (!userAuthorized(vm.userId)) {
-                $window.location.href = '/unauthorized';
+            if (!userService.userAuthorized(vm.userId)) {
+                $location.path('/unauthorized');
             }
 
             getBlog(vm.userId, vm.blogId);
-        }
-
-        function userAuthorized(userId) {
-            var loggedInUser = $window.localStorage.getItem('activeUserId');
-            if (!loggedInUser) {
-                return false;
-            }
-            if (loggedInUser !== userId) {
-                return false;
-            }
-            return true;
         }
 
         function getBlog(userId, blogId) {
@@ -67,23 +55,16 @@
         }
 
         function saveBlog(userId, blogId, blog) {
-            var credentials = {
-                emailAddress: $window.localStorage.getItem('email'),
-                password: $window.localStorage.getItem('password')
-            };
+            var credentials = userService.getCredentials();
 
             dataService.editBlog(userId, blogId, blog, credentials)
                 .then(function () {
                     notifierService.success();
-                    $window.history.back();
+                    $location.path('/users/' + userId + '/blogs/' + blogId);
                 })
                 .catch(function (reason) {
                     vm.errors = reason;
                 });
-        }
-
-        function cancel() {
-            $window.history.back();
         }
     }
 

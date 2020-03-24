@@ -6,12 +6,12 @@
         .module('app')
         .controller('BlogController', BlogController);
 
-    BlogController.$inject = ['dataService', '$window', '$location', '$routeParams', 'notifierService'];
+    BlogController.$inject = ['$routeParams', '$location', 'dataService', 'userService', 'notifierService'];
 
-    function BlogController(dataService, $window, $location, $routeParams, notifierService) {
+    function BlogController($routeParams, $location, dataService, userService, notifierService) {
         var vm = this;
 
-        vm.owner = false;
+        vm.isOwner = isOwner;
 
         vm.blog = {};
         vm.posts = [];
@@ -27,13 +27,15 @@
             var pageSize = $location.search().pageSize;
             var pageNumber = $location.search().pageNumber;
 
-            var userId = $routeParams.userId;
-            var blogId = $routeParams.blogId;
+            vm.userId = $routeParams.userId;
+            vm.blogId = $routeParams.blogId;
 
-            vm.owner = userId === $window.localStorage.getItem('activeUserId');
-
-            getBlog(userId, blogId, pageNumber, pageSize);
+            getBlog(vm.userId, vm.blogId, pageNumber, pageSize);
         }
+
+        function isOwner() {
+            return vm.userId === userService.loggedInUser();   
+        };
 
         function getBlog(userId, blogId, pageNumber, pageSize) {
             dataService.getBlogWithPosts(userId, blogId, pageNumber, pageSize)

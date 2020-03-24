@@ -13,8 +13,8 @@
             scope: {
                 blogs: '='
             },
-            controller: function ($scope, $window, $routeParams, dataService) {
-                $scope.user = $window.localStorage.getItem('activeUserId');
+            controller: function ($scope, $routeParams, dataService, userService, notifierService) {
+                $scope.user = userService.loggedInUser();
 
                 $scope.$on('loggedInEvent', function (e, args) {
                     $scope.user = args.userId;
@@ -25,10 +25,7 @@
                 });
 
                 $scope.$on('blogDeleteEvent', function (e, args) {
-                    var credentials = {
-                        emailAddress: $window.localStorage.getItem('email'),
-                        password: $window.localStorage.getItem('password')
-                    };
+                    var credentials = userService.getCredentials();
 
                     dataService.deleteBlog(args.blog.userId, args.blog.blogId, credentials)
                         .then(function () {
@@ -36,7 +33,7 @@
                             $scope.blogs.splice(index, 1);
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.warning('Status Code: ' + reason.status);
                         });
                 });
 

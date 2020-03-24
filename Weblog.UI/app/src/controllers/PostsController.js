@@ -6,9 +6,9 @@
         .module('app')
         .controller('PostsController', PostsController);
 
-    PostsController.$inject = ['$routeParams', '$location', 'dataService'];
+    PostsController.$inject = ['$routeParams', '$location', 'dataService', 'notifierService'];
 
-    function PostsController($routeParams, $location, dataService) {
+    function PostsController($routeParams, $location, dataService, notifierService) {
         var vm = this;
 
         vm.dataResolved = false;
@@ -46,10 +46,10 @@
                     vm.dataResolved = true;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    notifierService.error('Status Code: ' + reason.status);
+                    $location.path('/error');
                 });
         }
-
     }
 
 })();

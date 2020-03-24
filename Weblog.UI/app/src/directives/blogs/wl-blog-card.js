@@ -14,7 +14,7 @@
             scope: {
                 blog: '='
             },
-            controller: function ($scope, $window) {
+            controller: function ($scope, userService) {
                 $('[data-toggle="tooltip"]').tooltip({
                     trigger: 'hover'
                 }).on('click', function () {
@@ -23,7 +23,7 @@
 
                 $scope.deleting = false;
 
-                $scope.owner = $scope.blog.userId === parseInt($window.localStorage.getItem('activeUserId'));
+                $scope.owner = $scope.blog.userId === parseInt(userService.loggedInUser());
 
                 $scope.$on('loggedInEvent', function (e, args) {
                     $scope.owner = ($scope.blog.userId === args.userId);

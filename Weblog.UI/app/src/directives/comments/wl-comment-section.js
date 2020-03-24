@@ -15,9 +15,7 @@
                 blogId: '@',
                 postId: '@'
             },
-            controller: function ($scope, dataService, textEditorService, $window) {
-                $scope.editorOptions = textEditorService.commentOptions();
-
+            controller: function ($scope, dataService, $window, userService, notifierService) {
                 $scope.dataResolved = false;
                 $scope.comments = [];
                 $scope.commentCount = null;
@@ -63,46 +61,41 @@
                                         comment.userName = response.data.name;
                                     })
                                     .catch(function (reason) {
-                                        console.log(reason);
+                                        notifierService.error('Status Code: ' + reason.status);
                                     });
                             });
 
                             $scope.dataResolved = true;
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.error('Status Code: ' + reason.status);
                         });
                 }
 
                 function editComment(userId, blogId, postId, commentId, comment) {
-                    var credentials = {
-                        emailAddress: $window.localStorage.getItem('email'),
-                        password: $window.localStorage.getItem('password')
-                    };
+                    var credentials = userService.getCredentials();
 
                     dataService.editComment(userId, blogId, postId, commentId, comment, credentials)
                         .then(function () {
-
+                            notifierService.success();
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.warning(reason);
                         });
                 }
 
                 function deleteComment(userId, blogId, postId, commentId, comment) {
-                    var credentials = {
-                        emailAddress: $window.localStorage.getItem('email'),
-                        password: $window.localStorage.getItem('password')
-                    };
+                    var credentials = userService.getCredentials();
 
                     dataService.deleteComment(userId, blogId, postId, commentId, credentials)
                         .then(function () {
                             var index = $scope.comments.indexOf(comment);
                             $scope.comments.splice(index, 1);
                             $scope.commentCount--;
+                            notifierService.success();
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.warning(reason);
                         });
                 }
 
@@ -121,7 +114,7 @@
                                         comment.userName = response.data.name;
                                     })
                                     .catch(function (reason) {
-                                        console.log(reason);
+                                        notifierService.error('Status Code: ' + reason.status);
                                     });
 
                                 // add comment to the list
@@ -129,7 +122,8 @@
                             });
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.error('Status Code: ' + reason.status);
+
                         });
                 }
 
@@ -138,7 +132,7 @@
                 }
 
                 function addComment() {
-                    if ($window.localStorage.getItem('activeUserId')) {
+                    if (userService.loggedIn()) {
                         $('[data-toggle="popover"]').popover('dispose');
                         toggleComment();
                     } else {
@@ -150,7 +144,7 @@
                     if (form.$dirty) {
 
                         var comment = {
-                            userId: parseInt($window.localStorage.getItem('activeUserId')),
+                            userId: parseInt(userService.loggedInUser()),
                             body: $scope.newComment
                         };
                         createComment($scope.userId, $scope.blogId, $scope.postId, comment);
@@ -158,16 +152,15 @@
                 }
 
                 function createComment(userId, blogId, postId, comment) {
-                    var credentials = {
-                        emailAddress: $window.localStorage.getItem('email'),
-                        password: $window.localStorage.getItem('password')
-                    };
+                    var credentials = userService.getCredentials();
+
                     dataService.createComment(userId, blogId, postId, comment, credentials)
                         .then(function () {
+                            notifierService.success();
                             $window.location.reload();
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.warning(reason);
                         });
                 }
             }

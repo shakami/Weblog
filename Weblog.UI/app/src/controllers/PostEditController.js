@@ -4,18 +4,15 @@
         .module('app')
         .controller('PostEditController', PostEditController);
 
-    PostEditController.$inject = ['$routeParams', '$window', '$scope', 'dataService', 'textEditorService', 'notifierService'];
+    PostEditController.$inject = ['$location', '$routeParams', 'userService', 'dataService', 'notifierService'];
 
-    function PostEditController($routeParams, $window, $scope, dataService, textEditorService, notifierService) {
+    function PostEditController($location, $routeParams, userService, dataService, notifierService) {
         var vm = this;
-
-        vm.editorOptions = textEditorService.postOptions();
 
         vm.title = null;
         vm.content = null;
 
         vm.submit = submit;
-        vm.cancel = cancel;
 
         vm.errors = null;
 
@@ -26,33 +23,11 @@
             vm.blogId = $routeParams.blogId;
             vm.postId = $routeParams.postId;
 
-            if (!userAuthorized(vm.userId)) {
-                $window.location.href = '/unauthorized';
+            if (!userService.userAuthorized(vm.userId)) {
+                $location.path('/unauthorized');
             }
 
             getPost(vm.userId, vm.blogId, vm.postId);
-
-            $scope.$on('$locationChangeStart', function (e) {
-                var form = $scope.postForm;
-                if (form.$dirty) {
-                    var answer = confirm("Are you sure you want to leave this page? Your data won't be saved.");
-
-                    if (!answer) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        }
-
-        function userAuthorized(userId) {
-            var loggedInUser = $window.localStorage.getItem('activeUserId');
-            if (!loggedInUser) {
-                return false;
-            }
-            if (loggedInUser !== userId) {
-                return false;
-            }
-            return true;
         }
 
         function getPost(userId, blogId, postId) {
@@ -70,6 +45,7 @@
 
         function submit(form) {
             if (form.$valid) {
+                form.$setPristine();
                 var post = {
                     title: vm.title,
                     body: vm.content
@@ -79,23 +55,16 @@
         }
 
         function editPost(userId, blogId, postId, post) {
-            var credentials = {
-                emailAddress: $window.localStorage.getItem('email'),
-                password: $window.localStorage.getItem('password')
-            };
+            var credentials = userService.getCredentials();
 
             dataService.editPost(userId, blogId, postId, post, credentials)
                 .then(function () {
                     notifierService.success();
-                    $window.location.href = "users/" + userId + '/blogs/' + blogId + '/posts/' + postId;
+                    $location.path("users/" + userId + '/blogs/' + blogId + '/posts/' + postId);
                 })
                 .catch(function (reason) {
                     vm.errors = reason;
                 });
-        }
-
-        function cancel() {
-            $window.history.back();
         }
     }
 

@@ -13,11 +13,9 @@
             scope: {
                 comment: '='
             },
-            controller: function ($scope, $window, textEditorService) {
-                $scope.editorOptions = textEditorService.commentOptions();
-
+            controller: function ($scope, userService) {
                 $scope.isOwner = function (comment) {
-                    return comment.userId === parseInt($window.localStorage.getItem('activeUserId'));
+                    return comment.userId === parseInt(userService.loggedInUser());
                 }
 
                 $scope.submit = function () {

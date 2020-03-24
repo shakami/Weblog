@@ -14,9 +14,9 @@
                 userId: '@',
                 posts: '='
             },
-            controller: function ($scope, $window, dataService) {
+            controller: function ($scope, userService, dataService, notifierService) {
                 $scope.isOwner = function () {
-                    return $scope.userId === $window.localStorage.getItem('activeUserId');
+                    return $scope.userId === userService.loggedInUser();
                 }
 
                 $scope.postExcerpt = function (text) {
@@ -26,17 +26,16 @@
                 }
 
                 $scope.confirmDelete = function (post) {
-                    var credentials = {
-                        emailAddress: $window.localStorage.getItem('email'),
-                        password: $window.localStorage.getItem('password')
-                    };
+                    var credentials = userService.getCredentials();
+
                     dataService.deletePost($scope.userId, post.blogId, post.postId, credentials)
                         .then(function () {
                             var index = $scope.posts.indexOf(post);
                             $scope.posts.splice(index, 1);
+                            notifierService.success();
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.warning(reason);
                         });
                 }
             }
