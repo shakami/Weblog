@@ -4,11 +4,11 @@
 
     angular
         .module('app')
-        .controller('BrowseController', BrowseController);
+        .controller('BlogsController', BlogsController);
 
-    BrowseController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
+    BlogsController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
 
-    function BrowseController(dataService, $location, $routeParams, notifierService) {
+    function BlogsController(dataService, $location, $routeParams, notifierService) {
         var vm = this;
 
         vm.dataResolved = false;
@@ -26,12 +26,18 @@
 
             // userId is set when browsing blogs from one certain author
             var userId = $routeParams.userId;
+            var searchPhrase = $location.search().q;
+            if (searchPhrase) {
+                vm.currentUrl += '?q=' + searchPhrase + '&';
+            } else {
+                vm.currentUrl += '?';
+            }
 
-            getBlogs(userId, pageNumber, pageSize);
+            getBlogs(userId, pageNumber, pageSize, searchPhrase);
         }
 
-        function getBlogs(userId, pageNumber, pageSize) {
-            dataService.getBlogs(userId, pageNumber, pageSize)
+        function getBlogs(userId, pageNumber, pageSize, searchPhrase) {
+            dataService.getBlogs(userId, pageNumber, pageSize, searchPhrase)
                 .then(function (response) {
                     vm.blogs = response.data.blogs;
                     vm.pageInfo = response.pagingHeader;

@@ -32,7 +32,8 @@
             editComment: editComment,
             deleteComment: deleteComment,
 
-            search: search
+            searchBlogs: searchBlogs,
+            searchUserPosts: searchUserPosts
         };
 
         function authenticate(emailAddress, password) {
@@ -102,14 +103,15 @@
                 .catch(sendError);
         }
 
-        function getBlogs(userId, pageNumber, pageSize) {
-            var paging = "?pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
+        function getBlogs(userId, pageNumber, pageSize, searchQuery) {
+            var params = "?searchQuery=" + (searchQuery ?? "") +
+                "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12");
 
             var url = API_URL;
             if (userId) {
-                url += /users/ + userId;
+                url += '/users/' + userId;
             }
-            url += '/blogs' + paging;
+            url += '/blogs' + params;
 
             var req =
             {
@@ -208,7 +210,7 @@
 
             return $http(req)
                 .then(function (blogResponse) {
-                    return getPosts(postsUrl)
+                    return getPostsForBlog(postsUrl)
                         .then(function (postsResponse) {
                             return {
                                 data: {
@@ -223,7 +225,25 @@
                 .catch(sendError);
         }
 
-        function getPosts(url) {
+        function getPostsForBlog(url) {
+            var req =
+            {
+                url: url,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function getPosts(userId, pageNumber, pageSize, searchQuery) {
+            var params = "?searchQuery=" + (searchQuery ?? "") +
+                "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12");
+
+            var url = API_URL + '/users/' + userId + '/posts' + params;
+
             var req =
             {
                 url: url,
@@ -406,19 +426,34 @@
                 .catch(sendError);
         }
 
-        function search(query, pageNumber, pageSize) {
+        function searchBlogs(query, pageNumber, pageSize) {
            var paging = "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
 
-            var url = API_URL + '/blogs/?searchQuery=' + query + paging;
-
-            var req =
+            var blogsUrl = API_URL + '/blogs/?searchQuery=' + query + paging;
+            var blogsReq =
             {
-                url: url,
+                url: blogsUrl,
                 method: 'GET',
                 headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
             };
 
-            return $http(req)
+            return $http(blogsReq)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function searchUserPosts(userId, query, pageNumber, pageSize) {
+            var paging = "&pageNumber=" + (pageNumber ?? "1") + "&pageSize=" + (pageSize ?? "12")
+
+            var postsUrl = API_URL + '/users/' + userId + '/posts/?searchQuery=' + query + paging;
+            var postsReq =
+            {
+                url: postsUrl,
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.sepehr.hateoas+json' }
+            };
+
+            return $http(postsReq)
                 .then(sendResponseData)
                 .catch(sendError);
         }

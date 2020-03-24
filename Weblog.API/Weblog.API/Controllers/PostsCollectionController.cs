@@ -14,7 +14,7 @@ using Weblog.API.Entities;
 
 namespace Weblog.API.Controllers
 {
-    [Route("api/posts")]
+    [Route("api/users/{userId}/posts")]
     [ApiController]
     public class PostsCollectionController : ControllerBase
     {
@@ -30,12 +30,17 @@ namespace Weblog.API.Controllers
                 ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet(Name = nameof(GetAllPosts))]
-        public IActionResult GetAllPosts(
+        [HttpGet(Name = nameof(GetAllPostsForUser))]
+        public IActionResult GetAllPostsForUser(int userId,
             [FromQuery] PostsResourceParameters postsResourceParameters,
             [FromHeader(Name = nameof(HeaderNames.Accept))] string mediaType)
         {
-            var postEntities = _weblogDataRepository.GetPosts(postsResourceParameters);
+            if (!_weblogDataRepository.UserExists(userId))
+            {
+                return NotFound();
+            }
+
+            var postEntities = _weblogDataRepository.GetAllPostsForUser(userId, postsResourceParameters);
 
             var postsToReturn = _mapper.Map<IEnumerable<PostDto>>(postEntities);
 
@@ -50,9 +55,8 @@ namespace Weblog.API.Controllers
 
             var postsWithLinks = postsToReturn.Select(post =>
             {
-                var blog = _weblogDataRepository.GetBlog(post.BlogId);
                 var links = PostsController.CreateLinksForPost(
-                    Url, blog.UserId, post.BlogId, post.PostId);
+                    Url, userId, post.BlogId, post.PostId);
 
                 return new PostDtoWithLinks(post, links);
             });
@@ -80,7 +84,7 @@ namespace Weblog.API.Controllers
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
-                    return Url.Link(nameof(GetAllPosts),
+                    return Url.Link(nameof(GetAllPostsForUser),
                         new
                         {
                             searchQuery = postParameters.SearchQuery,
@@ -89,7 +93,7 @@ namespace Weblog.API.Controllers
                         });
 
                 case ResourceUriType.NextPage:
-                    return Url.Link(nameof(GetAllPosts),
+                    return Url.Link(nameof(GetAllPostsForUser),
                         new
                         {
                             searchQuery = postParameters.SearchQuery,
@@ -99,7 +103,7 @@ namespace Weblog.API.Controllers
 
                 case ResourceUriType.Current:
                 default:
-                    return Url.Link(nameof(GetAllPosts),
+                    return Url.Link(nameof(GetAllPostsForUser),
                         new
                         {
                             searchQuery = postParameters.SearchQuery,

@@ -6,9 +6,9 @@
         .module('app')
         .controller('BlogEditController', BlogEditController);
 
-    BlogEditController.$inject = ['dataService', '$routeParams', '$window'];
+    BlogEditController.$inject = ['dataService', '$routeParams', '$window', 'notifierService'];
 
-    function BlogEditController(dataService, $routeParams, $window) {
+    function BlogEditController(dataService, $routeParams, $window, notifierService) {
         var vm = this;
 
         vm.title = null;
@@ -16,6 +16,8 @@
 
         vm.submit = submit;
         vm.cancel = cancel;
+
+        vm.errors = null;
 
         activate();
 
@@ -49,7 +51,8 @@
                     vm.excerpt = blog.excerpt;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
 
@@ -71,10 +74,11 @@
 
             dataService.editBlog(userId, blogId, blog, credentials)
                 .then(function () {
+                    notifierService.success();
                     $window.history.back();
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    vm.errors = reason;
                 });
         }
 

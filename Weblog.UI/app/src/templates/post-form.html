@@ -12,6 +12,8 @@
             <textarea froala="vm.editorOptions" ng-model="vm.content"></textarea>
         </div>
 
+        <wl-validation-errors></wl-validation-errors>
+
         <button class="btn btn-success my-4" type="submit" ng-click="vm.submit(postForm)">Submit</button>
         <button class="btn btn-dark my-4" type="button" ng-click="vm.cancel()">Cancel</button>
     </form>

@@ -6,9 +6,9 @@
         .module('app')
         .controller('PostController', PostController);
 
-    PostController.$inject = ['dataService', '$routeParams'];
+    PostController.$inject = ['dataService', '$routeParams', 'notifierService'];
 
-    function PostController(dataService, $routeParams) {
+    function PostController(dataService, $routeParams, notifierService) {
         var vm = this;
 
         vm.userId = null;
@@ -40,13 +40,15 @@
                             vm.post.userName = response.data.name;
                         })
                         .catch(function (reason) {
-                            console.log(reason);
+                            notifierService.error("Status Code: " + reason.status);
+                            $location.path("/error");
                         });
 
                     vm.dataResolved = true;
                 })
                 .catch(function (reason) {
-                    vm.error = reason;
+                    notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
 

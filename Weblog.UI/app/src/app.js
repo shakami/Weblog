@@ -10,24 +10,24 @@
 
         $routeProvider
             .when('/browse', {
-                controller: 'BrowseController',
+                controller: 'BlogsController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/browse.html'
-            })
-            .when('/search/', {
-                controller: 'SearchController',
-                controllerAs: 'vm',
-                templateUrl: '/app/src/templates/search.html'
+                templateUrl: '/app/src/templates/blogs.html'
             })
             .when('/users/:userId', {
                 controller: 'UserProfileController',
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/user-profile.html'
             })
-            .when('/users/:userId/blogs', {
-                controller: 'BrowseController',
+            .when('/users/:userId/posts', {
+                controller: 'PostsController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/browse.html'
+                templateUrl: '/app/src/templates/posts.html'
+            })
+            .when('/users/:userId/blogs', {
+                controller: 'BlogsController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/blogs.html'
             })
             .when('/users/:userId/blogs/:blogId', {
                 controller: 'BlogController',

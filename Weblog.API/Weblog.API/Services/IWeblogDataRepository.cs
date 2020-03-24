@@ -40,7 +40,7 @@ namespace Weblog.API.Services
         void DeleteBlog(Blog blog);
 
         //--------- posts ---------//
-        PagedList<Post> GetPosts(PostsResourceParameters resourceParameters);
+        PagedList<Post> GetAllPostsForUser(int userId, PostsResourceParameters resourceParameters);
 
         PagedList<Post> GetPosts(int blogId, PostsResourceParameters resourceParameters);
 

@@ -10,7 +10,7 @@
         return {
             restrict: 'E',
             templateUrl: 'app/src/directives/layout/wl-nav-bar.html',
-            controller: function ($scope, dataService, $window) {
+            controller: function ($scope, dataService, $window, notifierService) {
 
                 $scope.loggedIn = false;
 
@@ -19,8 +19,11 @@
 
                 $scope.userName = null;
                 $scope.userBlogsLink = "";
+                $scope.userPostsLink = "";
 
                 $scope.searchPhrase = null;
+                $scope.searchType = 'Blogs';
+
                 $scope.search = search;
 
                 $scope.error = null;
@@ -44,6 +47,10 @@
                 activate();
 
                 function activate() {
+                    $scope.$on('$routeChangeSuccess', function () {
+                        $scope.searchType = $window.location.href.includes('post') ? 'Posts' : 'Blogs';
+                    });
+
                     if ($window.localStorage.getItem('activeUserId')) {
                         initialize();
                         userLogin();
@@ -56,6 +63,9 @@
 
                     $scope.$on('userRegisteredEvent', function (e, args) {
                         e.stopPropagation();
+
+                        notifierService.info('Account successfully created.');
+
                         $scope.emailAddress = args.emailAddress;
                         $scope.password = args.password;
                         userLogin();
@@ -76,6 +86,7 @@
 
                             $scope.userProfileLink = '/users/' + user.userId;
                             $scope.userBlogsLink = $scope.userProfileLink + '/blogs';
+                            $scope.userPostsLink = $scope.userProfileLink + '/posts';
 
                             $window.localStorage.setItem('activeUserId', user.userId);
                             $window.localStorage.setItem('email', $scope.emailAddress);
@@ -94,7 +105,12 @@
 
                 function search(form) {
                     if (form.$valid) {
-                        $window.location.href = '/search/?q=' + $scope.searchPhrase;
+                        var userId = $window.localStorage.getItem('activeUserId');
+                        if ($scope.searchType === 'Blogs') {
+                            $window.location.href = '/users/' + userId + '/blogs?q=' + $scope.searchPhrase;
+                        } else {
+                            $window.location.href = '/users/' + userId + '/posts?q=' + $scope.searchPhrase;
+                        }
                     }
                 }
             }

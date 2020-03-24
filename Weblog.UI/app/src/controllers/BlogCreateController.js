@@ -6,9 +6,9 @@
         .module('app')
         .controller('BlogCreateController', BlogCreateController);
 
-    BlogCreateController.$inject = ['$window', 'dataService'];
+    BlogCreateController.$inject = ['$window', 'dataService', 'notifierService'];
 
-    function BlogCreateController($window, dataService) {
+    function BlogCreateController($window, dataService, notifierService) {
         var vm = this;
 
         vm.title = null;
@@ -16,6 +16,8 @@
 
         vm.submit = submit;
         vm.cancel = cancel;
+
+        vm.errors = null;
 
         activate();
 
@@ -48,10 +50,11 @@
                 .then(function (response) {
                     var newBlogId = response.data.blogId;
 
+                    notifierService.success();
                     $window.location.href = '/users/' + vm.userId + '/blogs/' + newBlogId;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    vm.errors = reason;
                 });
         }
 

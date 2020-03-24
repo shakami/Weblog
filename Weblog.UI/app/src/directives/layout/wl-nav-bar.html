@@ -7,13 +7,17 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-            <form name="searchForm" class="form-inline my-2 my-lg-0 mx-auto">
-                <input ng-model="searchPhrase" required class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <form ng-show="loggedIn" name="searchForm" class="form-inline my-2 my-lg-0 mx-auto">
+                <input ng-model="searchPhrase" required class="form-control" type="search" placeholder="Search Your Content" aria-label="Search">
+                <select class="form-control mx-2" ng-model="searchType">
+                    <option>Blogs</option>
+                    <option>Posts</option>
+                </select>
                 <button ng-click="search(searchForm)" class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
             </form>
 
-            <ul class="navbar-nav col-1">
-                <li class="nav-item dropdown ml-auto" ng-show="loggedIn">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown" ng-show="loggedIn">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                         <i class="fa fa-user"></i>
                     </a>
@@ -25,6 +29,7 @@
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item" ng-href={{userBlogsLink}}>Your Blogs</a>
+                        <a class="dropdown-item" ng-href={{userPostsLink}}>Your Posts</a>
                         <a class="dropdown-item" ng-href="{{userProfileLink}}">Your Profile</a>
 
                         <div class="dropdown-divider"></div>
@@ -32,7 +37,7 @@
                         <a ng-click="logout()" class="dropdown-item" href="#">Logout</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown ml-auto" ng-hide="loggedIn">
+                <li class="nav-item dropdown" ng-hide="loggedIn">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                         Login
                     </a>

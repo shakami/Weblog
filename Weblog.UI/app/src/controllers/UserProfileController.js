@@ -6,9 +6,9 @@
         .module('app')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['$routeParams', 'dataService', '$window', '$scope'];
+    UserProfileController.$inject = ['$routeParams', 'dataService', '$window', '$scope', 'notifierService'];
 
-    function UserProfileController($routeParams, dataService, $window, $scope) {
+    function UserProfileController($routeParams, dataService, $window, $scope, notifierService) {
         var vm = this;
 
         vm.userId = null;
@@ -20,6 +20,8 @@
         vm.confirmPassword = null;
 
         vm.editing = false;
+
+        vm.errors = null;
 
         vm.toggleEdit = toggleEdit;
         vm.save = save;
@@ -61,7 +63,8 @@
                     }
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
 
@@ -108,12 +111,18 @@
                         $window.localStorage.setItem('password', vm.password);
 
                         $scope.$emit('userUpdateEvent', { userName: vm.userName });
+
+                        notifierService.success();
+
+                        toggleEdit();
                     })
                     .catch(function (reason) {
-                        console.log(reason);
+                        if (reason[0][0].includes('duplicate')) {
+                            vm.errors = ['There is already an account for this email address.'];
+                        } else {
+                            vm.errors = reason;
+                        }
                     });
-
-                toggleEdit();
             }
         }
     }

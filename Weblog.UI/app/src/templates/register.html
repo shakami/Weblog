@@ -30,12 +30,8 @@
             <input ng-model="vm.confirmPassword" type="password" class="form-control" placeholder="Password" required>
         </div>
 
-        <ul ng-show="vm.errors" class="alert alert-warning" role="alert">
-            <li ng-repeat="error in vm.errors">
-                {{error.toString()}}
-            </li>
-        </ul>
-
+        <wl-validation-errors></wl-validation-errors>
+        
         <button ng-click="vm.register(registerForm)" type="submit" class="btn btn-success">Register</button>
 
     </form>

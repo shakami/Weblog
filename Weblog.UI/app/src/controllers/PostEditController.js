@@ -4,9 +4,9 @@
         .module('app')
         .controller('PostEditController', PostEditController);
 
-    PostEditController.$inject = ['$routeParams', '$window', '$scope', 'dataService', 'textEditorService'];
+    PostEditController.$inject = ['$routeParams', '$window', '$scope', 'dataService', 'textEditorService', 'notifierService'];
 
-    function PostEditController($routeParams, $window, $scope, dataService, textEditorService) {
+    function PostEditController($routeParams, $window, $scope, dataService, textEditorService, notifierService) {
         var vm = this;
 
         vm.editorOptions = textEditorService.postOptions();
@@ -16,6 +16,8 @@
 
         vm.submit = submit;
         vm.cancel = cancel;
+
+        vm.errors = null;
 
         activate();
 
@@ -61,7 +63,8 @@
                     vm.content = post.body;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    notifierService.error("Status Code: " + reason.status);
+                    $location.path("/error");
                 });
         }
 
@@ -83,10 +86,11 @@
 
             dataService.editPost(userId, blogId, postId, post, credentials)
                 .then(function () {
+                    notifierService.success();
                     $window.location.href = "users/" + userId + '/blogs/' + blogId + '/posts/' + postId;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    vm.errors = reason;
                 });
         }
 

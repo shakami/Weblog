@@ -6,9 +6,9 @@
         .module('app')
         .controller('PostCreateController', PostCreateController);
 
-    PostCreateController.$inject = ['$routeParams', '$window', 'dataService', '$scope', 'textEditorService'];
+    PostCreateController.$inject = ['$routeParams', '$window', 'dataService', '$scope', 'textEditorService', 'notifierService'];
 
-    function PostCreateController($routeParams, $window, dataService, $scope, textEditorService) {
+    function PostCreateController($routeParams, $window, dataService, $scope, textEditorService, notifierService) {
         var vm = this;
 
         vm.editorOptions = textEditorService.postOptions();
@@ -18,6 +18,8 @@
 
         vm.submit = submit;
         vm.cancel = cancel;
+
+        vm.errors = null;
 
         activate();
 
@@ -71,10 +73,11 @@
             dataService.createPost(userId, blogId, post, credentials)
                 .then(function (response) {
                     var postId = response.data.postId;
+                    notifierService.success();
                     $window.location.href = "users/" + userId + '/blogs/' + blogId + '/posts/' + postId;
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    vm.errors = reason;
                 });
         }
 

@@ -40,7 +40,11 @@
                     $scope.$emit('userRegisteredEvent', user);
                     $location.path('/users/' + response.data.userId);
                 }).catch(function (reason) {
-                    vm.errors = reason;
+                    if (reason[0][0].includes('duplicate')) {
+                        vm.errors = ['There is already an account for this email address.'];
+                    } else {
+                        vm.errors = reason;
+                    }
                 })
             }
         }

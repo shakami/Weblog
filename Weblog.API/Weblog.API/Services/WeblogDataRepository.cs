@@ -202,14 +202,16 @@ namespace Weblog.API.Services
 
         //--------- posts ---------//
         #region posts
-        public PagedList<Post> GetPosts(PostsResourceParameters resourceParameters)
+        public PagedList<Post> GetAllPostsForUser(int userId, PostsResourceParameters resourceParameters)
         {
             if (resourceParameters is null)
             {
                 throw new ArgumentNullException(nameof(resourceParameters));
             }
 
-            var collection = _context.Posts as IQueryable<Post>;
+            var collection = _context.Posts
+                .Where(p => p.Blog.UserId == userId)
+                as IQueryable<Post>;
 
             var searchQuery = resourceParameters.SearchQuery?.Trim();
 
