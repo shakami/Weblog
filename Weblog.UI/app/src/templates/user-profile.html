@@ -4,69 +4,42 @@
         <img style="max-height: 10rem;" class="img-thumbnail mb-4" src="app/assets/user.png" />
     </picture>
 
-    <form name="profileForm" class="col-7 mx-auto">
-        <h1 ng-hide="vm.editing" class="my-4">{{vm.userName}}</h1>
-        <div ng-show="vm.editing" class="form-row">
-            <div class="col">
-                <label>First Name</label>
-                <input ng-model="vm.firstNameForEdit" class="form-control" type="text" placeholder="First Name" required />
-            </div>
-            <div class="col">
-                <label>Last Name</label>
-                <input ng-model="vm.lastNameForEdit" class="form-control" type="text" placeholder="Last Name" required />
-            </div>
-        </div>
+    <div>
+        <h1 class="my-4">{{vm.user.userName}}</h1>
 
-        <div ng-hide="vm.editing" class="my-4">
+        <div class="my-4">
             <label class="small">Email Address</label>
-            <h4 class="text-muted">{{vm.email}}</h4>
+            <h4 class="text-muted">{{vm.user.email}}</h4>
         </div>
-        <div ng-show="vm.editing">
-            <div class="form-group my-4">
-                <label>Email Address</label>
-                <input ng-model="vm.emailForEdit"
-                       class="form-control"
-                       type="email"
-                       placeholder="email@example.com"
-                       ng-required="true" />
-            </div>
-            <div class="form-row">
-                <div class="col">
-                    <label>Password</label>
-                    <input ng-model="vm.passwordForEdit"
-                           type="password"
-                           class="form-control"
-                           placeholder="Password"
-                           ng-required="true" />
-                </div>
-                <div class="col">
-                    <label>Confirm Password</label>
-                    <input ng-model="vm.confirmPassword"
-                           type="password" class="form-control"
-                           placeholder="Password"
-                           ng-required="true" />
-                </div>
-            </div>
-        </div>
-        <div ng-show="vm.editing">
-            <wl-validation-errors></wl-validation-errors>
-
-            <button ng-click="vm.toggleEdit()" type="button" class="btn btn-dark mt-3">Cancel</button>
-            <button ng-click="vm.save(profileForm)" type="submit" class="btn btn-success mt-3">Save</button>
-        </div>
-    </form>
-
-    <div ng-hide="vm.editing" class="mt-4">
-        <button ng-click="vm.toggleEdit()" type="button" class="btn btn-success">Edit My Profile</button>
-        <button data-toggle="collapse" data-target="#deleteAlert" class="btn btn-danger">Delete My Account</button>
-        <a ng-href="/users/{{vm.userId}}/blogs" role="button" class="btn btn-success">See My Blogs</a>
     </div>
 
-    <div id="deleteAlert" class="collapse alert alert-danger mt-2">
-        <p class="lead">Are you sure you want to delete your account and erase all data?</p>
-        <p class="small">It would make us sad to see you go... <i class="fa fa-sad-tear"></i></p>
+    <div ng-if="vm.isOwner()">
+        <div class="mt-4">
+            <a ng-href="/users/{{vm.user.userId}}/edit" role="button" class="btn btn-success">Edit My Profile</a>
+            <button data-toggle="collapse" data-target="#deleteAlert" class="btn btn-danger">Delete My Account</button>
+            <a ng-href="/users/{{vm.user.userId}}/blogs" role="button" class="btn btn-success">See My Blogs</a>
+        </div>
 
-        <button ng-dblclick="console.log('hi');" class="btn btn-sm btn-danger">Yes</button>
-        <button class="btn btn-sm btn-success">No</button>
+        <form id="deleteAlert" name="deleteForm" class="collapse alert alert-danger mt-2">
+            <p class="lead">Are you sure you want to delete your account and erase all data?</p>
+            <p>It would make us sad to see you go... <i class="fa fa-sad-tear"></i></p>
+
+            <div class="form-group">
+                <label class="small">Type the word "confirm" below.</label>
+                <input ng-model="vm.confirmDeleteInput"
+                       class="form-control col-3 mx-auto"
+                       type="text"
+                       placeholder="confirm"
+                       ng-required="true" />
+            </div>
+
+            <button ng-click="vm.confirmDelete(deleteForm)" class="btn btn-sm btn-danger" type="submit">Yes</button>
+            <button class="btn btn-sm btn-success"
+                    data-toggle="collapse"
+                    data-target="#deleteAlert"
+                    type="reset">
+                No
+            </button>
+        </form>
     </div>
 </div>

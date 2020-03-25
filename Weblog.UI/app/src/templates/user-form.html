@@ -1,7 +1,7 @@
 ﻿<div class="container">
-    <h1 class="display-4">Register as a New User</h1>
+    <h1 class="display-4">User Details</h1>
 
-    <form class="mt-5" name="registerForm">
+    <form class="mt-5" name="userForm">
         <div class="row">
             <div class="col">
                 <div class="form-group">
@@ -32,7 +32,8 @@
 
         <wl-validation-errors></wl-validation-errors>
         
-        <button ng-click="vm.register(registerForm)" type="submit" class="btn btn-success">Register</button>
+        <button ng-click="vm.submit(userForm)" type="submit" class="btn btn-success">Submit</button>
+        <wl-cancel-button></wl-cancel-button>
 
     </form>
 </div>

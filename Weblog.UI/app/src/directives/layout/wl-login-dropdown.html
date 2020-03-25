@@ -12,6 +12,9 @@
                 <label>Password</label>
                 <input required ng-model="password" type="password" class="form-control" placeholder="Password">
             </div>
+
+            <p ng-show="error" class="alert alert-warning small p-1">{{error}}</p>
+
             <button ng-click="login(loginForm)" type="submit" class="btn btn-success">Sign in</button>
         </form>
         <div class="dropdown-divider"></div>

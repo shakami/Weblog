@@ -17,10 +17,10 @@
         vm.password = "";
         vm.confirmPassword = "";
 
-        vm.register = register;
+        vm.submit = submit;
         vm.errors = null;
 
-        function register(form) {
+        function submit(form) {
             if (form.$valid) {
                 if (vm.password !== vm.confirmPassword) {
                     vm.errors = ["Make sure the passwords match!"];

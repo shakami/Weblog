@@ -55,9 +55,6 @@
                     setCredentials(emailAddress, password);
 
                     return response;
-                })
-                .catch(function (reason) {
-                    return reason;
                 });
         }
 

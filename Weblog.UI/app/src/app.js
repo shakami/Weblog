@@ -19,6 +19,11 @@
                 controllerAs: 'vm',
                 templateUrl: '/app/src/templates/user-profile.html'
             })
+            .when('/users/:userId/edit', {
+                controller: 'UserEditController',
+                controllerAs: 'vm',
+                templateUrl: '/app/src/templates/user-form.html'
+            })
             .when('/users/:userId/posts', {
                 controller: 'PostsController',
                 controllerAs: 'vm',
@@ -62,7 +67,7 @@
             .when('/register', {
                 controller: 'RegisterController',
                 controllerAs: 'vm',
-                templateUrl: '/app/src/templates/register.html'
+                templateUrl: '/app/src/templates/user-form.html'
             })
             .when('/unauthorized', {
                 templateUrl: '/app/src/templates/unauthorized.html'

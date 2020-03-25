@@ -11,42 +11,34 @@
     function UserProfileController($location, $routeParams, userService, dataService, $scope, notifierService) {
         var vm = this;
 
-        vm.userId = null;
-        vm.userName = null;
-        vm.firstName = null;
-        vm.lastName = null;
-        vm.email = null;
-        vm.password = null;
-        vm.confirmPassword = null;
-
-        vm.editing = false;
+        vm.user = {};
 
         vm.errors = null;
 
-        vm.toggleEdit = toggleEdit;
-        vm.save = save;
+        vm.confirmDeleteInput = "";
+        vm.confirmDelete = confirmDelete;
+
+        vm.isOwner = function () {
+            return vm.user.userId === userService.loggedInUser();
+        }
 
         activate();
 
         function activate() {
-            vm.userId = $routeParams.userId;
+            vm.user.userId = $routeParams.userId;
 
-            if (!userService.userAuthorized(vm.userId)) {
-                $location.path('/unauthorized');
-            }
-
-            getUser(vm.userId);
+            getUser(vm.user.userId);
         }
 
         function getUser(userId) {
             dataService.getUser(userId)
                 .then(function (response) {
-                    vm.userName = response.data.name;
-                    vm.email = response.data.emailAddress;
-                    var names = vm.userName.split(' ');
+                    vm.user.userName = response.data.name;
+                    vm.user.email = response.data.emailAddress;
+                    var names = vm.user.userName.split(' ');
                     if (names.length === 2) {
-                        vm.firstName = names[0].trim();
-                        vm.lastName = names[1].trim();
+                        vm.user.firstName = names[0].trim();
+                        vm.user.lastName = names[1].trim();
                     }
                 })
                 .catch(function (reason) {
@@ -55,69 +47,25 @@
                 });
         }
 
-        function toggleEdit() {
-            vm.editing = !vm.editing;
-            if (vm.editing) {
-                resetData();
+        function confirmDelete(form) {
+            if (form.$invalid) {
+                return;
             }
-        }
-
-        function save(form) {
-            if (form.$valid) {
-                if (vm.passwordForEdit !== vm.confirmPassword) {
-                    // passwords do not match
-                    return;
-                }
-
-                persistData();
-
-                // talk to server
-                var user = {
-                    firstName: vm.firstName,
-                    lastName: vm.lastName,
-                    emailAddress: vm.email,
-                    password: vm.password
-                };
-
-                editUser(vm.userId, user);
+            if (vm.confirmDeleteInput.trim().toUpperCase() !== 'confirm'.toUpperCase()) {
+                notifierService.warning('You need to type the word "confirm".');
+                return;
             }
-        }
-
-        function editUser(userId, user) {
+            // delete user
             var credentials = userService.getCredentials();
 
-            dataService.editUser(userId, user, credentials)
+            dataService.deleteUser(vm.user.userId, credentials)
                 .then(function () {
-                    // update credentials
-                    userService.setCredentials(user.emailAddress, user.password);
-                    $scope.$emit('userUpdateEvent', { userName: vm.userName });
-
-                    notifierService.success();
-                    toggleEdit();
+                    $scope.$emit('userDeletedEvent');
+                    $location.path('/');
                 })
                 .catch(function (reason) {
-                    if (reason[0][0].includes('duplicate')) {
-                        vm.errors = ['There is already an account for this email address.'];
-                    } else {
-                        vm.errors = reason;
-                    }
+                    notifierService.warning(reason);
                 });
-        }
-
-        function persistData() {
-            vm.email = angular.copy(vm.emailForEdit);
-            vm.password = angular.copy(vm.passwordForEdit);
-            vm.firstName = angular.copy(vm.firstNameForEdit);
-            vm.lastName = angular.copy(vm.lastNameForEdit);
-            vm.userName = vm.firstName + ' ' + vm.lastName;
-        }
-
-        function resetData() {
-            vm.emailForEdit = angular.copy(vm.email);
-            vm.passwordForEdit = angular.copy(vm.password);
-            vm.confirmPassword = angular.copy(vm.password);
-            vm.firstNameForEdit = angular.copy(vm.firstName);
-            vm.lastNameForEdit = angular.copy(vm.lastName);
         }
     }
 

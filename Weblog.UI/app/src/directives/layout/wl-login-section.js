@@ -19,6 +19,8 @@
 
                 $scope.userName = null;
 
+                $scope.error = null;
+
                 $scope.userBlogsLink = "";
                 $scope.userPostsLink = "";
                 $scope.userProfileLink = "";
@@ -46,11 +48,21 @@
 
                         userLogin(args.emailAddress, args.password);
                     });
+
+                    $scope.$on('userDeletedEvent', function (e, args) {
+                        e.stopPropagation();
+
+                        notifierService.info('Account successfully deleted.');
+
+                        logout();
+                    });
                 }
 
                 function userLogin(emailAddress, password) {
                     userService.authenticate(emailAddress, password)
                         .then(function (response) {
+                            $scope.error = null;
+
                             var user = response.data;
                             $scope.loggedIn = true;
                             $scope.userName = user.name;
@@ -62,7 +74,11 @@
                             $scope.$broadcast('loggedInEvent', { userId: user.userId });
                         })
                         .catch(function (reason) {
-                            notifierService.warning(reason);
+                            if (reason.status === 401) {
+                                $scope.error = 'That did not match our records... Do you need to register?';
+                            } else {
+                                notifierService.warning(reason);
+                            }
                         });
                 }
 

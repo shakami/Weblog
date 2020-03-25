@@ -13,6 +13,7 @@
             register: register,
             getUser: getUser,
             editUser: editUser,
+            deleteUser: deleteUser,
 
             getBlogs: getBlogs,
             getBlog: getBlog,
@@ -94,6 +95,24 @@
                 },
                 data: user
             };
+
+            return $http(req)
+                .then(sendResponseData)
+                .catch(sendError);
+        }
+
+        function deleteUser(userId, credentials) {
+            var req =
+            {
+                url: API_URL + '/users/' + userId,
+                method: 'DELETE',
+                headers:
+                {
+                    'Accept': 'application/vnd.sepehr.hateoas+json',
+                    'Content-Type': 'application/json'
+                },
+                data: credentials
+            }
 
             return $http(req)
                 .then(sendResponseData)
