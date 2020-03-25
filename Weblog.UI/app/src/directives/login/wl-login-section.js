@@ -9,7 +9,7 @@
     function wlLoginSection() {
         return {
             restrict: 'E',
-            templateUrl: 'app/src/directives/layout/wl-login-section.html',
+            templateUrl: 'app/src/directives/login/wl-login-section.html',
             replace: true,
             controller: function ($scope, userService, notifierService) {
                 $scope.loggedIn = false;
@@ -77,7 +77,7 @@
                             if (reason.status === 401) {
                                 $scope.error = 'That did not match our records... Do you need to register?';
                             } else {
-                                notifierService.warning(reason);
+                                notifierService.error('Status Code: ' + reason.status);
                             }
                         });
                 }

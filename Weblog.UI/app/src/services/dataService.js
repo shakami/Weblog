@@ -4,6 +4,7 @@
 
     angular
         .module('app')
+        .config(httpConfig)
         .constant('API_URL', 'https://localhost:5001/api')
         .factory('dataService', ['$http', '$q', 'API_URL', dataService]);
 
@@ -41,8 +42,7 @@
                 method: 'POST',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: { emailAddress, password }
             };
@@ -58,8 +58,7 @@
                 method: 'POST',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: user
             };
@@ -90,8 +89,7 @@
                 method: 'PUT',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: user
             };
@@ -162,8 +160,7 @@
                 method: 'PUT',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: blog
             }
@@ -182,8 +179,7 @@
                 method: 'POST',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: blog
             }
@@ -274,7 +270,6 @@
 
         function getPost(userId, blogId, postId) {
             var postUrl = API_URL + '/users/' + userId + '/blogs/' + blogId + '/posts/' + postId;
-            var commentsUrl = postUrl + '/comments';
 
             var req =
             {
@@ -297,8 +292,7 @@
                 method: 'POST',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: post
             }
@@ -316,8 +310,7 @@
                 method: 'PUT',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: post
             }
@@ -381,8 +374,7 @@
                 method: 'POST',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: comment
             }
@@ -407,8 +399,7 @@
                 method: 'PUT',
                 headers:
                 {
-                    'Accept': 'application/vnd.sepehr.hateoas+json',
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/vnd.sepehr.hateoas+json'
                 },
                 data: comment
             }
@@ -460,6 +451,12 @@
             }
             return $q.reject(response);
         }
+    }
+
+    function httpConfig($httpProvider) {
+        $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache';
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
+        $httpProvider.defaults.headers.put['Content-Type'] = 'application/json';
     }
 
 })();

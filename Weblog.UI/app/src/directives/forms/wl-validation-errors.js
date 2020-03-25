@@ -9,7 +9,7 @@
     function wlValidationErrors() {
         return {
             restrict: 'E',
-            templateUrl: 'app/src/directives/layout/wl-validation-errors.html'
+            templateUrl: 'app/src/directives/forms/wl-validation-errors.html'
         };
     }
 

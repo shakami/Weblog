@@ -9,7 +9,7 @@
     function wlLoginDropdown() {
         return {
             restrict: 'E',
-            templateUrl: 'app/src/directives/layout/wl-login-dropdown.html',
+            templateUrl: 'app/src/directives/login/wl-login-dropdown.html',
             replace: true,
         };
     }
