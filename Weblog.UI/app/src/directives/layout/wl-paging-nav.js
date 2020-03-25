@@ -14,15 +14,21 @@
                 currentUrl: '=',
                 pageInfo: '='
             },
-            controller: function ($scope, $timeout) {
+            controller: function ($scope) {
                 $scope.previousPageLink = null;
                 $scope.nextPageLink = null;
 
                 $scope.pages = [];
 
-                $timeout(function () {
-                    generatePageLinks($scope.pageInfo);
-                }, 500);
+                $scope.$watch(
+                    function () {
+                        return $scope.pageInfo;
+                    },
+                    function (newValue, oldValue) {
+                        if (newValue) {
+                            generatePageLinks(newValue);
+                        }
+                    });
 
                 function generatePageLinks(pageInfo) {
                     if (pageInfo.currentPage !== 1) {
