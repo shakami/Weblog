@@ -18,7 +18,7 @@
         vm.dataResolved = false;
 
         // used to handle paging
-        vm.currentUrl = $location.path();
+        vm.currentUrl = $location.path() + '?';
         vm.pageInfo = {};
 
         activate();

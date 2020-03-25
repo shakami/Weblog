@@ -19,10 +19,10 @@ namespace Weblog.API.DbContexts
             : base()
         { }
 
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Blog> Blogs { get; set; }
-        public virtual DbSet<Post> Posts { get; set; }
-        public virtual DbSet<Comment> Comments { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,8 @@ namespace Weblog.API.DbContexts
                            .HasForeignKey(c => c.UserId)
                            .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Seed();
 
             base.OnModelCreating(modelBuilder);
         }
