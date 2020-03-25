@@ -16,6 +16,7 @@ namespace Weblog.API.DbContexts
         }
 
         public WeblogContext()
+            : base()
         { }
 
         public virtual DbSet<User> Users { get; set; }

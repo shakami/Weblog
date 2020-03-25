@@ -63,6 +63,11 @@ namespace Weblog.API.Services
 
             var user = GetUser(userId);
 
+            if (user is null)
+            {
+                return false;
+            }
+
             if (user.EmailAddress != emailAddress ||
                 user.Password != password)
             {
