@@ -96,7 +96,7 @@ namespace Weblog.API.Tests
                     LastName = "lname3",
                     EmailAddress = "3@users",
                     Password = "secret3"
-                },
+                }
             };
 
             foreach (var user in users)
