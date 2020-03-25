@@ -116,7 +116,7 @@ namespace Weblog.API.Tests
             var actual = _repository.GetBlogs(_resourceParameters);
 
             //-- assert
-            Assert.AreEqual("title1", actual.First().Title);
+            Assert.AreEqual("title1", actual.Last().Title);
             Assert.AreEqual(countBeforeAdd + 4, actual.Count());
 
             //-- cleanup

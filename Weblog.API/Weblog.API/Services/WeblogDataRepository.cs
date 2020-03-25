@@ -136,7 +136,10 @@ namespace Weblog.API.Services
                 throw new ArgumentNullException(nameof(resourceParameters));
             }
 
-            var collection = _context.Blogs as IQueryable<Blog>;
+            // reversing the order so newest blogs are delivered first
+            var collection = _context.Blogs
+                    .OrderByDescending(b => b.BlogId)
+                    as IQueryable<Blog>;
 
             var searchQuery = resourceParameters.SearchQuery?.Trim();
 
@@ -159,7 +162,9 @@ namespace Weblog.API.Services
             }
 
             var collection = _context.Blogs
-                .Where(b => b.UserId == userId) as IQueryable<Blog>;
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.BlogId)
+                as IQueryable<Blog>;
 
             var searchQuery = resourceParameters.SearchQuery?.Trim();
 
