@@ -75,7 +75,7 @@ namespace Weblog.API.Tests
             _repository.DeleteBlog(blog);
             _repository.Save();
         }
-        
+
         [TestMethod]
         public void GetBlogs()
         {
@@ -126,7 +126,7 @@ namespace Weblog.API.Tests
             }
             _repository.Save();
         }
-        
+
         [TestMethod]
         public void GetBlog()
         {
@@ -150,7 +150,7 @@ namespace Weblog.API.Tests
             _repository.DeleteBlog(blog);
             _repository.Save();
         }
-        
+
         [TestMethod]
         public void UpdateBlog()
         {
@@ -181,7 +181,7 @@ namespace Weblog.API.Tests
             _repository.DeleteBlog(blog);
             _repository.Save();
         }
-        
+
         [TestMethod]
         public void DeleteBlog()
         {
@@ -206,7 +206,7 @@ namespace Weblog.API.Tests
 
             Assert.AreEqual(countBeforeDelete - 1, actual);
         }
-        
+
         [TestMethod]
         public void BlogExists()
         {
@@ -230,7 +230,7 @@ namespace Weblog.API.Tests
             _repository.DeleteBlog(blog);
             _repository.Save();
         }
-        
+
         [TestMethod]
         public void BlogExistsInvalidID()
         {
@@ -242,7 +242,7 @@ namespace Weblog.API.Tests
             //-- assert
             Assert.IsFalse(actual);
         }
-        
+
         [TestCleanup]
         public void TestCleanup()
         {

@@ -12,12 +12,12 @@ using Weblog.API.Services;
 namespace Weblog.API.Tests
 {
     [TestClass]
-    public class PostsDataTests
+    public class CommentsDataTests
     {
         private static SqliteConnection _connection;
         private static WeblogContext _context;
         private static IWeblogDataRepository _repository;
-        private static PostsResourceParameters _resourceParameters;
+        private static CommentsResourceParameters _resourceParameters;
 
         [TestInitialize]
         public void TestInitialize()
@@ -34,11 +34,10 @@ namespace Weblog.API.Tests
 
             _repository = new WeblogDataRepository(_context);
 
-            _resourceParameters = new PostsResourceParameters
+            _resourceParameters = new CommentsResourceParameters
             {
                 PageNumber = 1,
-                PageSize = 10,
-                SearchQuery = ""
+                PageSize = 10
             };
 
             _repository.AddUser(new User
@@ -52,206 +51,175 @@ namespace Weblog.API.Tests
 
             _repository.AddBlog(1, new Blog
             {
-                Title = "title",
-                Excerpt = "excerpt"
+                Title = "blog-title",
+                Excerpt = "blog-excerpt"
+            });
+            _repository.Save();
+
+            _repository.AddPost(1, new Post
+            {
+                Title = "post-title",
+                Body = "post-body",
+                TimeCreated = DateTime.Now
             });
             _repository.Save();
         }
 
         [TestMethod]
-        public void AddPost()
+        public void AddComment()
         {
             //-- arrange
-            var countBeforeAdd = _repository.GetPosts(1, _resourceParameters).Count();
+            var countBeforeAdd = _repository.GetComments(1, _resourceParameters).Count();
 
-            var post = new Post
+            var comment = new Comment
             {
-                Title = "title",
+                UserId = 1,
                 Body = "body",
                 TimeCreated = DateTime.Now
             };
 
             //-- act
-            _repository.AddPost(1, post);
+            _repository.AddComment(1, comment);
             _repository.Save();
 
-            var actual = _repository.GetPosts(1, _resourceParameters).Count();
+            var actual = _repository.GetComments(1, _resourceParameters).Count();
 
             //-- assert
             Assert.AreEqual(countBeforeAdd + 1, actual);
 
             //-- clean up
-            _repository.DeletePost(post);
+            _repository.DeleteComment(comment);
             _repository.Save();
         }
 
         [TestMethod]
-        public void GetPosts()
+        public void GetComments()
         {
             //-- arrange
-            var countBeforeAdd = _repository.GetPosts(1, _resourceParameters).Count();
+            var countBeforeAdd = _repository.GetComments(1, _resourceParameters).Count();
 
-            var posts = new List<Post>
+            var comments = new List<Comment>
             {
-                new Post
+                new Comment
                 {
-                    Title = "title1",
+                    UserId = 1,
                     Body = "body1",
                     TimeCreated = DateTime.Now.AddDays(-1)
                 },
-                new Post
+                new Comment
                 {
-                    Title = "title2",
+                    UserId = 1,
                     Body = "body2",
                     TimeCreated = DateTime.Now.AddDays(-2)
                 },
-                new Post
+                new Comment
                 {
-                    Title = "title3",
+                    UserId = 1,
                     Body = "body3",
                     TimeCreated = DateTime.Now.AddDays(-3)
                 }
             };
 
-            foreach (var post in posts)
+            foreach (var comment in comments)
             {
-                _repository.AddPost(1, post);
+                _repository.AddComment(1, comment);
             }
             _repository.Save();
 
             //-- act
-            var actual = _repository.GetPosts(1, _resourceParameters);
+            var actual = _repository.GetComments(1, _resourceParameters);
 
             //-- assert
-            Assert.AreEqual("title1", actual.First().Title);
+            Assert.AreEqual("body1", actual.First().Body);
             Assert.AreEqual(countBeforeAdd + 3, actual.Count());
 
             //-- cleanup
-            foreach (var post in posts)
+            foreach (var comment in comments)
             {
-                _repository.DeletePost(post);
+                _repository.DeleteComment(comment);
             }
             _repository.Save();
         }
 
         [TestMethod]
-        public void GetPost()
+        public void GetComment()
         {
             //-- arrange
-            var post = new Post
+            var comment = new Comment
             {
-                Title = "title",
+                UserId = 1,
                 Body = "body",
                 TimeCreated = DateTime.Now
             };
 
-            _repository.AddPost(1, post);
+            _repository.AddComment(1, comment);
             _repository.Save();
 
             //-- act
-            var actual = _repository.GetPost(1);
+            var actual = _repository.GetComment(1);
 
             //-- assert
-            Assert.AreEqual("title", actual.Title);
+            Assert.AreEqual("body", actual.Body);
 
             //-- cleanup
-            _repository.DeletePost(post);
+            _repository.DeleteComment(comment);
             _repository.Save();
         }
 
         [TestMethod]
-        public void UpdatePost()
+        public void UpdateComment()
         {
             //-- arrange
-            var post = new Post
+            var comment = new Comment
             {
-                Title = "old-title",
+                UserId = 1,
                 Body = "old-body",
                 TimeCreated = DateTime.Now
             };
 
-            _repository.AddPost(1, post);
+            _repository.AddComment(1, comment);
             _repository.Save();
 
-            post.Title = "new-title";
-            post.Body = "new-body";
+            comment.Body = "new-body";
 
             //-- act
-            _repository.UpdatePost(post);
+            _repository.UpdateComment(comment);
             _repository.Save();
 
-            var actual = _repository.GetPost(1);
+            var actual = _repository.GetComment(1);
 
             //-- assert
-            Assert.AreEqual("new-title", actual.Title);
             Assert.AreEqual("new-body", actual.Body);
 
             //-- cleanup
-            _repository.DeletePost(post);
+            _repository.DeleteComment(comment);
             _repository.Save();
         }
 
         [TestMethod]
-        public void DeletePost()
+        public void DeleteComment()
         {
             //-- arrange
-            var post = new Post
+            var comment = new Comment
             {
-                Title = "title",
+                UserId = 1,
                 Body = "body",
                 TimeCreated = DateTime.Now
             };
 
-            _repository.AddPost(1, post);
+            _repository.AddComment(1, comment);
             _repository.Save();
 
-            var countBeforeDelete = _repository.GetPosts(1, _resourceParameters).Count();
+            var countBeforeDelete = _repository.GetComments(1, _resourceParameters).Count();
 
             //-- act
-            _repository.DeletePost(post);
+            _repository.DeleteComment(comment);
             _repository.Save();
 
             //-- assert
-            var actual = _repository.GetPosts(1, _resourceParameters).Count();
+            var actual = _repository.GetComments(1, _resourceParameters).Count();
 
             Assert.AreEqual(countBeforeDelete - 1, actual);
-        }
-
-        [TestMethod]
-        public void PostExists()
-        {
-            //-- arrange
-            var post = new Post
-            {
-                Title = "title",
-                Body = "body",
-                TimeCreated = DateTime.Now
-            };
-
-            _repository.AddPost(1, post);
-            _repository.Save();
-
-            //-- act
-            var actual = _repository.PostExists(1);
-
-            //-- assert
-            Assert.IsTrue(actual);
-
-            //-- clean up
-            _repository.DeletePost(post);
-            _repository.Save();
-        }
-
-        [TestMethod]
-        public void PostExistsInvalidID()
-        {
-            //-- arrange
-
-            //-- act
-            var actual = _repository.PostExists(1);
-
-            //-- assert
-            Assert.IsFalse(actual);
         }
 
         [TestCleanup]

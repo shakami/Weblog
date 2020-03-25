@@ -290,7 +290,7 @@ namespace Weblog.API.Tests
             //-- assert
             Assert.AreNotEqual(user, actual1);
             Assert.IsNull(actual1);
-            
+
             Assert.AreNotEqual(user, actual2);
             Assert.IsNull(actual2);
 
