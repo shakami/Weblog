@@ -4,16 +4,28 @@
     <form class="mt-5" name="blogForm">
         <div class="form-group">
             <label>Title</label>
-            <input ng-model="vm.title" type="text" class="form-control" placeholder="Title" required />
+            <input ng-model="vm.title"
+                   type="text"
+                   class="form-control"
+                   placeholder="Title" required />
         </div>
         <div class="form-group">
             <label>Excerpt</label>
-            <textarea ng-model="vm.excerpt" class="form-control" rows="4" placeholder="Excerpt"></textarea>
+            <textarea ng-model="vm.excerpt"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Excerpt">
+            </textarea>
         </div>
 
         <wl-validation-errors></wl-validation-errors>
 
-        <button ng-click="vm.submit(blogForm)" type="submit" class="btn btn-success">Submit</button>
+        <button ng-click="vm.submit(blogForm)"
+                type="submit"
+                class="btn btn-success">
+            Submit
+        </button>
+
         <wl-cancel-button></wl-cancel-button>
     </form>
 </div>

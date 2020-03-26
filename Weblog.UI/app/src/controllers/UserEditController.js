@@ -6,8 +6,10 @@
         .module('app')
         .controller('UserEditController', UserEditController);
 
-    UserEditController.$inject = ['$scope', '$routeParams', '$location', 'userService', 'dataService', 'notifierService'];
-    function UserEditController($scope, $routeParams, $location, userService, dataService, notifierService) {
+    UserEditController.$inject =
+        ['$scope', '$routeParams', '$location', 'userService', 'dataService', 'notifierService'];
+    function UserEditController(
+        $scope, $routeParams, $location, userService, dataService, notifierService) {
         var vm = this;
 
         vm.userId = null;

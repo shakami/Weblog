@@ -5,8 +5,12 @@
 
         <h1 class="display-4">{{vm.post.title}}</h1>
         <div class="row mx-auto">
-            <a ng-href="/users/{{vm.post.userId}}/blogs" class="font-italic">{{vm.post.userName}}</a>
-            <h6 class="text-muted ml-auto">{{vm.post.timeCreated | date: 'EEEE, MMMM d, y @ h:mm a'}}</h6>
+            <a ng-href="/users/{{vm.post.userId}}/blogs" class="font-italic">
+                {{vm.post.userName}}
+            </a>
+            <h6 class="text-muted ml-auto">
+                {{vm.post.timeCreated | date: 'EEEE, MMMM d, y @ h:mm a'}}
+            </h6>
         </div>
 
         <hr class="my-4" />

@@ -6,9 +6,11 @@
         .module('app')
         .controller('BlogCreateController', BlogCreateController);
 
-    BlogCreateController.$inject = ['$location', 'dataService', 'notifierService', 'userService'];
+    BlogCreateController.$inject =
+        ['$location', 'dataService', 'notifierService', 'userService'];
 
-    function BlogCreateController($location, dataService, notifierService, userService) {
+    function BlogCreateController(
+        $location, dataService, notifierService, userService) {
         var vm = this;
 
         vm.title = null;
@@ -35,7 +37,6 @@
                     title: vm.title,
                     excerpt: vm.excerpt
                 };
-
                 createBlog(vm.userId, blog);
             }
         }

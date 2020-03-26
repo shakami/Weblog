@@ -1,5 +1,5 @@
 ﻿<div class="card my-4">
-    
+
     <div class="card-body">
         <a ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
             <h5 class="card-title">{{ blog.title }}</h5>
@@ -14,11 +14,12 @@
                 {{blog.userName}}
             </a>
         </div>
-        
+
     </div>
     <div class="card-footer">
         <a data-toggle="tooltip" title="Read"
-           class="btn btn-sm btn-info" ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
+           class="btn btn-sm btn-info"
+           ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}">
             <i class="fa fa-glasses"></i>
         </a>
         <div ng-show="owner" class="d-inline float-right">
@@ -32,8 +33,10 @@
                ng-href="/users/{{blog.userId}}/blogs/{{blog.blogId}}/edit">
                 <i class="fa fa-pencil-alt"></i>
             </a>
-            <button data-toggle="collapse" title="Delete Blog" data-target=".delete-collapse{{blog.blogId}}"
-               class="btn btn-sm btn-danger">
+            <button data-toggle="collapse"
+                    title="Delete Blog"
+                    data-target=".delete-collapse{{blog.blogId}}"
+                    class="btn btn-sm btn-danger">
                 <i class="fa fa-trash-alt"></i>
             </button>
         </div>
@@ -44,9 +47,17 @@
             <p class="card-text text-white small">You will NOT be able to undo this. All posts inside the blog will also be deleted.</p>
         </div>
         <div class="card-footer bg-danger">
-            <button ng-show="owner" class="btn btn-sm btn-dark" ng-click="confirmDelete()">Yes</button>
-            <button ng-show="owner" data-toggle="collapse" data-target=".delete-collapse{{blog.blogId}}" class="btn btn-sm btn-success">No</button>
+            <button ng-show="owner"
+                    class="btn btn-sm btn-dark"
+                    ng-click="confirmDelete()">
+                Yes
+            </button>
+            <button ng-show="owner" data-toggle="collapse"
+                    data-target=".delete-collapse{{blog.blogId}}"
+                    class="btn btn-sm btn-success">
+                No
+            </button>
         </div>
     </div>
-    
+
 </div>

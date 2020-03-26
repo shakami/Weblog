@@ -75,7 +75,8 @@
                         })
                         .catch(function (reason) {
                             if (reason.status === 401) {
-                                $scope.error = 'That did not match our records... Do you need to register?';
+                                $scope.error =
+                                    'That did not match our records... Do you need to register?';
                             } else {
                                 notifierService.error('Status Code: ' + reason.status);
                             }

@@ -4,9 +4,11 @@
         .module('app')
         .controller('PostEditController', PostEditController);
 
-    PostEditController.$inject = ['$location', '$routeParams', 'userService', 'dataService', 'notifierService'];
+    PostEditController.$inject =
+        ['$location', '$routeParams', 'userService', 'dataService', 'notifierService'];
 
-    function PostEditController($location, $routeParams, userService, dataService, notifierService) {
+    function PostEditController(
+        $location, $routeParams, userService, dataService, notifierService) {
         var vm = this;
 
         vm.title = null;
@@ -60,7 +62,10 @@
             dataService.editPost(userId, blogId, postId, post, credentials)
                 .then(function () {
                     notifierService.success();
-                    $location.path("users/" + userId + '/blogs/' + blogId + '/posts/' + postId);
+                    $location.path(
+                        'users/' + userId +
+                        '/blogs/' + blogId +
+                        '/posts/' + postId);
                 })
                 .catch(function (reason) {
                     vm.errors = reason;

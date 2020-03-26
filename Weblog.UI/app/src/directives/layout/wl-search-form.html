@@ -1,8 +1,15 @@
 ﻿<form ng-show="loggedIn" name="searchForm" class="form-inline my-2 my-lg-0 mx-auto">
-    <input ng-model="searchPhrase" required class="form-control" type="search" placeholder="Search Your Content" aria-label="Search">
+    <input ng-model="searchPhrase"
+           required class="form-control"
+           type="search"
+           placeholder="Search Your Content">
     <select class="form-control mx-2" ng-model="searchType">
         <option>Blogs</option>
         <option>Posts</option>
     </select>
-    <button ng-click="search(searchForm)" class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+    <button ng-click="search(searchForm)"
+            class="btn btn-success my-2 my-sm-0"
+            type="submit">
+        Search
+    </button>
 </form>

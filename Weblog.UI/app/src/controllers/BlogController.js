@@ -6,9 +6,11 @@
         .module('app')
         .controller('BlogController', BlogController);
 
-    BlogController.$inject = ['$routeParams', '$location', 'dataService', 'userService', 'notifierService'];
+    BlogController.$inject =
+        ['$routeParams', '$location', 'dataService', 'userService', 'notifierService'];
 
-    function BlogController($routeParams, $location, dataService, userService, notifierService) {
+    function BlogController($routeParams,
+        $location, dataService, userService, notifierService) {
         var vm = this;
 
         vm.isOwner = isOwner;
@@ -34,7 +36,7 @@
         }
 
         function isOwner() {
-            return vm.userId === userService.loggedInUser();   
+            return vm.userId === userService.loggedInUser();
         };
 
         function getBlog(userId, blogId, pageNumber, pageSize) {

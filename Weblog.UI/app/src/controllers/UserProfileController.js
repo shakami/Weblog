@@ -6,9 +6,11 @@
         .module('app')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['$location', '$routeParams', 'userService', 'dataService', '$scope', 'notifierService'];
+    UserProfileController.$inject =
+        ['$location', '$routeParams', 'userService', 'dataService', '$scope', 'notifierService'];
 
-    function UserProfileController($location, $routeParams, userService, dataService, $scope, notifierService) {
+    function UserProfileController(
+        $location, $routeParams, userService, dataService, $scope, notifierService) {
         var vm = this;
 
         vm.user = {};

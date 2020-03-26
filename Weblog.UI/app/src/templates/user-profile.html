@@ -15,13 +15,27 @@
 
     <div ng-if="vm.isOwner()">
         <div class="mt-4">
-            <a ng-href="/users/{{vm.user.userId}}/edit" role="button" class="btn btn-success">Edit My Profile</a>
-            <button data-toggle="collapse" data-target="#deleteAlert" class="btn btn-danger">Delete My Account</button>
-            <a ng-href="/users/{{vm.user.userId}}/blogs" role="button" class="btn btn-success">See My Blogs</a>
+            <a ng-href="/users/{{vm.user.userId}}/edit"
+               role="button"
+               class="btn btn-success">
+                Edit My Profile
+            </a>
+            <button data-toggle="collapse"
+                    data-target="#deleteAlert"
+                    class="btn btn-danger">
+                Delete My Account
+            </button>
+            <a ng-href="/users/{{vm.user.userId}}/blogs"
+               role="button"
+               class="btn btn-success">
+                See My Blogs
+            </a>
         </div>
 
         <form id="deleteAlert" name="deleteForm" class="collapse alert alert-danger mt-2">
-            <p class="lead">Are you sure you want to delete your account and erase all data?</p>
+            <p class="lead">
+                Are you sure you want to delete your account and erase all data?
+            </p>
             <p>It would make us sad to see you go... <i class="fa fa-sad-tear"></i></p>
 
             <div class="form-group">
@@ -33,7 +47,11 @@
                        ng-required="true" />
             </div>
 
-            <button ng-click="vm.confirmDelete(deleteForm)" class="btn btn-sm btn-danger" type="submit">Yes</button>
+            <button ng-click="vm.confirmDelete(deleteForm)"
+                    class="btn btn-sm btn-danger"
+                    type="submit">
+                Yes
+            </button>
             <button class="btn btn-sm btn-success"
                     data-toggle="collapse"
                     data-target="#deleteAlert"

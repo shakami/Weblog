@@ -41,11 +41,12 @@
                     $location.path('/users/' + response.data.userId);
                 }).catch(function (reason) {
                     if (reason[0][0].includes('duplicate')) {
-                        vm.errors = ['There is already an account for this email address.'];
+                        vm.errors =
+                            ['There is already an account for this email address.'];
                     } else {
                         vm.errors = reason;
                     }
-                })
+                });
             }
         }
     }

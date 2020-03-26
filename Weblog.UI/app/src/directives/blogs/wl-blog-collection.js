@@ -13,7 +13,9 @@
             scope: {
                 blogs: '='
             },
-            controller: function ($scope, $routeParams, dataService, userService, notifierService) {
+            controller: function (
+                $scope, $routeParams, dataService, userService, notifierService) {
+
                 $scope.user = userService.loggedInUser();
 
                 $scope.$on('loggedInEvent', function (e, args) {
@@ -40,7 +42,6 @@
                 $scope.isCurrentUserBlogs = $scope.user === $routeParams.userId;
             }
         };
-
     }
 
 })();

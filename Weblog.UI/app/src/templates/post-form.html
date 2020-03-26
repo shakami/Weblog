@@ -4,9 +4,12 @@
     <form class="m-4" name="postForm" wl-confirm-on-exit>
         <div class="form-group">
             <label>Title</label>
-            <input ng-model="vm.title" class="form-control" type="text" placeholder="Title" required />
+            <input ng-model="vm.title"
+                   class="form-control"
+                   type="text"
+                   placeholder="Title" required />
         </div>
-        
+
         <div class="form-group">
             <label>Body</label>
             <wl-text-editor type="post" model="vm.content"></wl-text-editor>
@@ -14,7 +17,12 @@
 
         <wl-validation-errors></wl-validation-errors>
 
-        <button class="btn btn-success my-4" type="submit" ng-click="vm.submit(postForm)">Submit</button>
+        <button class="btn btn-success my-4"
+                type="submit"
+                ng-click="vm.submit(postForm)">
+            Submit
+        </button>
+
         <wl-cancel-button></wl-cancel-button>
     </form>
 </div>

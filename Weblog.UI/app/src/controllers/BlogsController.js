@@ -6,7 +6,8 @@
         .module('app')
         .controller('BlogsController', BlogsController);
 
-    BlogsController.$inject = ['dataService', '$location', '$routeParams', 'notifierService'];
+    BlogsController.$inject =
+        ['dataService', '$location', '$routeParams', 'notifierService'];
 
     function BlogsController(dataService, $location, $routeParams, notifierService) {
         var vm = this;

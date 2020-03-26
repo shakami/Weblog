@@ -6,7 +6,8 @@
         .module('app')
         .controller('PostsController', PostsController);
 
-    PostsController.$inject = ['$routeParams', '$location', 'dataService', 'notifierService'];
+    PostsController.$inject =
+        ['$routeParams', '$location', 'dataService', 'notifierService'];
 
     function PostsController($routeParams, $location, dataService, notifierService) {
         var vm = this;

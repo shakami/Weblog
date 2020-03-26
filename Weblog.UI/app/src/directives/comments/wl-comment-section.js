@@ -15,7 +15,9 @@
                 blogId: '@',
                 postId: '@'
             },
-            controller: function ($scope, dataService, $window, userService, notifierService) {
+            controller: function (
+                $scope, dataService, $window, userService, notifierService) {
+
                 $scope.dataResolved = false;
                 $scope.comments = [];
                 $scope.commentCount = null;

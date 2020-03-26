@@ -1,7 +1,5 @@
 ﻿<div>
     <div ng-show="dataResolved" class="row my-2">
-        <!--<h2 class="col-4">Comments <span class="text-muted font-italic small">({{commentCount}})</span></h2>-->
-
         <div class="col-8">
             <button class="btn btn-success"
                     type="button"
@@ -28,8 +26,16 @@
         <wl-text-editor type="comment" model="newComment"></wl-text-editor>
 
         <div class="my-4 text-right">
-            <button ng-click="submit(newCommentForm)" class="btn btn-success" type="submit">Submit</button>
-            <button ng-click="toggleComment()" class="btn btn-dark" type="button">Cancel</button>
+            <button ng-click="submit(newCommentForm)"
+                    class="btn btn-success"
+                    type="submit">
+                Submit
+            </button>
+            <button ng-click="toggleComment()"
+                    class="btn btn-dark"
+                    type="button">
+                Cancel
+            </button>
         </div>
     </form>
 

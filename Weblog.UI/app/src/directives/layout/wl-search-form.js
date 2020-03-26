@@ -21,15 +21,18 @@
                 $scope.search = search;
 
                 $scope.$on('$routeChangeSuccess', function () {
-                    $scope.searchType = $location.path().includes('post') ? 'Posts' : 'Blogs';
+                    $scope.searchType =
+                        $location.path().includes('post') ? 'Posts' : 'Blogs';
                 });
 
                 function search(form) {
                     if (form.$valid) {
                         if ($scope.searchType === 'Blogs') {
-                            $location.url($scope.userProfileLink + '/blogs?q=' + $scope.searchPhrase);
+                            $location.url(
+                                $scope.userProfileLink + '/blogs?q=' + $scope.searchPhrase);
                         } else {
-                            $location.url($scope.userProfileLink + '/posts?q=' + $scope.searchPhrase);
+                            $location.url(
+                                $scope.userProfileLink + '/posts?q=' + $scope.searchPhrase);
                         }
                     }
                 }

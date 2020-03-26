@@ -7,7 +7,10 @@
         <div class="row">
             <div class="ml-3">
                 <h6 class="text-muted">{{vm.blog.excerpt}}</h6>
-                <a ng-href="/users/{{vm.blog.userId}}/blogs" class="font-italic">{{vm.blog.userName}}</a>
+                <a ng-href="/users/{{vm.blog.userId}}/blogs"
+                   class="font-italic">
+                    {{vm.blog.userName}}
+                </a>
             </div>
             <div class="ml-auto mr-3">
                 <a ng-if="vm.isOwner()" class="btn btn-success"

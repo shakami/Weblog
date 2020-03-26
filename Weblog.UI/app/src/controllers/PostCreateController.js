@@ -6,9 +6,11 @@
         .module('app')
         .controller('PostCreateController', PostCreateController);
 
-    PostCreateController.$inject = ['$location', '$routeParams', 'userService', 'dataService', 'notifierService'];
+    PostCreateController.$inject =
+        ['$location', '$routeParams', 'userService', 'dataService', 'notifierService'];
 
-    function PostCreateController($location, $routeParams, userService, dataService, notifierService) {
+    function PostCreateController(
+        $location, $routeParams, userService, dataService, notifierService) {
         var vm = this;
 
         vm.title = null;

@@ -6,9 +6,11 @@
         .module('app')
         .controller('BlogEditController', BlogEditController);
 
-    BlogEditController.$inject = ['$location', '$routeParams', 'dataService', 'userService', 'notifierService'];
+    BlogEditController.$inject =
+        ['$location', '$routeParams', 'dataService', 'userService', 'notifierService'];
 
-    function BlogEditController($location, $routeParams, dataService, userService, notifierService) {
+    function BlogEditController(
+        $location, $routeParams, dataService, userService, notifierService) {
         var vm = this;
 
         vm.title = null;

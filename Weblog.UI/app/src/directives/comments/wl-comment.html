@@ -1,7 +1,11 @@
 ﻿<div class="jumbotron py-2 m-4">
     <div class="row">
-        <a ng-href="/users/{{comment.userId}}/blogs"><i class="fa fa-user-circle"></i> {{comment.userName}}</a>
-        <p class="small text-muted ml-auto">{{comment.timeCreated | date : 'MMM d, y h:mm a'}}</p>
+        <a ng-href="/users/{{comment.userId}}/blogs">
+            <i class="fa fa-user-circle"></i> {{comment.userName}}
+        </a>
+        <p class="small text-muted ml-auto">
+            {{comment.timeCreated | date : 'MMM d, y h:mm a'}}
+        </p>
     </div>
 
     <div class="my-2 collapse show delete-collapse{{comment.commentId}} edit-collapse{{comment.commentId}}">
@@ -10,33 +14,46 @@
         <div ng-if="isOwner(comment)">
             <button data-toggle="collapse"
                     data-target=".edit-collapse{{comment.commentId}}"
-                    class="btn btn-sm btn-success">Edit</button>
+                    class="btn btn-sm btn-success">
+                Edit
+            </button>
             <button class="btn btn-sm btn-danger"
                     data-toggle="collapse"
-                    data-target=".delete-collapse{{comment.commentId}}">Delete</button>
+                    data-target=".delete-collapse{{comment.commentId}}">
+                Delete
+            </button>
         </div>
     </div>
 
     <div class="collapse alert alert-danger delete-collapse{{comment.commentId}}">
-            <p class="lead">Do you really want to delete this comment?</p>
-            <div class="text-right">
-                <button ng-click="confirmDelete()" class="btn btn-sm btn-danger">Yes</button>
-                <button class="btn btn-sm btn-success"
-                        data-toggle="collapse"
-                        data-target=".delete-collapse{{comment.commentId}}">
-                    No
-                </button>
-            </div>
+        <p class="lead">Do you really want to delete this comment?</p>
+        <div class="text-right">
+            <button ng-click="confirmDelete()"
+                    class="btn btn-sm btn-danger">
+                Yes
+            </button>
+            <button class="btn btn-sm btn-success"
+                    data-toggle="collapse"
+                    data-target=".delete-collapse{{comment.commentId}}">
+                No
+            </button>
+        </div>
     </div>
 
     <div class="collapse edit-collapse{{comment.commentId}}">
         <wl-text-editor type="comment" model="comment.body"></wl-text-editor>
 
         <div class="mt-2">
-            <button ng-click="submit()" class="btn btn-sm btn-success" type="submit">Submit</button>
+            <button ng-click="submit()"
+                    class="btn btn-sm btn-success"
+                    type="submit">
+                Submit
+            </button>
             <button data-toggle="collapse"
                     data-target=".edit-collapse{{comment.commentId}}"
-                    class="btn btn-sm btn-dark">Cancel</button>
+                    class="btn btn-sm btn-dark">
+                Cancel
+            </button>
         </div>
     </div>
 </div>

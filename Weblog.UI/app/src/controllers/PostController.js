@@ -51,7 +51,6 @@
                     $location.path("/error");
                 });
         }
-
     }
 
 })();
